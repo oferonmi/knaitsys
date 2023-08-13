@@ -6,7 +6,7 @@ export const HomeContent = () => {
     return (
         <div className="bg-cover bg-center flex flex-col items-center justify-center text-white h-screen relative" style={{ backgroundImage: `url(${HomeBgImg.src})` }}>
 
-            <h1 className="font-mono text-5xl mt-40">
+            <h1 className="font-mono text-5xl mt-30">
                 Craft your own AI Research Assistant.
             </h1>
 
@@ -16,7 +16,7 @@ export const HomeContent = () => {
 
             <Link
                 href="/"
-                className="text-white text-justify font-medium text-sm bg-black hover:bg-gray-800 focus:ring-4 dark:bg-black dark:hover:bg-gray-800 focus:outline-none dark:focus:ring-gray-800 px-6 py-3 mt-2 rounded-full"
+                className="text-white text-justify font-medium text-sm bg-black hover:bg-gray-800 focus:ring-4 dark:bg-black dark:hover:bg-gray-800 focus:outline-none dark:focus:ring-gray-800 px-6 py-4 mt-2 rounded-full"
             >
                 Get Started
             </Link>
