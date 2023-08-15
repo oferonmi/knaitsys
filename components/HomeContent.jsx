@@ -1,5 +1,4 @@
 import Link from "next/link"
-import Image from "next/image"
 import HomeBgImg from "../public/d5-render-0NSnrDBogYg-unsplash.jpg"
 
 export const HomeContent = () => {

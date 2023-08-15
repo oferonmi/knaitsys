@@ -1,11 +1,15 @@
 // 'use client'
 import Link from "next/link"
 import Image from "next/image"
+import { authOptions } from "../app/api/auth/[...nextauth]/options"
+import { getServerSession } from "next-auth/next"
+// import {usePathname} from 'next/navigation';
 import Logo from "../public/kaito_app_logo.png"
 // import { useSession, signIn, signOut } from 'next-auth/react'
 
-export const Header = () => {
-    // const { data: session } = useSession();
+export const Header = async () => {
+    const session = await getServerSession(authOptions);
+    // const currentPathName = usePathname()
 
     const handleSignin = (e) => {
         e.preventDefault();
@@ -28,22 +32,46 @@ export const Header = () => {
                             <Image src="/kaito_app_logo.png" alt="App logo" width={199} height={115} />
                         </Link>
                     </div>
-
-                    <div className="flex flex-row px-20">
-                        <Link
-                            href="/api/auth/signin"
+                    
+                    {session ? (
+                        <div className="flex flex-row px-20">
+                            <Link
+                            href="/api/auth/signout"
                             className="flex text-white text-justify bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1"
                         >
-                            Log In
+                            Log Out
                         </Link>
+                        </div>
+                    ):(
+                        <div className="flex flex-row px-20">
+                            {/* {currentPathName !="/api/auth/signin" ? (
+                                <Link
+                                    href="/api/auth/signin"
+                                    className="flex text-white text-justify bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1"
+                                >
+                                    Log In
+                                </Link>
+                            ):(
+                                <></>
+                            )} */}
 
-                        <Link
-                            href="/" 
-                            className=" flex text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1"
-                        >
-                            Sign Up
-                        </Link>   
-                    </div>
+                            <Link
+                                href="/api/auth/signin"
+                                className="flex text-white text-justify bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1"
+                            >
+                                Log In
+                            </Link>
+                            
+
+                            <Link
+                                href="/" 
+                                className=" flex text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1"
+                            >
+                                Sign Up
+                            </Link>   
+                        </div>
+                    )}
+                    
                 </div>
                 
             </nav>
