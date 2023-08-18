@@ -1,4 +1,3 @@
-
 "use client";
 import { signIn } from "next-auth/react";
 import React, { FormEventHandler, useRef } from "react";
@@ -24,6 +23,8 @@ const Login = () => {
                 "flex flex-col justify-center items-center  h-screen bg-gradient-to-br gap-1 from-cyan-300 to-sky-600"
             }
         >
+            
+            {/* <div>current path: { pathname }</div> */}
             <form className="px-7 py-4 shadow bg-white dark:bg-gray-900 rounded-md flex flex-col gap-2" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="email">Username</label>
@@ -51,11 +52,11 @@ const Login = () => {
 
                 <div className="flex flex-col justify-center items-center py-3">
                     <input
-                        className="flex text-white text-justify bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1 shadow" 
-                        type="submit"
-                        value="Login"
+                        className="flex text-white text-justify bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1 shadow"
+                        type={"submit"}
+                        value={"Login"}
                     />
-                </div>
+               </div>
             </form>
         </div>
     );
