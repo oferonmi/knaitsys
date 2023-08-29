@@ -4,12 +4,10 @@ import { authOptions } from "../app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
 import {AuthHeader} from "./AuthHeader";
 import { UnAuthHeader } from "./UnAuthHeader";
-// import { usePathname } from 'next/navigation';
 // import Logo from "../public/kaito_app_logo.png";
 
 export const Header = async () => {
     const session = await getServerSession(authOptions);
-    // const pathname = usePathname();
 
     // const handleSignin = (e) => {
     //     e.preventDefault();
