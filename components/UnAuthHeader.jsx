@@ -7,7 +7,7 @@ export const UnAuthHeader = () => {
 
     return (
         <div className="header">
-            <nav className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-600 w-full items-center space-x-6"> {/*z-20 fixed*/}
+            <nav className="bg-white border-gray-200 w-full items-center space-x-6"> {/*z-20 fixed*/}
 
                 <div className="md:flex md:items-center md:justify-between md:mx-auto">
                     {/* <div>page path: {pgPathName}</div> */}
