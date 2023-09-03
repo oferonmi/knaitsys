@@ -33,15 +33,15 @@ const Login = async () => {
 
     return (
         <>
-            <div className="px-7 py-4 shadow bg-transparent flex flex-col justify-center items-center h-screen bg-gradient-to-br gap-1 from-gray-100 to-gray-400">
+            <div className="px-7 py-4 shadow bg-transparent flex flex-col justify-center items-center h-screen bg-gradient-to-br gap-1 from-teal-100 to-teal-100">
                 <h1 className="font-mono text-5xl text-black mt-30">
                     Log in
                 </h1>
                 
-                <div className="border-t-0 border-y-0 border-b-2 border-b-gray-200">
+                <div className="border-t-0 border-y-0 border-b-2 border-b-black">
                     <form onSubmit={handleSubmit} >
                         <div className="text-black">
-                            <label htmlFor="email">Username</label>
+                            <label htmlFor="email">Email or Username</label>
                         </div>
                         <div className="text-black">
                             <input
