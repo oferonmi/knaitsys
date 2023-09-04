@@ -24,18 +24,20 @@ const Chat = () => {
     return (
       <>
         <div className="flex flex-col bg-teal-100">
-          <div className="max-w-2xl pb-5 mx-auto mt-0 mb-0 sm:px-4">
-            {/* <div className="text-center"></div> */}
+          <div className="grow max-w-2xl mx-auto mt-4 sm:px-4">
+            <div className="text-center"></div>
 
             {messages.length == 0 && <EmptyChatState />}
 
-            <div className="flex flex-col text-sm sm:text-base text-gray-500 flex-1 gap-y-4 mt-5">
+            <div className="flex flex-col text-sm sm:text-base text-gray-500 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-60">
               {messages.map((m) => (
                 <div key={m.id}>
                   {m.role === "user" ? "User: " : "KAITO: "}
                   {m.content}
                 </div>
               ))}
+
+              <div ref={bottomRef} />
             </div>
 
             <ChatForm
@@ -51,7 +53,6 @@ const Chat = () => {
               </label>
               <button type="submit">Send</button>
             </form> */}
-            <div ref={bottomRef} />
           </div>
         </div>
       </>
