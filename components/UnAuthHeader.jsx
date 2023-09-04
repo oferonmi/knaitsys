@@ -24,7 +24,7 @@ export const UnAuthHeader = () => {
                         )}
 
                         <Link
-                            href="/" 
+                            href="/home" 
                             className=" flex text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 dark:bg-teal-600 dark:hover:bg-teal-700 focus:outline-none dark:focus:ring-teal-800 gap-1"
                         >
                             Sign Up

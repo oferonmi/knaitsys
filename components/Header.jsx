@@ -26,7 +26,7 @@ export const Header = async () => {
                 <div className="md:flex md:items-center md:justify-between md:mx-auto">
 
                     <div className="flex flex-row">
-                        <Link href="/" passHref className="px-20 py-1 w-auto h-auto">
+                        <Link href="/home" passHref className="px-20 py-1 w-auto h-auto">
                             <Image src="/kaito_app_logo.png" alt="App logo" width={199} height={115} />
                         </Link>
                     </div>

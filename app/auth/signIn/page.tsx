@@ -18,7 +18,7 @@ const Login = async () => {
             username: userName.current,
             password: passWd.current,
             redirect: true,
-            callbackUrl: "/",
+            callbackUrl: "/home",
         });
     };
 
@@ -91,7 +91,7 @@ const Login = async () => {
                             return(
                                 <div key={provider.id} >
                                     <button 
-                                        onClick={ () => signIn(provider.id, { callbackUrl: "/",}) }
+                                        onClick={ () => signIn(provider.id, { callbackUrl: "/home",}) }
                                         className="flex text-white text-justify bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:ring-teal-300 rounded-lg font-medium text-sm px-5 py-2 mr-2 mb-2 focus:outline-none gap-1 shadow"
                                     >
                                         {loginIcon} Sign In with {provider.name}

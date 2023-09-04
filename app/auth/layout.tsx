@@ -1,7 +1,7 @@
-import './globals.css'
+import 'app/globals.css'
 import { Inter } from 'next/font/google'
-import { Header } from '../components/Header'
-import { Footer } from '../components/Footer'
+import { Header } from '../../components/Header'
+import { Footer } from '../../components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -10,7 +10,7 @@ export const metadata = {
   description: 'Your AI research assistant',
 }
 
-export default function RootLayout({children}: {children: React.ReactNode}) {
+export default function AuthLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <body className={inter.className}>
