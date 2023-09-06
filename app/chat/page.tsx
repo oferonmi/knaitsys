@@ -27,13 +27,6 @@ const Chat = () => {
               onSubmitHandler={handleSubmit}
             />
 
-            {/* <form onSubmit={handleSubmit}>
-              <label>
-                Say something...
-                <input value={input} onChange={handleInputChange} />
-              </label>
-              <button type="submit">Send</button>
-            </form> */}
           </div>
         </div>
       </>
