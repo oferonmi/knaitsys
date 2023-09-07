@@ -14,7 +14,7 @@ export const HomeContent = () => {
             </p>
 
             <Link
-                href="/api/auth/signin"
+                href="/ai_tools"
                 className="text-white text-justify font-medium text-sm bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none px-6 py-4 mt-2 rounded-full"
             >
                 Get Started

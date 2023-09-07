@@ -13,11 +13,16 @@ export const metadata = {
 export default function ChatLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-          <Header />
-          {children}
-          {/* <Footer /> */}
+      <body
+        className={
+          inter.className +
+          " bg-gradient-to-r from-teal-100 to-teal-100"
+        }
+      >
+        <Header />
+        {children}
+        {/* <Footer /> */}
       </body>
     </html>
-  )
+  );
 }

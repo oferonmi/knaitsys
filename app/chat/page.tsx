@@ -14,20 +14,16 @@ const Chat = () => {
 
     return (
       <>
-        <div className="flex bg-teal-100">
-          <div className="max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
+        <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
+          {messages.length == 0 && <EmptyChatState />}
 
-            {messages.length == 0 && <EmptyChatState />}
+          {messages.length > 0 && <ChatThread messages={messages} />}
 
-            {messages.length > 0 && <ChatThread messages={messages} />}
-
-            <ChatForm
-              userInput={input}
-              onChangeHandler={handleInputChange}
-              onSubmitHandler={handleSubmit}
-            />
-
-          </div>
+          <ChatForm
+            userInput={input}
+            onChangeHandler={handleInputChange}
+            onSubmitHandler={handleSubmit}
+          />
         </div>
       </>
     );
