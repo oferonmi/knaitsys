@@ -104,8 +104,10 @@ const AiTools = () => {
             </Link>
           </div>
           <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
-            {fileIcon}
-            <p>Text</p>
+            <Link href="/summarizer">
+              {fileIcon}
+              <p>Summarizer</p>
+            </Link>
           </div>
           <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
             {micIcon}

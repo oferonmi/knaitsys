@@ -6,17 +6,20 @@ import { Footer } from '../../components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'KAITO - Chat',
-  description: 'Your AI research assistant',
-}
+  title: "KAITO - Summarizer",
+  description: "Your AI research assistant",
+};
 
-export default function ChatLayout({children}: {children: React.ReactNode}) {
+export default function SummarizerLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
       <body
         className={
-          inter.className +
-          " bg-gradient-to-r from-teal-100 to-teal-100"
+          inter.className + " bg-gradient-to-r from-teal-100 to-teal-100"
         }
       >
         <Header />

@@ -17,7 +17,6 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler }) => {
     <footer className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
       <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
         <form className="w-full flex" onSubmit={onSubmitHandler}> 
-        {/* {handleSubmit} */}
           <input
             type="text"
             autoComplete="off"
@@ -27,7 +26,7 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler }) => {
             placeholder="  Send a message"
             required={true}
             value={userInput}
-            onChange={onChangeHandler} //{(e) => onChangeHandler(e.target.value)}
+            onChange={onChangeHandler}
           />
           <button
             className="bg-teal-600 hover:bg-teal-800 items-center font-semibold text-white rounded-r-md px-5 py-3"
