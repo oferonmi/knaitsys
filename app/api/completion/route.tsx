@@ -18,13 +18,15 @@ export async function POST(req: Request) {
     stream: true,
     temperature: 0.6,
     max_tokens: 300,
-    prompt: `Create three slogans for a business with unique features.
-            Business: Bookstore with cats
-            Slogans: "Purr-fect Pages", "Books and Whiskers", "Novels and Nuzzles"
-            Business: Gym with rock climbing
-            Slogans: "Peak Performance", "Reach New Heights", "Climb Your Way Fit"
-            Business: ${prompt}
-            Slogans:`, //TODO Change for specific completion purpose
+    prompt: `Create a summary of a text. Include key data points.
+            Text: ${prompt}`,
+    // `Create three slogans for a business with unique features.
+    // Business: Bookstore with cats
+    // Slogans: "Purr-fect Pages", "Books and Whiskers", "Novels and Nuzzles"
+    // Business: Gym with rock climbing
+    // Slogans: "Peak Performance", "Reach New Heights", "Climb Your Way Fit"
+    // Business: ${prompt}
+    // Slogans:`, //TODO Change for specific completion purpose
   });
 
   // Convert the response into a friendly text-stream
