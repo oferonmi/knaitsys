@@ -30,7 +30,7 @@ const Summarizer = () => {
 
         {completion.length > 0 && (
           <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-60 grow">
-            Completion result: {completion}
+            {completion}
           </output>
         )}
 
