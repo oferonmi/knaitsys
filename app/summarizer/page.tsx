@@ -37,7 +37,7 @@ const Summarizer = () => {
         <footer className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
           <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
             <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-              <input
+              {/* <input
                 className="flex-grow block w-full rounded-md border-0 py-1.5 text-teal-900 ring-1 ring-inset ring-teal-600 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-teal-600 sm:leading-6"
                 placeholder="  Paste in the text you want to summarize"
                 value={input}
@@ -60,6 +60,70 @@ const Summarizer = () => {
                 >
                   Stop summary
                 </button>
+              </div> */}
+
+              <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 ">
+                {/* dark:bg-gray-700 dark:border-gray-600 */}
+                <div className="px-4 py-2 bg-white rounded-t-lg ">
+                  {/* dark:bg-gray-800 */}
+                  {/* <label htmlFor="comment" className="sr-only">
+                    Your comment
+                  </label> */}
+                  <textarea
+                    id="comment"
+                    rows="4"
+                    className="w-full px-0 text-sm text-teal-900 bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-teal-600"
+                    value={input}
+                    onChange={handleInputChange}
+                    placeholder="Paste or upload the file of the text you want to summarize..."
+                    required
+                  ></textarea>
+                  {/* dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 */}
+                </div>
+
+                <div className="flex items-center justify-between px-3 py-2 border-t ">
+                  {/* dark:border-gray-600 */}
+                  <div className="justify-left mt-2 space-x-6">
+                    <button
+                      className="inline-flex items-center py-1.5 px-3 font-medium text-center text-white bg-teal-600 rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-teal-800"
+                      type="submit"
+                      disabled={isLoading}
+                    >
+                      {/* dark:focus:ring-teal-900 */}
+                      Start summary
+                    </button>
+                    <button
+                      className="inline-flex bg-teal-600 hover:bg-teal-800 items-center font-medium text-white rounded-md px-3 py-1.5"
+                      type="button"
+                      onClick={stop}
+                    >
+                      Stop summary
+                    </button>
+                  </div>
+                  <div className="flex pl-0 space-x-1 sm:pl-2">
+                    <button
+                      type="button"
+                      className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+                    >
+                      {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+                      <svg
+                        className="w-4 h-4"
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 12 20"
+                      >
+                        <path
+                          stroke="currentColor"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"
+                        />
+                      </svg>
+                      <span className="sr-only">Attach file</span>
+                    </button>
+                  </div>
+                </div>
               </div>
             </form>
           </div>
