@@ -9,16 +9,6 @@ import { UnAuthHeader } from "./UnAuthHeader";
 export const Header = async () => {
     const session = await getServerSession(authOptions);
 
-    // const handleSignin = (e) => {
-    //     e.preventDefault();
-    //     signIn();
-    // };
-
-    // const handleSignout = (e) => {
-    //     e.preventDefault();
-    //     signOut();
-    // };
-
     return (
         <div className="header">
             <nav className="bg-white border-gray-200 w-full items-center space-x-6"> {/*z-20 fixed*/}

@@ -3,168 +3,115 @@ import { useState, useRef } from "react";
 import { useCompletion } from "ai/react";
 import Emoji from "../../components/Emoji";
 import { Footer } from "../../components/Footer";
+// import { SessionProvider } from "next-auth/react";
+// import { useSession } from "next-auth/react";
+// import { getServerSession } from "next-auth/next";
+// import { authOptions } from "../api/auth/[...nextauth]/options";
+// import { redirect } from "next/navigation";
 
 const Summarizer = () => {
+  // const { data: session } = useSession();
+  // const session = await getServerSession(authOptions);
 
-    const [showTextInput, setShowTextInput] = useState(true);
-    const [showFileInput, setShowFileInput] = useState(false);
+  const [showTextInput, setShowTextInput] = useState(true);
+  const [showFileInput, setShowFileInput] = useState(false);
 
-    const inputSectionRef = useRef(null);
+  const inputSectionRef = useRef(null);
 
-    // icons
-    const clipIcon = (
-      <svg
-        className="w-4 h-4"
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 12 20"
-      >
-        <path
-          stroke="currentColor"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"
-        />
-      </svg>
-    );
+  // icons
+  const clipIcon = (
+    <svg
+      className="w-4 h-4"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 12 20"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"
+      />
+    </svg>
+  );
 
-    const cloudUploadIcon = (
-      // dark:text-gray-400
-      <svg
-        className="w-8 h-8 mb-4 text-gray-500" 
-        aria-hidden="true"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 20 16"
-      >
-        <path
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-        />
-      </svg>
-    );
+  const cloudUploadIcon = (
+    // dark:text-gray-400
+    <svg
+      className="w-8 h-8 mb-4 text-gray-500"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 20 16"
+    >
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+      />
+    </svg>
+  );
 
-    const textBodyIcon = (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        fill="currentColor"
-        className="bi bi-body-text"
-        viewBox="0 0 16 16"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M0 .5A.5.5 0 0 1 .5 0h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 0 .5Zm0 2A.5.5 0 0 1 .5 2h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm9 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm-9 2A.5.5 0 0 1 .5 4h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Zm5 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm7 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Zm-12 2A.5.5 0 0 1 .5 6h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5Zm8 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm-8 2A.5.5 0 0 1 .5 8h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm7 0a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm-7 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5Zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Z"
-        />
-      </svg>
-    );
+  const textBodyIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      className="bi bi-body-text"
+      viewBox="0 0 16 16"
+    >
+      <path
+        fill-rule="evenodd"
+        d="M0 .5A.5.5 0 0 1 .5 0h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 0 .5Zm0 2A.5.5 0 0 1 .5 2h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm9 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm-9 2A.5.5 0 0 1 .5 4h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Zm5 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm7 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Zm-12 2A.5.5 0 0 1 .5 6h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5Zm8 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm-8 2A.5.5 0 0 1 .5 8h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm7 0a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm-7 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5Zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Z"
+      />
+    </svg>
+  );
 
-    // text AI completion ffunction call
-    const {
-      completion,
-      input,
-      stop,
-      isLoading,
-      handleInputChange,
-      handleSubmit,
-    } = useCompletion({
-      api: "/api/completion",
-    });
+  // text AI completion function call
+  const {
+    completion,
+    input,
+    stop,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+  } = useCompletion({
+    api: "/api/completion",
+  });
 
-    // handle button for input selection
-    const handleFileInputSelection = () =>{
-      setShowFileInput(true);
-      setShowTextInput(false);
-    }
+  // handle button for input selection
+  const handleFileInputSelection = () => {
+    setShowFileInput(true);
+    setShowTextInput(false);
+  };
 
-    const handleTextInputSelection = () =>{
-      setShowTextInput(true);
-      setShowFileInput(false);
-    }
+  const handleTextInputSelection = () => {
+    setShowTextInput(true);
+    setShowFileInput(false);
+  };
 
-    // input section form specifications
-    // direct text input form
-    const textInputFormSpec = (
-      <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-        <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50">
-          {/* dark:bg-gray-700 dark:border-gray-600 */}
-          <div className="px-4 py-2 bg-white rounded-t-lg ">
-            {/* dark:bg-gray-800 */}
-            <textarea
-              id="comment"
-              rows="4"
-              className="w-full px-0 text-sm text-teal-900 bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-teal-600"
-              value={input}
-              onChange={handleInputChange}
-              placeholder="Paste or upload the file of the text you want to summarize..."
-              required
-            ></textarea>
-            {/* dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 */}
-          </div>
-
-          <div className="flex items-center justify-between px-3 py-2 border-t ">
-            {/* dark:border-gray-600 */}
-            <div className="justify-left mt-2 space-x-6">
-              <button
-                className="inline-flex items-center py-1.5 px-3 font-medium text-center text-white bg-teal-600 rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-teal-800"
-                type="submit"
-                disabled={isLoading}
-              >
-                {/* dark:focus:ring-teal-900 */}
-                Start summary
-              </button>
-              <button
-                className="inline-flex bg-teal-600 hover:bg-teal-800 items-center font-medium text-white rounded-md px-3 py-1.5"
-                type="button"
-                onClick={stop}
-              >
-                Stop summary
-              </button>
-            </div>
-            <div className="flex pl-0 space-x-1 sm:pl-2">
-              <button
-                type="button"
-                className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
-                onClick={handleFileInputSelection}
-              >
-                {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-                {clipIcon}
-                <span className="sr-only">Attach file</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </form>
-    );
-
-    // text file input form
-    const fileInputFormSpec = (
-      <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-        <div className="flex items-center justify-center w-full">
-          <label
-            htmlFor="dropzone-file"
-            className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50  hover:bg-gray-100 "
-          >
-            {/* dark:hover:bg-bray-800 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 */}
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              {cloudUploadIcon}
-              <p className="mb-2 text-sm text-gray-500 ">
-                {/* dark:text-gray-400 */}
-                <span className="font-semibold">Click to upload</span> or drag
-                and drop
-              </p>
-              <p className="text-xs text-gray-500 ">
-                {/* dark:text-gray-400 */}
-                DOC, DOCX, TXT or PDF
-              </p>
-            </div>
-            <input id="dropzone-file" type="file" className="hidden" />
-          </label>
+  // input section form specifications
+  // direct text input form
+  const textInputFormSpec = (
+    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+      <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50">
+        {/* dark:bg-gray-700 dark:border-gray-600 */}
+        <div className="px-4 py-2 bg-white rounded-t-lg ">
+          {/* dark:bg-gray-800 */}
+          <textarea
+            id="comment"
+            rows="4"
+            className="w-full px-0 text-sm text-teal-900 bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-teal-600"
+            value={input}
+            onChange={handleInputChange}
+            placeholder="Paste or upload the file of the text you want to summarize..."
+            required
+          ></textarea>
+          {/* dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 */}
         </div>
 
         <div className="flex items-center justify-between px-3 py-2 border-t ">
@@ -190,30 +137,99 @@ const Summarizer = () => {
             <button
               type="button"
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
-              onClick={handleTextInputSelection}
+              onClick={handleFileInputSelection}
             >
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-              {textBodyIcon}
-              <span className="sr-only">Paste text</span>
+              {clipIcon}
+              <span className="sr-only">Attach file</span>
             </button>
           </div>
         </div>
-      </form>
-    );
+      </div>
+    </form>
+  );
 
-    return (
+  // text file input form
+  const fileInputFormSpec = (
+    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+      <div className="flex items-center justify-center w-full">
+        <label
+          htmlFor="dropzone-file"
+          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50  hover:bg-gray-100 "
+        >
+          {/* dark:hover:bg-bray-800 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 */}
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            {cloudUploadIcon}
+            <p className="mb-2 text-sm text-gray-500 ">
+              {/* dark:text-gray-400 */}
+              <span className="font-semibold">Click to upload</span> or drag and
+              drop
+            </p>
+            <p className="text-xs text-gray-500 ">
+              {/* dark:text-gray-400 */}
+              DOC, DOCX, TXT or PDF
+            </p>
+          </div>
+          <input id="dropzone-file" type="file" className="hidden" />
+        </label>
+      </div>
+
+      <div className="flex items-center justify-between px-3 py-2 border-t ">
+        {/* dark:border-gray-600 */}
+        <div className="justify-left mt-2 space-x-6">
+          <button
+            className="inline-flex items-center py-1.5 px-3 font-medium text-center text-white bg-teal-600 rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-teal-800"
+            type="submit"
+            disabled={isLoading}
+          >
+            {/* dark:focus:ring-teal-900 */}
+            Start summary
+          </button>
+          <button
+            className="inline-flex bg-teal-600 hover:bg-teal-800 items-center font-medium text-white rounded-md px-3 py-1.5"
+            type="button"
+            onClick={stop}
+          >
+            Stop summary
+          </button>
+        </div>
+        <div className="flex pl-0 space-x-1 sm:pl-2">
+          <button
+            type="button"
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            onClick={handleTextInputSelection}
+          >
+            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+            {textBodyIcon}
+            <span className="sr-only">Paste text</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+
+  // If no session exists, redirect to sign page
+  // if (!session) {
+  //   redirect("/api/auth/signin");
+  // }
+
+  return (
       <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
         {completion.length == 0 && (
           <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
-            <p>
+            <div>
               <Emoji symbol="👋" label="waving hand" /> Hello! Paste in your
               text or upload a text file and get a summary of the text content.
               Click button{" "}
-              <div className="inline-flex text-2xl font-extrabold">{clipIcon}</div> for file
-              upload or{" "}
-              <div className="inline-flex text-2xl font-extrabold">{textBodyIcon}</div> button
-              for direct text input.
-            </p>
+              <div className="inline-flex text-2xl font-extrabold">
+                {clipIcon}
+              </div>{" "}
+              for file upload or{" "}
+              <div className="inline-flex text-2xl font-extrabold">
+                {textBodyIcon}
+              </div>{" "}
+              button for direct text input.
+            </div>
           </div>
         )}
 
@@ -231,7 +247,7 @@ const Summarizer = () => {
           <Footer />
         </footer>
       </div>
-    );
+  );
 };
 
 export default Summarizer;

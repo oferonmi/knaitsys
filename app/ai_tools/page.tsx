@@ -1,6 +1,12 @@
 import Link from "next/link";
 
-const AiTools = () => {
+import { SessionProvider } from "next-auth/react";
+import type { AppProps } from "next/app";
+import type { Session } from "next-auth";
+
+const AiTools = ({
+  // pageProps: { session, ...pageProps },
+}) => {
   const chatIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +91,7 @@ const AiTools = () => {
   );
 
   return (
-    <>
+    // <SessionProvider session={session}>
       <div className="flex flex-col bg-teal-100 bg-cover bg-center items-center justify-center h-screen">
         <div className="font-mono text-3xl text-gray-700 max-w-2xl pb-5 mx-auto mt-4 sm:px-4">
           AI Tools kit.
@@ -127,7 +133,7 @@ const AiTools = () => {
           </div>
         </div>
       </div>
-    </>
+    // </SessionProvider>
   );
 };
 
