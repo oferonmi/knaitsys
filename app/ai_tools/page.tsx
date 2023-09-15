@@ -1,12 +1,13 @@
+"use client"
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
-import { SessionProvider } from "next-auth/react";
-import type { AppProps } from "next/app";
-import type { Session } from "next-auth";
+const AiTools = () => {
+  // sessions
+  const { data: session, status } = useSession();
 
-const AiTools = ({
-  // pageProps: { session, ...pageProps },
-}) => {
+  // icons
   const chatIcon = (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -90,51 +91,51 @@ const AiTools = ({
     </svg>
   );
 
-  return (
-    // <SessionProvider session={session}>
-      <div className="flex flex-col bg-teal-100 bg-cover bg-center items-center justify-center h-screen">
-        <div className="font-mono text-3xl text-gray-700 max-w-2xl pb-5 mx-auto mt-4 sm:px-4">
-          AI Tools kit.
-        </div>
+  const aiToolsSdkPgContent = (
+    <div className="flex flex-col bg-teal-100 bg-cover bg-center items-center justify-center h-screen">
+      <div className="font-mono text-3xl text-gray-700 max-w-2xl pb-5 mx-auto mt-4 sm:px-4">
+        AI Tools kit.
+      </div>
 
-        <div className="mt-2 text-xl text-black">
-          Choose your preferred Natural Language Interface (NLI) for your
-          knowledge work.
-        </div>
+      <div className="mt-2 text-xl text-black">
+        Choose your preferred Natural Language Interface (NLI) for your
+        knowledge work.
+      </div>
 
-        <div className="grid grid-flow-col justify-items-stretch place-items-center gap-4 max-w-2xl pb-5 mx-auto mt-4 sm:px-4 text-gray-700">
-          <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
-            <Link href="/chat">
-              {chatIcon}
-              <p>Chat</p>
-            </Link>
-          </div>
-          <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
-            <Link href="/summarizer">
-              {fileIcon}
-              <p>Summarizer</p>
-            </Link>
-          </div>
-          <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
-            {micIcon}
-            <p>Audio</p>
-          </div>
-          <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
-            {videoIcon}
-            <p>Videos</p>
-          </div>
-          <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
-            {imagesIcon}
-            <p>Images</p>
-          </div>
-          <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
-            {softwareIcon}
-            <p>Agent</p>
-          </div>
+      <div className="grid grid-flow-col justify-items-stretch place-items-center gap-4 max-w-2xl pb-5 mx-auto mt-4 sm:px-4 text-gray-700">
+        <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
+          <Link href="/chat">
+            {chatIcon}
+            <p>Chat</p>
+          </Link>
+        </div>
+        <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
+          <Link href="/summarizer">
+            {fileIcon}
+            <p>Summarizer</p>
+          </Link>
+        </div>
+        <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
+          {micIcon}
+          <p>Audio</p>
+        </div>
+        <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
+          {videoIcon}
+          <p>Videos</p>
+        </div>
+        <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
+          {imagesIcon}
+          <p>Images</p>
+        </div>
+        <div className="border-hidden border-2 hover:border-dotted border-gray-700 rounded-md text-center justify-self-center">
+          {softwareIcon}
+          <p>Agent</p>
         </div>
       </div>
-    // </SessionProvider>
+    </div>
   );
+
+  return <>{session ? aiToolsSdkPgContent : redirect("/auth/signIn")}</>;
 };
 
 export default AiTools;
