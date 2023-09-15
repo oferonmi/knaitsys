@@ -1,5 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import NextAuthProvider from "../context/NextAuthProvider";
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,7 +18,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           inter.className + " bg-gradient-to-r from-teal-100 to-teal-100"
         }
       >
-        {children}
+        <NextAuthProvider>{children}</NextAuthProvider>
       </body>
     </html>
   );

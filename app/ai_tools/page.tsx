@@ -135,7 +135,12 @@ const AiTools = () => {
     </div>
   );
 
-  return <>{session ? aiToolsSdkPgContent : redirect("/auth/signIn")}</>;
+  return(
+    <>
+      {status === "authenticated" && aiToolsSdkPgContent};
+      {status === "unauthenticated" && redirect("/auth/signIn")};
+    </>
+  );
 };
 
 export default AiTools;

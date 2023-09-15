@@ -2,10 +2,7 @@ import "app/globals.css";
 import { Inter } from "next/font/google";
 import { Header } from "../../components/Header";
 import { Footer } from "../../components/Footer";
-
-import { SessionProvider } from "next-auth/react";
-
-import NextAuthProvider from "../../context/NextAuthProvider";
+// import NextAuthProvider from "../../context/NextAuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,11 +19,11 @@ export default function aiAssistantLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NextAuthProvider>
+        {/* <NextAuthProvider> */}
           <Header />
           {children}
           <Footer />
-        </NextAuthProvider>
+        {/* </NextAuthProvider> */}
       </body>
     </html>
   );
