@@ -3,15 +3,11 @@ import { useState, useRef } from "react";
 import { useCompletion } from "ai/react";
 import Emoji from "../../components/Emoji";
 import { Footer } from "../../components/Footer";
-// import { SessionProvider } from "next-auth/react";
-// import { useSession } from "next-auth/react";
-// import { getServerSession } from "next-auth/next";
-// import { authOptions } from "../api/auth/[...nextauth]/options";
-// import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 const Summarizer = () => {
-  // const { data: session } = useSession();
-  // const session = await getServerSession(authOptions);
+  const { data:session, status } = useSession();
 
   const [showTextInput, setShowTextInput] = useState(true);
   const [showFileInput, setShowFileInput] = useState(false);
@@ -214,39 +210,45 @@ const Summarizer = () => {
   // }
 
   return (
-      <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
-        {completion.length == 0 && (
-          <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
-            <div>
-              <Emoji symbol="👋" label="waving hand" /> Hello! Paste in your
-              text or upload a text file and get a summary of the text content.
-              Click button{" "}
-              <div className="inline-flex text-2xl font-extrabold">
-                {clipIcon}
-              </div>{" "}
-              for file upload or{" "}
-              <div className="inline-flex text-2xl font-extrabold">
-                {textBodyIcon}
-              </div>{" "}
-              button for direct text input.
+    <>
+      {status === "authenticated" && (
+        <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
+          {completion.length == 0 && (
+            <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
+              <div>
+                <Emoji symbol="👋" label="waving hand" /> Hello! Paste in your
+                text or upload a text file and get a summary of the text
+                content. Click button{" "}
+                <div className="inline-flex text-2xl font-extrabold">
+                  {clipIcon}
+                </div>{" "}
+                for file upload or{" "}
+                <div className="inline-flex text-2xl font-extrabold">
+                  {textBodyIcon}
+                </div>{" "}
+                button for direct text input.
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {completion.length > 0 && (
-          <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-60 grow">
-            {completion}
-          </output>
-        )}
+          {completion.length > 0 && (
+            <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-60 grow">
+              {completion}
+            </output>
+          )}
 
-        <footer className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
-          <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
-            {showTextInput && textInputFormSpec}
-            {showFileInput && fileInputFormSpec}
-          </div>
-          <Footer />
-        </footer>
-      </div>
+          <footer className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
+            <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
+              {showTextInput && textInputFormSpec}
+              {showFileInput && fileInputFormSpec}
+            </div>
+            <Footer />
+          </footer>
+        </div>
+      )}
+
+      {status === "unauthenticated" && redirect("/auth/signIn")};
+    </>
   );
 };
 

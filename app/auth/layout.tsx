@@ -6,7 +6,7 @@ import { Footer } from '../../components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'KAITO - Knowledge work AI tool',
+  title: 'KAITO - Authentication',
   description: 'Your AI research assistant',
 }
 
