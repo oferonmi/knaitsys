@@ -11,6 +11,7 @@ const Summarizer = () => {
 
   const [showTextInput, setShowTextInput] = useState(true);
   const [showFileInput, setShowFileInput] = useState(false);
+  const [showUrlInput, setShowUrlInput] = useState(false);
 
   const inputSectionRef = useRef(null);
 
@@ -67,6 +68,20 @@ const Summarizer = () => {
     </svg>
   );
 
+  const linkIcon = (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      className="bi bi-link-45deg"
+      viewBox="0 0 16 16"
+    >
+      <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z" />
+      <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z" />
+    </svg>
+  );
+
   // text AI completion function call
   const {
     completion,
@@ -83,14 +98,42 @@ const Summarizer = () => {
   const handleFileInputSelection = () => {
     setShowFileInput(true);
     setShowTextInput(false);
+    setShowUrlInput(false);
   };
 
   const handleTextInputSelection = () => {
     setShowTextInput(true);
     setShowFileInput(false);
+    setShowUrlInput(false);
+  };
+
+  const handleUrlInputSelection = () => {
+    setShowUrlInput(true);
+    setShowTextInput(false);
+    setShowFileInput(false);
   };
 
   // input section form specifications
+  const summarizerCtrlButtons = (
+    <div className="justify-left mt-2 space-x-6">
+      <button
+        className="inline-flex items-center py-1.5 px-3 font-medium text-center text-white bg-teal-600 rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-teal-800"
+        type="submit"
+        disabled={isLoading}
+      >
+        {/* dark:focus:ring-teal-900 */}
+        Start summary
+      </button>
+      <button
+        className="inline-flex bg-teal-600 hover:bg-teal-800 items-center font-medium text-white rounded-md px-3 py-1.5"
+        type="button"
+        onClick={stop}
+      >
+        Stop summary
+      </button>
+    </div>
+  );
+
   // direct text input form
   const textInputFormSpec = (
     <form className="w-full flex flex-col" onSubmit={handleSubmit}>
@@ -112,23 +155,7 @@ const Summarizer = () => {
 
         <div className="flex items-center justify-between px-3 py-2 border-t ">
           {/* dark:border-gray-600 */}
-          <div className="justify-left mt-2 space-x-6">
-            <button
-              className="inline-flex items-center py-1.5 px-3 font-medium text-center text-white bg-teal-600 rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-teal-800"
-              type="submit"
-              disabled={isLoading}
-            >
-              {/* dark:focus:ring-teal-900 */}
-              Start summary
-            </button>
-            <button
-              className="inline-flex bg-teal-600 hover:bg-teal-800 items-center font-medium text-white rounded-md px-3 py-1.5"
-              type="button"
-              onClick={stop}
-            >
-              Stop summary
-            </button>
-          </div>
+          {summarizerCtrlButtons}
           <div className="flex pl-0 space-x-1 sm:pl-2">
             <button
               type="button"
@@ -138,6 +165,16 @@ const Summarizer = () => {
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
               {clipIcon}
               <span className="sr-only">Attach file</span>
+            </button>
+
+            <button
+              type="button"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+              onClick={handleUrlInputSelection}
+            >
+              {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+              {linkIcon}
+              <span className="sr-only">paste URL of webpage to summarize</span>
             </button>
           </div>
         </div>
@@ -172,23 +209,7 @@ const Summarizer = () => {
 
       <div className="flex items-center justify-between px-3 py-2 border-t ">
         {/* dark:border-gray-600 */}
-        <div className="justify-left mt-2 space-x-6">
-          <button
-            className="inline-flex items-center py-1.5 px-3 font-medium text-center text-white bg-teal-600 rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-teal-800"
-            type="submit"
-            disabled={isLoading}
-          >
-            {/* dark:focus:ring-teal-900 */}
-            Start summary
-          </button>
-          <button
-            className="inline-flex bg-teal-600 hover:bg-teal-800 items-center font-medium text-white rounded-md px-3 py-1.5"
-            type="button"
-            onClick={stop}
-          >
-            Stop summary
-          </button>
-        </div>
+        {summarizerCtrlButtons}
         <div className="flex pl-0 space-x-1 sm:pl-2">
           <button
             type="button"
@@ -199,15 +220,60 @@ const Summarizer = () => {
             {textBodyIcon}
             <span className="sr-only">Paste text</span>
           </button>
+
+          <button
+            type="button"
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            onClick={handleUrlInputSelection}
+          >
+            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+            {linkIcon}
+            <span className="sr-only">paste URL of webpage to summarize</span>
+          </button>
         </div>
       </div>
     </form>
   );
 
-  // If no session exists, redirect to sign page
-  // if (!session) {
-  //   redirect("/api/auth/signin");
-  // }
+  const urlInputFormSpec = (
+    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+      <div>
+        <input
+          type="url"
+          id="urlInput"
+          className="bg-gray-50 border border-gray-300 text-teal-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5"
+          placeholder="Type in URL of webpage to summarize. Example: https//www.***.com"
+          required
+        />
+        {/* dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 */}
+      </div>
+
+      <div className="flex items-center justify-between px-3 py-2 border-t ">
+        {summarizerCtrlButtons}
+        <div className="flex pl-0 space-x-1 sm:pl-2">
+          <button
+            type="button"
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            onClick={handleTextInputSelection}
+          >
+            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+            {textBodyIcon}
+            <span className="sr-only">Paste text</span>
+          </button>
+
+          <button
+            type="button"
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            onClick={handleFileInputSelection}
+          >
+            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+            {clipIcon}
+            <span className="sr-only">Attach file</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  );
 
   return (
     <>
@@ -222,11 +288,12 @@ const Summarizer = () => {
                 <div className="inline-flex text-2xl font-extrabold">
                   {clipIcon}
                 </div>{" "}
-                for file upload or{" "}
+                for file upload,{" "}
                 <div className="inline-flex text-2xl font-extrabold">
                   {textBodyIcon}
                 </div>{" "}
-                button for direct text input.
+                button for direct text input or {" "}
+                <div className="inline-flex text-2xl font-extrabold">{linkIcon}</div>{" "} button for URL of webpage you want to summarize.
               </div>
             </div>
           )}
@@ -241,12 +308,12 @@ const Summarizer = () => {
             <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
               {showTextInput && textInputFormSpec}
               {showFileInput && fileInputFormSpec}
+              {showUrlInput && urlInputFormSpec}
             </div>
             <Footer />
           </footer>
         </div>
       )}
-
       {status === "unauthenticated" && redirect("/auth/signIn")};
     </>
   );
