@@ -22,7 +22,7 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler }) => {
             autoComplete="off"
             autoFocus
             name="prompt"
-            className="flex-grow block w-full rounded-l-md border-0 py-1.5 text-teal-900 ring-1 ring-inset ring-teal-600 placeholder:text-gray-400 focus:ring-0 focus:ring-inset focus:ring-teal-600 sm:leading-6"
+            className="flex-grow block w-full rounded-l-md border-0 py-1.5 text-teal-900 ring-1 ring-inset ring-teal-600 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-teal-600 sm:leading-6"
             placeholder="  Send a message"
             required={true}
             value={userInput}

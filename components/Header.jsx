@@ -15,11 +15,17 @@ export const Header = async () => {
 
                 <div className="md:flex md:items-center md:justify-between md:mx-auto">
 
-                    <div className="flex flex-row">
-                        <Link href="/ai_tools" passHref className="px-20 py-1 w-auto h-auto">
-                            <Image src="/kaito_app_logo.png" alt="App logo" width={199} height={115} />
-                        </Link>
-                    </div>
+                    <Link href="/ai_tools" passHref className="px-20 py-1 w-auto h-auto">
+                        <div className="flex flex-row">
+                            <div>
+                                <Image src="/logos/B0C1C6_D93128/KAITO-logos_transparent.png" alt="App logo" width={115} height={115} />
+                            </div>
+                            <div>
+                                <Image src="/kaito_app_logo.png" alt="App logo" width={199} height={115} />
+                            </div>
+                        </div>
+                    </Link>
+                    
                     
                     {session ? (
                         <AuthHeader />

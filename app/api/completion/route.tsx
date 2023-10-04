@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     stream: true,
     temperature: 0.6,
     max_tokens: 300,
-    prompt: `Create a summary of a text. Include key data points.
+    prompt: `Create a summary of a text. Include key data points and identify why there are important.
             Text: ${prompt}`,
     // `Create three slogans for a business with unique features.
     // Business: Bookstore with cats

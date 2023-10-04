@@ -113,6 +113,36 @@ const Summarizer = () => {
     setShowFileInput(false);
   };
 
+
+  //extract text from a url input
+  const getUrlPgContent = (e: { target: { value: any; }; }) => {
+    const urlInput = document.getElementById("urlInput");
+
+    const url_pg_content_holder = document.getElementById(
+      "url_pg_content_holder"
+    );
+
+    const cheerio = require("cheerio");
+
+    fetch(urlInput?.value)
+      .then((response: { text: () => any }) => response.text())
+      .then((html: any) => {
+        const $ = cheerio.load(html);
+        const title = $("h1").text() + $("h2").text() + $("h3").text();
+        const paragraph = $("p").text();
+
+        // console.log("Title:", title);
+        // console.log("Paragraph:", paragraph);
+        url_pg_content_holder.value = title + "\n" + paragraph;
+        url_pg_content_holder.disabled = true;
+        // url_pg_content_holder.textContent = title + "\n" + paragraph;
+        console.log(url_pg_content_holder?.value);
+      })
+      .catch((error: any) => {
+        console.error("Error:", error);
+      });
+  }
+
   // input section form specifications
   const summarizerCtrlButtons = (
     <div className="justify-left mt-2 space-x-6">
@@ -137,12 +167,12 @@ const Summarizer = () => {
   // direct text input form
   const textInputFormSpec = (
     <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-      <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50">
+      <div className="w-full mb-4 border border-teal-600 rounded-lg bg-gray-50">
         {/* dark:bg-gray-700 dark:border-gray-600 */}
         <div className="px-4 py-2 bg-white rounded-t-lg ">
           {/* dark:bg-gray-800 */}
           <textarea
-            id="comment"
+            id="textInput"
             rows="4"
             className="w-full px-0 text-sm text-teal-900 bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-teal-600"
             value={input}
@@ -184,11 +214,14 @@ const Summarizer = () => {
 
   // text file input form
   const fileInputFormSpec = (
-    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+    <form
+      className="w-full flex flex-col border border-teal-600 rounded-lg bg-gray-50"
+      onSubmit={handleSubmit}
+    >
       <div className="flex items-center justify-center w-full">
         <label
           htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50  hover:bg-gray-100 "
+          className="flex flex-col items-center justify-center w-full h-64 cursor-pointer bg-gray-50  hover:bg-gray-100 "
         >
           {/* dark:hover:bg-bray-800 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 */}
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -235,18 +268,41 @@ const Summarizer = () => {
     </form>
   );
 
+  const urlInputBox = (
+    <>
+      <input
+        type="url"
+        id="urlInput"
+        className="bg-white hover:bg-gray-50 text-teal-900 text-sm rounded-t-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
+        placeholder="Type in URL of webpage to summarize. Example: https//www.***.com"
+        onChange={getUrlPgContent}
+        required
+      />
+    </>
+  );
+
   const urlInputFormSpec = (
-    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-      <div>
-        <input
-          type="url"
-          id="urlInput"
-          className="bg-gray-50 border border-gray-300 text-teal-900 text-sm rounded-lg focus:ring-teal-500 focus:border-teal-500 block w-full p-2.5"
-          placeholder="Type in URL of webpage to summarize. Example: https//www.***.com"
-          required
-        />
-        {/* dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 */}
-      </div>
+    <form
+      className="w-full flex flex-col border border-teal-600 rounded-lg"
+      onSubmit={handleSubmit}
+    >
+      {urlInputBox}
+      {/* <input
+        id="url_pg_content_holder"
+        type="hidden"
+        value={input}
+        onChange={handleInputChange}
+      /> */}
+      {/* dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 */}
+      <textarea
+        id="url_pg_content_holder"
+        rows="4"
+        className="w-full px-0 text-sm text-teal-900 bg-gray-100 focus:ring-0 ring-inset focus:ring-inset ring-teal-600 focus:ring-teal-600"
+        value={input}
+        onChange={handleInputChange}
+        placeholder="  Preview of webpage content appears here ..."
+        disabled={true}
+      ></textarea>
 
       <div className="flex items-center justify-between px-3 py-2 border-t ">
         {summarizerCtrlButtons}
@@ -296,7 +352,7 @@ const Summarizer = () => {
                 <div className="inline-flex text-2xl font-extrabold">{linkIcon}</div>{" "} button for URL of webpage you want to summarize.
               </div>
             </div>
-          )}
+          )};
 
           {completion.length > 0 && (
             <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-60 grow">
@@ -314,6 +370,7 @@ const Summarizer = () => {
           </footer>
         </div>
       )}
+
       {status === "unauthenticated" && redirect("/auth/signIn")};
     </>
   );
