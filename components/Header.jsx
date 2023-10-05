@@ -18,7 +18,7 @@ export const Header = async () => {
                     <Link href="/ai_tools" passHref className="px-20 py-1 w-auto h-auto">
                         <div className="flex flex-row">
                             <div>
-                                <Image src="/logos/D9E2D5_3E6765/KAITO-logos_black.png" alt="App logo" width={115} height={115} />
+                                <Image src="/logos/D9E2D5_3E6765/KAITO_logos_transparent.png" alt="App logo" width={115} height={115} />
                             </div>
                             <div>
                                 <Image src="/kaito_app_logo.png" alt="App logo" width={199} height={115} />

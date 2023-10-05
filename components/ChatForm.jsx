@@ -22,14 +22,14 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler }) => {
             autoComplete="off"
             autoFocus
             name="prompt"
-            className="flex-grow block w-full rounded-l-md border-0 py-1.5 text-teal-900 ring-1 ring-inset ring-teal-600 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-teal-600 sm:leading-6"
+            className="flex-grow block w-full rounded-l-md border-0 py-1.5 text-kaito-brand-ash-green ring-1 ring-inset ring-kaito-brand-ash-green placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-kaito-brand-ash-green sm:leading-6"
             placeholder="  Send a message"
             required={true}
             value={userInput}
             onChange={onChangeHandler}
           />
           <button
-            className="bg-teal-600 hover:bg-teal-800 items-center font-semibold text-white rounded-r-md px-5 py-3"
+            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-r-md px-5 py-3"
             type="submit"
           >
             {chatIcon}

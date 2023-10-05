@@ -147,7 +147,7 @@ const Summarizer = () => {
   const summarizerCtrlButtons = (
     <div className="justify-left mt-2 space-x-6">
       <button
-        className="inline-flex items-center py-1.5 px-3 font-medium text-center text-white bg-teal-600 rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-teal-800"
+        className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-kaito-brand-ash-green"
         type="submit"
         disabled={isLoading}
       >
@@ -155,7 +155,7 @@ const Summarizer = () => {
         Start summary
       </button>
       <button
-        className="inline-flex bg-teal-600 hover:bg-teal-800 items-center font-medium text-white rounded-md px-3 py-1.5"
+        className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-md px-3 py-1.5"
         type="button"
         onClick={stop}
       >
@@ -167,14 +167,14 @@ const Summarizer = () => {
   // direct text input form
   const textInputFormSpec = (
     <form className="w-full flex flex-col" onSubmit={handleSubmit}>
-      <div className="w-full mb-4 border border-teal-600 rounded-lg bg-gray-50">
+      <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
         {/* dark:bg-gray-700 dark:border-gray-600 */}
         <div className="px-4 py-2 bg-white rounded-t-lg ">
           {/* dark:bg-gray-800 */}
           <textarea
             id="textInput"
             rows="4"
-            className="w-full px-0 text-sm text-teal-900 bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-teal-600"
+            className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
             value={input}
             onChange={handleInputChange}
             placeholder="Paste or upload the file of the text you want to summarize..."
@@ -189,7 +189,7 @@ const Summarizer = () => {
           <div className="flex pl-0 space-x-1 sm:pl-2">
             <button
               type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
               onClick={handleFileInputSelection}
             >
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
@@ -199,7 +199,7 @@ const Summarizer = () => {
 
             <button
               type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
               onClick={handleUrlInputSelection}
             >
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
@@ -215,7 +215,7 @@ const Summarizer = () => {
   // text file input form
   const fileInputFormSpec = (
     <form
-      className="w-full flex flex-col border border-teal-600 rounded-lg bg-gray-50"
+      className="w-full flex flex-col border border-kaito-brand-ash-green rounded-lg bg-gray-50"
       onSubmit={handleSubmit}
     >
       <div className="flex items-center justify-center w-full">
@@ -246,7 +246,7 @@ const Summarizer = () => {
         <div className="flex pl-0 space-x-1 sm:pl-2">
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
             onClick={handleTextInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
@@ -256,7 +256,7 @@ const Summarizer = () => {
 
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
             onClick={handleUrlInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
@@ -273,7 +273,7 @@ const Summarizer = () => {
       <input
         type="url"
         id="urlInput"
-        className="bg-white hover:bg-gray-50 text-teal-900 text-sm rounded-t-lg focus:ring-gray-500 focus:border-gray-500 block w-full p-2.5"
+        className="bg-white hover:bg-gray-50 text-kaito-brand-ash-green text-sm rounded-t-lg focus:ring-gray-200 focus:border-gray-200 block w-full p-2.5"
         placeholder="Type in URL of webpage to summarize. Example: https//www.***.com"
         onChange={getUrlPgContent}
         required
@@ -283,7 +283,7 @@ const Summarizer = () => {
 
   const urlInputFormSpec = (
     <form
-      className="w-full flex flex-col border border-teal-600 rounded-lg"
+      className="w-full flex flex-col border border-kaito-brand-ash-green rounded-lg"
       onSubmit={handleSubmit}
     >
       {urlInputBox}
@@ -297,7 +297,7 @@ const Summarizer = () => {
       <textarea
         id="url_pg_content_holder"
         rows="4"
-        className="w-full px-0 text-sm text-teal-900 bg-gray-100 focus:ring-0 ring-inset focus:ring-inset ring-teal-600 focus:ring-teal-600"
+        className="w-full px-0 text-sm text-kaito-brand-ash-green bg-gray-100 focus:ring-0 ring-inset focus:ring-inset ring-kaito-brand-ash-green focus:ring-kaito-brand-ash-green"
         value={input}
         onChange={handleInputChange}
         placeholder="  Preview of webpage content appears here ..."
@@ -309,7 +309,7 @@ const Summarizer = () => {
         <div className="flex pl-0 space-x-1 sm:pl-2">
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
             onClick={handleTextInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
@@ -319,7 +319,7 @@ const Summarizer = () => {
 
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-teal-100  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
             onClick={handleFileInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
