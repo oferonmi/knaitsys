@@ -5,6 +5,7 @@ import Emoji from "../../components/Emoji";
 import { Footer } from "../../components/Footer";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { ClipIcon, CloudUploadIcon, TextBodyIcon, LinkIcon, SendIcon, StopIcon } from "@/components/Icons";
 
 const Summarizer = () => {
   const { data:session, status } = useSession();
@@ -14,73 +15,6 @@ const Summarizer = () => {
   const [showUrlInput, setShowUrlInput] = useState(false);
 
   const inputSectionRef = useRef(null);
-
-  // icons
-  const clipIcon = (
-    <svg
-      className="w-4 h-4"
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 12 20"
-    >
-      <path
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M1 6v8a5 5 0 1 0 10 0V4.5a3.5 3.5 0 1 0-7 0V13a2 2 0 0 0 4 0V6"
-      />
-    </svg>
-  );
-
-  const cloudUploadIcon = (
-    // dark:text-gray-400
-    <svg
-      className="w-8 h-8 mb-4 text-gray-500"
-      aria-hidden="true"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 20 16"
-    >
-      <path
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-      />
-    </svg>
-  );
-
-  const textBodyIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      fill="currentColor"
-      className="bi bi-body-text"
-      viewBox="0 0 16 16"
-    >
-      <path
-        fill-rule="evenodd"
-        d="M0 .5A.5.5 0 0 1 .5 0h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 0 .5Zm0 2A.5.5 0 0 1 .5 2h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm9 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm-9 2A.5.5 0 0 1 .5 4h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Zm5 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm7 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5Zm-12 2A.5.5 0 0 1 .5 6h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5Zm8 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm-8 2A.5.5 0 0 1 .5 8h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5Zm7 0a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5Zm-7 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5Zm0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5Zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5Z"
-      />
-    </svg>
-  );
-
-  const linkIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      fill="currentColor"
-      className="bi bi-link-45deg"
-      viewBox="0 0 16 16"
-    >
-      <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z" />
-      <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z" />
-    </svg>
-  );
 
   // text AI completion function call
   const {
@@ -152,14 +86,14 @@ const Summarizer = () => {
         disabled={isLoading}
       >
         {/* dark:focus:ring-teal-900 */}
-        Start summary
+        <SendIcon />
       </button>
       <button
         className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-md px-3 py-1.5"
         type="button"
         onClick={stop}
       >
-        Stop summary
+        <StopIcon />
       </button>
     </div>
   );
@@ -189,21 +123,21 @@ const Summarizer = () => {
           <div className="flex pl-0 space-x-1 sm:pl-2">
             <button
               type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
               onClick={handleFileInputSelection}
             >
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-              {clipIcon}
+              <ClipIcon />
               <span className="sr-only">Attach file</span>
             </button>
 
             <button
               type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
               onClick={handleUrlInputSelection}
             >
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-              {linkIcon}
+              <LinkIcon />
               <span className="sr-only">paste URL of webpage to summarize</span>
             </button>
           </div>
@@ -225,7 +159,7 @@ const Summarizer = () => {
         >
           {/* dark:hover:bg-bray-800 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 */}
           <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            {cloudUploadIcon}
+            <CloudUploadIcon />
             <p className="mb-2 text-sm text-gray-500 ">
               {/* dark:text-gray-400 */}
               <span className="font-semibold">Click to upload</span> or drag and
@@ -246,21 +180,21 @@ const Summarizer = () => {
         <div className="flex pl-0 space-x-1 sm:pl-2">
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
             onClick={handleTextInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            {textBodyIcon}
+            <TextBodyIcon />
             <span className="sr-only">Paste text</span>
           </button>
 
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
             onClick={handleUrlInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            {linkIcon}
+            <LinkIcon />
             <span className="sr-only">paste URL of webpage to summarize</span>
           </button>
         </div>
@@ -309,21 +243,21 @@ const Summarizer = () => {
         <div className="flex pl-0 space-x-1 sm:pl-2">
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
             onClick={handleTextInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            {textBodyIcon}
+            <TextBodyIcon />
             <span className="sr-only">Paste text</span>
           </button>
 
           <button
             type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-kaito-brand-ash-green  "
+            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
             onClick={handleFileInputSelection}
           >
             {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            {clipIcon}
+            <ClipIcon />
             <span className="sr-only">Attach file</span>
           </button>
         </div>
@@ -342,14 +276,14 @@ const Summarizer = () => {
                 text or upload a text file and get a summary of the text
                 content. Click button{" "}
                 <div className="inline-flex text-2xl font-extrabold">
-                  {clipIcon}
+                  <ClipIcon />
                 </div>{" "}
                 for file upload,{" "}
                 <div className="inline-flex text-2xl font-extrabold">
-                  {textBodyIcon}
+                  <TextBodyIcon />
                 </div>{" "}
                 button for direct text input or {" "}
-                <div className="inline-flex text-2xl font-extrabold">{linkIcon}</div>{" "} button for URL of webpage you want to summarize.
+                <div className="inline-flex text-2xl font-extrabold"><LinkIcon /></div>{" "} button for URL of webpage you want to summarize.
               </div>
             </div>
           )};

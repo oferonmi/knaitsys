@@ -1,5 +1,5 @@
 "use client";
-import LogOutButton from "../components/buttons/LogOutButton"
+import { LogOutButton } from "../components/Buttons"
 
 export const AuthHeader = () => {
     return (

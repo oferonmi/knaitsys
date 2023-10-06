@@ -1,7 +1,6 @@
 "use client";
 import { usePathname } from 'next/navigation';
-import LogInButton from "../components/buttons/LogInButton"
-import SignUpButton from "../components/buttons/SignUpButton"
+import { LogInButton, SignUpButton} from "../components/Buttons"
 
 export const UnAuthHeader = () => {
     const pgPathName = usePathname();
