@@ -5,6 +5,7 @@ import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import {scrapeUsingCheerio, scrapeUsingPuppeteer} from "@/components/WebScraper";
 import { 
   ClipIcon, 
   CloudUploadIcon, 
@@ -23,7 +24,11 @@ const SummarizerPage = () => {
 
   const inputSectionRef = useRef(null);
 
-  const [llmApiRoute, setLlmApiRoute] = useState("/api/completion/cohere");
+  const [llmApiRoute, setLlmApiRoute] = useState("/api/completion/fireworksai");
+
+  const handleLlmApiChange = (event: { target: { value: any } }) => {
+    setLlmApiRoute("/api/completion/" + event.target.value);
+  };
 
   // text OpenAI completion function call
   const {
@@ -58,37 +63,56 @@ const SummarizerPage = () => {
 
 
   //extract text from a url input
-  const getUrlPgContent = (e: { target: { value: any; }; }) => {
+  const getUrlPgContent = () => {
     const urlInput = document.getElementById("urlInput");
 
-    const url_pg_content_holder = document.getElementById(
-      "url_pg_content_holder"
+    const pg_content_disp = document.getElementById(
+      "pg_content_disp"
     );
 
-    const cheerio = require("cheerio");
+    pg_content_disp.value = scrapeUsingCheerio(urlInput?.innerText);
+    // pg_content_disp.value = scrapeUsingPuppeteer(urlInput?.innerText);
+    pg_content_disp.disabled = true;
 
-    fetch(urlInput?.value)
-      .then((response: { text: () => any }) => response.text())
-      .then((html: any) => {
-        const $ = cheerio.load(html);
-        const title = $("h1").text() + $("h2").text() + $("h3").text();
-        const paragraph = $("p").text();
+    // const cheerio = require("cheerio");
 
-        // console.log("Title:", title);
-        // console.log("Paragraph:", paragraph);
-        url_pg_content_holder.value = title + "\n" + paragraph;
-        url_pg_content_holder.disabled = true;
-        // url_pg_content_holder.textContent = title + "\n" + paragraph;
-        console.log(url_pg_content_holder?.value);
-      })
-      .catch((error: any) => {
-        console.error("Error:", error);
-      });
+    // fetch(urlInput?.value)
+    //   .then((response: { text: () => any }) => response.text())
+    //   .then((html: any) => {
+    //     const $ = cheerio.load(html);
+    //     const title = $("h1").text() + $("h2").text() + $("h3").text();
+    //     const paragraph = $("p").text();
+
+    //     // console.log("Title:", title);
+    //     // console.log("Paragraph:", paragraph);
+    //     url_pg_content_holder.value = title + "\n" + paragraph;
+    //     url_pg_content_holder.disabled = true;
+    //     // url_pg_content_holder.textContent = title + "\n" + paragraph;
+    //     console.log(url_pg_content_holder?.value);
+    //   })
+    //   .catch((error: any) => {
+    //     console.error("Error:", error);
+    //   });
   }
 
   // input section form specifications
   const summarizerCtrlButtons = (
     <div className="justify-left mt-2 space-x-6">
+      {/* <label className="text-black" htmlFor="llm-selector">Select LLM: </label> */}
+      <select
+        onChange={handleLlmApiChange}
+        className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
+        id="llm-selector"
+        required
+      >
+        <option value="">--Select LLM--</option>
+        <option value="openai">GPT-3.5</option>
+        <option value="fireworksai">Llama-2-Fwks</option>
+        {/* <option value="replicate">Llama-2-Rplte</option> */}
+        <option value="cohere">Cohere</option>
+        {/* <option value="anthropic">Claude-2</option> */}
+      </select>
+
       <button
         className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green"
         type="submit"
@@ -231,14 +255,14 @@ const SummarizerPage = () => {
     >
       {urlInputBox}
       {/* <input
-        id="url_pg_content_holder"
+        id="pg_content_disp"
         type="hidden"
         value={input}
         onChange={handleInputChange}
       /> */}
       {/* dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 */}
       <textarea
-        id="url_pg_content_holder"
+        id="pg_content_disp"
         rows="4"
         className="w-full px-0 text-sm text-kaito-brand-ash-green bg-gray-100 focus:ring-0 ring-inset focus:ring-inset ring-kaito-brand-ash-green focus:ring-kaito-brand-ash-green"
         value={input}
