@@ -1,13 +1,20 @@
 "use client";
 import { useState, useRef } from "react";
 import { useCompletion } from "ai/react";
-import Emoji from "../../components/Emoji";
-import { Footer } from "../../components/Footer";
+import Emoji from "@/components/Emoji";
+import { Footer } from "@/components/Footer";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { ClipIcon, CloudUploadIcon, TextBodyIcon, LinkIcon, SendIcon, StopIcon } from "@/components/Icons";
+import { 
+  ClipIcon, 
+  CloudUploadIcon, 
+  TextBodyIcon, 
+  LinkIcon, 
+  SendIcon, 
+  StopIcon 
+} from "@/components/Icons";
 
-const Summarizer = () => {
+const SummarizerPage = () => {
   const { data:session, status } = useSession();
 
   const [showTextInput, setShowTextInput] = useState(true);
@@ -16,7 +23,9 @@ const Summarizer = () => {
 
   const inputSectionRef = useRef(null);
 
-  // text AI completion function call
+  const [llmApiRoute, setLlmApiRoute] = useState("/api/completion/cohere");
+
+  // text OpenAI completion function call
   const {
     completion,
     input,
@@ -25,7 +34,7 @@ const Summarizer = () => {
     handleInputChange,
     handleSubmit,
   } = useCompletion({
-    api: "/api/completion",
+    api: llmApiRoute,
   });
 
   // handle button for input selection
@@ -81,7 +90,7 @@ const Summarizer = () => {
   const summarizerCtrlButtons = (
     <div className="justify-left mt-2 space-x-6">
       <button
-        className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md focus:ring-4 focus:ring-teal-200  hover:bg-kaito-brand-ash-green"
+        className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green"
         type="submit"
         disabled={isLoading}
       >
@@ -294,14 +303,14 @@ const Summarizer = () => {
             </output>
           )}
 
-          <footer className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
+          <div className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
             <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
               {showTextInput && textInputFormSpec}
               {showFileInput && fileInputFormSpec}
               {showUrlInput && urlInputFormSpec}
             </div>
             <Footer />
-          </footer>
+          </div>
         </div>
       )}
 
@@ -310,4 +319,4 @@ const Summarizer = () => {
   );
 };
 
-export default Summarizer;
+export default SummarizerPage;

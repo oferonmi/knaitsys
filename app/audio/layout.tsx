@@ -6,11 +6,11 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "KAITO - AI tools kit",
-  description: "Menu of AI functionalities",
+  title: "KAITO - Audio",
+  description: "Process Audio using AI",
 };
 
-export default function aiAssistantLayout({
+export default function audioPageLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -18,9 +18,9 @@ export default function aiAssistantLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-          <Header />
-          {children}
-          <Footer />
+        <Header />
+        {children}
+        <Footer />
       </body>
     </html>
   );

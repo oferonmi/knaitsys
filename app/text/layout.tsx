@@ -6,11 +6,11 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "KAITO - AI tools kit",
-  description: "Menu of AI functionalities",
+  title: "KAITO - Text",
+  description: "Process text documents using NLP",
 };
 
-export default function aiAssistantLayout({
+export default function textProcessorLayout({
   children,
 }: {
   children: React.ReactNode;

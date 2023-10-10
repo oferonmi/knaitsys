@@ -11,7 +11,7 @@ import {
   BraceAsteriskIcon,
 } from "@/components/Icons";
 
-const AiTools = () => {
+const AiToolsPage = () => {
   // sessions
   const { data: session, status } = useSession();
 
@@ -35,7 +35,7 @@ const AiTools = () => {
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <Link href="/summarizer">
+          <Link href="/text">
             <FileTextFillIcon />
             <p>Text</p>
           </Link>
@@ -74,4 +74,4 @@ const AiTools = () => {
   );
 };
 
-export default AiTools;
+export default AiToolsPage;
