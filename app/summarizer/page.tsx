@@ -66,33 +66,13 @@ const SummarizerPage = () => {
   const getUrlPgContent = () => {
     const urlInput = document.getElementById("urlInput");
 
-    const pg_content_disp = document.getElementById(
-      "pg_content_disp"
-    );
+    const pg_content_disp = document.getElementById("pg_content_disp");
 
-    pg_content_disp.value = scrapeUsingCheerio(urlInput?.innerText);
-    // pg_content_disp.value = scrapeUsingPuppeteer(urlInput?.innerText);
+    const url = urlInput?.textContent;
+
+    pg_content_disp.value = scrapeUsingCheerio(url);
+    // pg_content_disp.value = scrapeUsingPuppeteer(url);
     pg_content_disp.disabled = true;
-
-    // const cheerio = require("cheerio");
-
-    // fetch(urlInput?.value)
-    //   .then((response: { text: () => any }) => response.text())
-    //   .then((html: any) => {
-    //     const $ = cheerio.load(html);
-    //     const title = $("h1").text() + $("h2").text() + $("h3").text();
-    //     const paragraph = $("p").text();
-
-    //     // console.log("Title:", title);
-    //     // console.log("Paragraph:", paragraph);
-    //     url_pg_content_holder.value = title + "\n" + paragraph;
-    //     url_pg_content_holder.disabled = true;
-    //     // url_pg_content_holder.textContent = title + "\n" + paragraph;
-    //     console.log(url_pg_content_holder?.value);
-    //   })
-    //   .catch((error: any) => {
-    //     console.error("Error:", error);
-    //   });
   }
 
   // input section form specifications
@@ -110,6 +90,7 @@ const SummarizerPage = () => {
         <option value="fireworksai">Llama-2-Fwks</option>
         {/* <option value="replicate">Llama-2-Rplte</option> */}
         <option value="cohere">Cohere</option>
+        <option value="huggingface">OpenAssistant</option>
         {/* <option value="anthropic">Claude-2</option> */}
       </select>
 
@@ -118,7 +99,6 @@ const SummarizerPage = () => {
         type="submit"
         disabled={isLoading}
       >
-        {/* dark:focus:ring-teal-900 */}
         <SendIcon />
       </button>
       <button
@@ -132,12 +112,10 @@ const SummarizerPage = () => {
   );
 
   // direct text input form
-  const textInputFormSpec = (
+  const textInputForm = (
     <form className="w-full flex flex-col" onSubmit={handleSubmit}>
       <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
-        {/* dark:bg-gray-700 dark:border-gray-600 */}
-        <div className="px-4 py-2 bg-white rounded-t-lg ">
-          {/* dark:bg-gray-800 */}
+        <div className="px-2 py-2 bg-white rounded-t-lg ">
           <textarea
             id="textInput"
             rows="4"
@@ -147,11 +125,9 @@ const SummarizerPage = () => {
             placeholder="Paste or upload the file of the text you want to summarize..."
             required
           ></textarea>
-          {/* dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 */}
         </div>
 
         <div className="flex items-center justify-between px-3 py-2 border-t ">
-          {/* dark:border-gray-600 */}
           {summarizerCtrlButtons}
           <div className="flex pl-0 space-x-1 sm:pl-2">
             <button
@@ -159,7 +135,6 @@ const SummarizerPage = () => {
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
               onClick={handleFileInputSelection}
             >
-              {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
               <ClipIcon />
               <span className="sr-only">Attach file</span>
             </button>
@@ -169,7 +144,6 @@ const SummarizerPage = () => {
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
               onClick={handleUrlInputSelection}
             >
-              {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
               <LinkIcon />
               <span className="sr-only">paste URL of webpage to summarize</span>
             </button>
@@ -180,56 +154,49 @@ const SummarizerPage = () => {
   );
 
   // text file input form
-  const fileInputFormSpec = (
-    <form
-      className="w-full flex flex-col border border-kaito-brand-ash-green rounded-lg bg-gray-50"
-      onSubmit={handleSubmit}
-    >
-      <div className="flex items-center justify-center w-full">
-        <label
-          htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-full h-64 cursor-pointer bg-gray-50  hover:bg-gray-100 "
-        >
-          {/* dark:hover:bg-bray-800 dark:bg-gray-700 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 */}
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            <CloudUploadIcon />
-            <p className="mb-2 text-sm text-gray-500 ">
-              {/* dark:text-gray-400 */}
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
-            </p>
-            <p className="text-xs text-gray-500 ">
-              {/* dark:text-gray-400 */}
-              DOC, DOCX, TXT or PDF
-            </p>
+  const fileInputForm = (
+    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+      <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
+        <div className="flex items-center justify-center w-full">
+          <label
+            htmlFor="dropzone-file"
+            className="flex flex-col items-center justify-center w-full cursor-pointer bg-white  hover:bg-gray-50 rounded-t-lg"
+          >
+            <div className="flex flex-col items-center justify-center pt-5 pb-6">
+              <CloudUploadIcon />
+              <p className="mb-2 text-sm text-gray-500 ">
+                <span className="font-semibold">Click to upload</span> or drag and
+                drop
+              </p>
+              <p className="text-xs text-gray-500 ">
+                DOC, DOCX, TXT or PDF
+              </p>
+            </div>
+            <input id="dropzone-file" type="file" className="hidden" />
+          </label>
+        </div>
+
+        <div className="flex items-center justify-between px-3 py-2 border-t ">
+          {summarizerCtrlButtons}
+          <div className="flex pl-0 space-x-1 sm:pl-2">
+            <button
+              type="button"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
+              onClick={handleTextInputSelection}
+            >
+              <TextBodyIcon />
+              <span className="sr-only">Paste text</span>
+            </button>
+
+            <button
+              type="button"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
+              onClick={handleUrlInputSelection}
+            >
+              <LinkIcon />
+              <span className="sr-only">paste URL of webpage to summarize</span>
+            </button>
           </div>
-          <input id="dropzone-file" type="file" className="hidden" />
-        </label>
-      </div>
-
-      <div className="flex items-center justify-between px-3 py-2 border-t ">
-        {/* dark:border-gray-600 */}
-        {summarizerCtrlButtons}
-        <div className="flex pl-0 space-x-1 sm:pl-2">
-          <button
-            type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-            onClick={handleTextInputSelection}
-          >
-            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            <TextBodyIcon />
-            <span className="sr-only">Paste text</span>
-          </button>
-
-          <button
-            type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-            onClick={handleUrlInputSelection}
-          >
-            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            <LinkIcon />
-            <span className="sr-only">paste URL of webpage to summarize</span>
-          </button>
         </div>
       </div>
     </form>
@@ -240,7 +207,7 @@ const SummarizerPage = () => {
       <input
         type="url"
         id="urlInput"
-        className="bg-white hover:bg-gray-50 text-kaito-brand-ash-green text-sm rounded-t-lg focus:ring-gray-200 focus:border-gray-200 block w-full p-2.5"
+        className="bg-white hover:bg-gray-50 text-kaito-brand-ash-green text-sm rounded-t-lg border border-b-kaito-brand-gray focus:ring-gray-200 focus:border-gray-200 block w-full p-2.5"
         placeholder="Type in URL of webpage to summarize. Example: https//www.***.com"
         onChange={getUrlPgContent}
         required
@@ -248,51 +215,46 @@ const SummarizerPage = () => {
     </>
   );
 
-  const urlInputFormSpec = (
-    <form
-      className="w-full flex flex-col border border-kaito-brand-ash-green rounded-lg"
-      onSubmit={handleSubmit}
-    >
-      {urlInputBox}
-      {/* <input
-        id="pg_content_disp"
-        type="hidden"
-        value={input}
-        onChange={handleInputChange}
-      /> */}
-      {/* dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 */}
-      <textarea
-        id="pg_content_disp"
-        rows="4"
-        className="w-full px-0 text-sm text-kaito-brand-ash-green bg-gray-100 focus:ring-0 ring-inset focus:ring-inset ring-kaito-brand-ash-green focus:ring-kaito-brand-ash-green"
-        value={input}
-        onChange={handleInputChange}
-        placeholder="  Preview of webpage content appears here ..."
-        disabled={true}
-      ></textarea>
+  const urlInputForm = (
+    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+      <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
+        <div className=" bg-white rounded-t-lg">
+          {urlInputBox}
 
-      <div className="flex items-center justify-between px-3 py-2 border-t ">
-        {summarizerCtrlButtons}
-        <div className="flex pl-0 space-x-1 sm:pl-2">
-          <button
-            type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-            onClick={handleTextInputSelection}
-          >
-            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            <TextBodyIcon />
-            <span className="sr-only">Paste text</span>
-          </button>
+          <textarea
+            id="pg_content_disp"
+            rows="4"
+            className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
+            value={input}
+            onChange={handleInputChange}
+            placeholder="  Preview of webpage content appears here ..."
+            disabled={true}
+          ></textarea>
+        </div>
 
-          <button
-            type="button"
-            className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-            onClick={handleFileInputSelection}
-          >
-            {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
-            <ClipIcon />
-            <span className="sr-only">Attach file</span>
-          </button>
+        <div className="flex items-center justify-between px-3 py-2 border-t ">
+          {summarizerCtrlButtons}
+          <div className="flex pl-0 space-x-1 sm:pl-2">
+            <button
+              type="button"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
+              onClick={handleTextInputSelection}
+            >
+              {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+              <TextBodyIcon />
+              <span className="sr-only">Paste text</span>
+            </button>
+
+            <button
+              type="button"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
+              onClick={handleFileInputSelection}
+            >
+              {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
+              <ClipIcon />
+              <span className="sr-only">Attach file</span>
+            </button>
+          </div>
         </div>
       </div>
     </form>
@@ -322,16 +284,16 @@ const SummarizerPage = () => {
           )};
 
           {completion.length > 0 && (
-            <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-60 grow">
+            <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
               {completion}
             </output>
           )}
 
           <div className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
             <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
-              {showTextInput && textInputFormSpec}
-              {showFileInput && fileInputFormSpec}
-              {showUrlInput && urlInputFormSpec}
+              {showTextInput && textInputForm}
+              {showFileInput && fileInputForm}
+              {showUrlInput && urlInputForm}
             </div>
             <Footer />
           </div>

@@ -1,5 +1,5 @@
 // Webpage scrapping functions
-// import puppeteer from "puppeteer";
+// import puppeteer from 'puppeteer';
 
 // Cheerio
 export const scrapeUsingCheerio = (url) => {
@@ -16,7 +16,7 @@ export const scrapeUsingCheerio = (url) => {
         const pg_data = title + "\n" + text_body;
         // console.log("Title:", title);
         // console.log("Paragraph:", text_body);
-        // console.log(pg_data);
+        console.log(pg_data);
         return (pg_data);
       }).catch((error) => {
         console.error("Error:", error);
@@ -25,24 +25,27 @@ export const scrapeUsingCheerio = (url) => {
 
 // Puppeteer
 // export const scrapeUsingPuppeteer = async (url) => {
-//     // Start a Puppeteer session with:
-//     // - a visible browser (`headless: false` - easier to debug because you'll see the browser in action)
-//     // - no default viewport (`defaultViewport: null` - website page will in full width and height)
+//     // launch browser
 //     const browser = await puppeteer.launch({
 //         headless: false,
-//         defaultViewport: null,
+//         args: ["--disable-setuid-sandbox"],
+//         'ignoreHTTPSErrors': true
 //     });
 
 //     // Open a new page
-//     const page = await browser.newPage();
+//     let page = await browser.newPage();
+//       // Set screen size
+//       // await page.setViewport({width: 1080, height: 1024});
+//       // - open the website and wait until the dom content is loaded (HTML is ready)
+//       await page.goto(url, {
+//           waitUntil: "domcontentloaded",
+//       });
 
-//     // - open the website and wait until the dom content is loaded (HTML is ready)
-//     await page.goto(url, {
-//         waitUntil: "domcontentloaded",
-//     });
+//       // Wait for the required DOM to be rendered
+// 		  // await page.waitForSelector('.page_inner');
 
 //     // Get page data
-//     const pg_data = await page.evaluate(() => {
+//     const pg_data = await page?.evaluate(() => {
 //         // Fetch the first element with class "quote"
 //         const htmlSelectorList = document.querySelectorAll("div, p");
 
@@ -57,7 +60,6 @@ export const scrapeUsingCheerio = (url) => {
 
 //     // Display the quotes
 //     // console.log(pg_data);
-//     return pg_data;
 
 //     // Close the browser
 //     await browser.close();
