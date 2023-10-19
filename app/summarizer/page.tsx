@@ -89,8 +89,8 @@ const SummarizerPage = () => {
         <option value="openai">GPT-3.5</option>
         <option value="fireworksai">Llama-2-Fwks</option>
         {/* <option value="replicate">Llama-2-Rplte</option> */}
-        <option value="cohere">Cohere</option>
-        <option value="huggingface">OpenAssistant</option>
+        <option value="cohere">Co:here</option>
+        <option value="huggingface">OpenAssistant-HF</option>
         {/* <option value="anthropic">Claude-2</option> */}
       </select>
 
@@ -277,19 +277,21 @@ const SummarizerPage = () => {
                 <div className="inline-flex text-2xl font-extrabold">
                   <TextBodyIcon />
                 </div>{" "}
-                button for direct text input or {" "}
-                <div className="inline-flex text-2xl font-extrabold"><LinkIcon /></div>{" "} button for URL of webpage you want to summarize.
+                button for direct text input or{" "}
+                <div className="inline-flex text-2xl font-extrabold">
+                  <LinkIcon />
+                </div>{" "}
+                button for URL of webpage you want to summarize.
               </div>
             </div>
-          )};
-
+          )}
+          
           {completion.length > 0 && (
             <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
               {completion}
             </output>
           )}
-
-          <div className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
+          <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
             <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
               {showTextInput && textInputForm}
               {showFileInput && fileInputForm}
@@ -299,10 +301,9 @@ const SummarizerPage = () => {
           </div>
         </div>
       )}
-
       {status === "unauthenticated" && redirect("/auth/signIn")};
     </>
   );
-};
+}
 
 export default SummarizerPage;

@@ -32,7 +32,7 @@ const ChatbotPage = () => {
 
           {messages.length > 0 && <ChatThread messages={messages} />}
 
-          <footer className="z-10 fixed left-0 right-0 bottom-0 bg-slate-100 border-t-2 border-b-2">
+          <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
             <div className="container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9">
               {/* <label className="text-black" htmlFor="llm-selector">Select LLM: </label> */}
               <select
@@ -43,9 +43,9 @@ const ChatbotPage = () => {
               >
                 <option value="">--Select LLM--</option>
                 <option value="openai">GPT-3.5</option>
-                {/* <option value="replicate">Llama-2-Rplte</option> */}
+                {/* <option value="replicate">Llama-2-Rplcte</option> */}
                 <option value="fireworksai">Llama-2-Fwks</option>
-                <option value="huggingface">OpenAssistant</option>
+                <option value="huggingface">OpenAssistant-HF</option>
                 {/* <option value="anthropic">Claude-1</option> */}
               </select>
 
@@ -56,7 +56,7 @@ const ChatbotPage = () => {
               />
             </div>
             <Footer />
-          </footer>
+          </div>
         </div>
       )}
       {status === "unauthenticated" && redirect("/auth/signIn")};

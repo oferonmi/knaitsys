@@ -4,7 +4,7 @@ export const Footer = () => {
    return (
     <>
         <footer className="bg-white">
-            <div className="px-4 py-6 bg-gray-100 md:flex md:items-center md:justify-between md:mx-auto">
+            <div className="px-4 py-6 bg-kaito-brand-gray md:flex md:items-center md:justify-between md:mx-auto">
                 <span className="text-sm text-gray-500 sm:text-center">
                     <a href="#">Gutenkraft Labs</a> © 2023 
                 </span>
