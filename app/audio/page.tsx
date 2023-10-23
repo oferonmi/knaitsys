@@ -159,6 +159,15 @@ function AudioPage() {
         <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
           <div className="container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9 space-x-2">
             {/* <label className="text-black" htmlFor="llm-selector">Select LLM: </label> */}
+            <button
+              type="button"
+              className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer py-5 px-5 hover:text-white border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green  "
+              onClick={() => setAudioInputType("file")}
+            >
+              <FileEarmarkMusicIcon />
+              <span className="sr-only">Attach file</span>
+            </button>
+
             <select
               onChange={handleLlmApiChange}
               className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
@@ -175,7 +184,7 @@ function AudioPage() {
 
             <button
               onClick={handleAudioRecording}
-              className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+              className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
             >
               {audioInputType === "microphone" ? (
                 <MicFillIcon2 />
@@ -191,20 +200,12 @@ function AudioPage() {
             ></audio>
 
             <button
-              className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+              className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
               type="submit"
             >
               <SendIcon />
             </button>
-
-            <button
-              type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-              onClick={() => setAudioInputType("file")}
-            >
-              <FileEarmarkMusicIcon />
-              <span className="sr-only">Attach file</span>
-            </button>
+            
           </div>
           <Footer />
         </div>

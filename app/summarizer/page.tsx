@@ -95,14 +95,14 @@ const SummarizerPage = () => {
       </select>
 
       <button
-        className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green"
+        className="inline-flex items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
         type="submit"
         disabled={isLoading}
       >
         <SendIcon />
       </button>
       <button
-        className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-md px-3 py-1.5"
+        className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
         type="button"
         onClick={stop}
       >
