@@ -15,7 +15,8 @@ export default function ChatBotLayout({children}: {children: React.ReactNode}) {
     <html lang="en">
       <body
         className={
-          inter.className + " bg-gradient-to-r from-teal-100 to-teal-100"
+          inter.className +
+          " bg-gradient-to-r from-teal-100 to-teal-100"
         }
       >
         <Header />

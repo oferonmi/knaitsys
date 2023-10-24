@@ -18,9 +18,7 @@ import {
 const SummarizerPage = () => {
   const { data:session, status } = useSession();
 
-  const [showTextInput, setShowTextInput] = useState(true);
-  const [showFileInput, setShowFileInput] = useState(false);
-  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [inputType, setInputType] = useState("text");
 
   const inputSectionRef = useRef(null);
 
@@ -41,26 +39,6 @@ const SummarizerPage = () => {
   } = useCompletion({
     api: llmApiRoute,
   });
-
-  // handle button for input selection
-  const handleFileInputSelection = () => {
-    setShowFileInput(true);
-    setShowTextInput(false);
-    setShowUrlInput(false);
-  };
-
-  const handleTextInputSelection = () => {
-    setShowTextInput(true);
-    setShowFileInput(false);
-    setShowUrlInput(false);
-  };
-
-  const handleUrlInputSelection = () => {
-    setShowUrlInput(true);
-    setShowTextInput(false);
-    setShowFileInput(false);
-  };
-
 
   //extract text from a url input
   const getUrlPgContent = () => {
@@ -133,7 +111,9 @@ const SummarizerPage = () => {
             <button
               type="button"
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-              onClick={handleFileInputSelection}
+              onClick={() => {
+                setInputType("file");
+              }}
             >
               <ClipIcon />
               <span className="sr-only">Attach file</span>
@@ -142,7 +122,9 @@ const SummarizerPage = () => {
             <button
               type="button"
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-              onClick={handleUrlInputSelection}
+              onClick={() => {
+                setInputType("url");
+              }}
             >
               <LinkIcon />
               <span className="sr-only">paste URL of webpage to summarize</span>
@@ -182,7 +164,7 @@ const SummarizerPage = () => {
             <button
               type="button"
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-              onClick={handleTextInputSelection}
+              onClick={() => {setInputType("text")}}
             >
               <TextBodyIcon />
               <span className="sr-only">Paste text</span>
@@ -191,7 +173,7 @@ const SummarizerPage = () => {
             <button
               type="button"
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-              onClick={handleUrlInputSelection}
+              onClick={() => {setInputType("url")}}
             >
               <LinkIcon />
               <span className="sr-only">paste URL of webpage to summarize</span>
@@ -238,7 +220,7 @@ const SummarizerPage = () => {
             <button
               type="button"
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-              onClick={handleTextInputSelection}
+              onClick={() => {setInputType("text")}}
             >
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
               <TextBodyIcon />
@@ -248,7 +230,7 @@ const SummarizerPage = () => {
             <button
               type="button"
               className="inline-flex justify-center items-center p-2 text-gray-500 rounded cursor-pointer hover:text-white hover:bg-kaito-brand-ash-green  "
-              onClick={handleFileInputSelection}
+              onClick={() => {setInputType("file")}}
             >
               {/* dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 */}
               <ClipIcon />
@@ -285,7 +267,7 @@ const SummarizerPage = () => {
               </div>
             </div>
           )}
-          
+
           {completion.length > 0 && (
             <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
               {completion}
@@ -293,9 +275,9 @@ const SummarizerPage = () => {
           )}
           <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
             <div className="container max-w-2xl mx-auto my-auto p-5 pt-9 pb-9">
-              {showTextInput && textInputForm}
-              {showFileInput && fileInputForm}
-              {showUrlInput && urlInputForm}
+              {inputType === "text" && textInputForm}
+              {inputType === "file" && fileInputForm}
+              {inputType === "url" && urlInputForm}
             </div>
             <Footer />
           </div>

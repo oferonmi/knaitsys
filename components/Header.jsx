@@ -10,8 +10,8 @@ export const Header = async () => {
     const session = await getServerSession(authOptions);
 
     return (
-        <div className="flex flex-col">
-            <header className="bg-white border-gray-200 w-full items-center space-x-6 rounded-md sticky z-50 top-0"> {/*z-20 fixed*/}
+        <div className="flex flex-col border-b-2">
+            <header className="bg-gray-100 border-gray-200 w-full items-center space-x-6 rounded-md sticky top-0"> {/*z-20 fixed*/}
 
                 <div className="md:flex md:items-center md:justify-between md:mx-auto">
 
@@ -37,5 +37,5 @@ export const Header = async () => {
                 
             </header>
         </div>
-    )
+    );
 }

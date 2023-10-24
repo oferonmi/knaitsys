@@ -4,7 +4,7 @@ import { LogOutButton } from "../components/Buttons"
 export const AuthHeader = () => {
     return (
         <div className="header">
-            <nav className="bg-white border-gray-200  w-full items-center space-x-6"> {/*z-20 fixed*/}
+            <nav className="bg-gray-100 w-full items-center space-x-6">
 
                 <div className="md:flex md:items-center md:justify-between md:mx-auto">   
                     <div className="flex flex-row px-20">

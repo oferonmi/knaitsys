@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: "KAITO - Summarizer",
-  description: "Your AI research assistant",
+  description: "Summarizes documents using LLMs",
 };
 
 export default function SummarizerLayout({
@@ -19,7 +19,8 @@ export default function SummarizerLayout({
     <html lang="en">
       <body
         className={
-          inter.className + " bg-gradient-to-r from-teal-100 to-teal-100"
+          inter.className +
+          " bg-gradient-to-r from-teal-100 to-teal-100 flex flex-col h-screen overflow-hidden"
         }
       >
         <Header />

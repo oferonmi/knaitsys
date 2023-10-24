@@ -27,7 +27,7 @@ const ChatbotPage = () => {
   return (
     <>
       {status === "authenticated" && (
-        <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
+        <div className="flex flex-auto max-w-2xl pt-27 pb-5 mx-auto mt-4 sm:px-4 grow">
           {messages.length == 0 && <EmptyThreadState />}
 
           {messages.length > 0 && <ChatThread messages={messages} />}

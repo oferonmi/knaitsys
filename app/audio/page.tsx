@@ -2,7 +2,7 @@
 import { useState, useRef } from "react";
 import ChatThread from "@/components/ChatThread"
 import {handleAudioFileSelect, handleAudioRecording, transcribeAudio} from "@/components/Audio"
-import {PlayFillIcon, MicFillIcon2, MicMuteFillIcon2, SendIcon, FileEarmarkMusicIcon} from "@/components/Icons"
+import {PlayFillIcon, MicFillIcon2, MicMuteFillIcon2, SendIcon, FileEarmarkMusicIcon, CloudUploadIcon} from "@/components/Icons"
 import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
 import { useChat } from "ai/react";
@@ -12,6 +12,7 @@ import { redirect } from "next/navigation";
 
 function AudioPage() {
   const [audioInputType, setAudioInputType] = useState("microphone");
+  const [micState, setMicState] = useState("ready"); // ready or stopped
   const [transcribedText, setTranscribedText] = useState("");
 
   const audioRef = useRef(null);
@@ -159,14 +160,27 @@ function AudioPage() {
         <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
           <div className="container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9 space-x-2">
             {/* <label className="text-black" htmlFor="llm-selector">Select LLM: </label> */}
-            <button
-              type="button"
-              className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer py-5 px-5 hover:text-white border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green  "
-              onClick={() => setAudioInputType("file")}
-            >
-              <FileEarmarkMusicIcon />
-              <span className="sr-only">Attach file</span>
-            </button>
+            {audioInputType === "microphone" && (
+              <button
+                type="button"
+                className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer py-5 px-5 hover:text-white border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green  "
+                onClick={() => setAudioInputType("file")}
+              >
+                <FileEarmarkMusicIcon />
+                <span className="sr-only">Attach file</span>
+              </button>
+            )}
+
+            {audioInputType === "file" && (
+              <button
+                type="button"
+                className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer py-5 px-5 hover:text-white border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green  "
+                onClick={() => setAudioInputType("microphone")}
+              >
+                <MicFillIcon2 />
+                <span className="sr-only">Attach file</span>
+              </button>
+            )}
 
             <select
               onChange={handleLlmApiChange}
@@ -182,16 +196,36 @@ function AudioPage() {
               {/* <option value="anthropic">Claude-1</option> */}
             </select>
 
-            <button
-              onClick={handleAudioRecording}
-              className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-            >
-              {audioInputType === "microphone" ? (
-                <MicFillIcon2 />
-              ) : (
-                <PlayFillIcon />
-              )}
-            </button>
+            {audioInputType === "microphone" && (
+              <button
+                onClick={handleAudioRecording}
+                className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+              >
+                {micState === "ready" && <MicFillIcon2 />}
+                {micState === "stopped" && <MicMuteFillIcon2 />}
+              </button>
+            )}
+
+            {audioInputType === "file" && (
+              <div className="flex flex-col items-center justify-center">
+                <label className="relative cursor-pointer rounded-full px-2 border border-kaito-brand-ash-green bg-white text-gray-200">
+                  <div className="flex flex-col items-center justify-center">
+                    <CloudUploadIcon />
+                    {/* <p className="mb-2 text-sm text-gray-500 ">
+                      <span className="font-semibold">
+                        Click to upload or drag and drop MP3 or WAV files
+                      </span>
+                    </p> */}
+                  </div>
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleAudioFileSelect}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+            )}
 
             <audio
               controls
@@ -205,7 +239,6 @@ function AudioPage() {
             >
               <SendIcon />
             </button>
-            
           </div>
           <Footer />
         </div>
