@@ -1,120 +1,178 @@
-import OpenAI from "openai";
-// Audio processing functions
+import { useRef, useState, useEffect, useCallback } from "react";
+import WaveSurfer from "wavesurfer.js";
+import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
+import {
+    StopIcon, 
+    PlayFillIcon, 
+    PauseFillIcon, 
+    MicFillIcon2, 
+    MicMuteFillIcon2,
+} from "@/components/Icons"
 
-export const handleAudioFileSelect = (event, audioRef) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-        const fileReader = new FileReader();
-        fileReader.onload = (e) => {
-            const audioDataFromFile = e.target.result;
-            audioRef.current.src = audioDataFromFile;
-            audioRef.current.play();
-        };
-        fileReader.readAsDataURL(selectedFile);
+// WaveSurfer hook
+const useWavesurfer = (containerRef, options) => {
+  const [wavesurfer, setWavesurfer] = useState(null);
+
+  // Initialize wavesurfer when the container mounts
+  // or any of the props change
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const ws = WaveSurfer.create({
+      ...options,
+      container: containerRef.current,
+    });
+
+    setWavesurfer(ws);
+
+    return () => {
+      ws.destroy()
     }
-};
+  }, [options, containerRef]);
 
-export const handleAudioRecording = (mediaRecorderRef,audioRef) => {
-    //check if browser supports getUserMedia
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    alert("Your browser does not support recording!");
-    return;
-    }
+  return wavesurfer;
+}
 
-    if (!mediaRecorderRef.current) {
-        //will be used later to record audio
-        const chunks = [];
+const WaveSurferAudioPlayer = (props) => {
+    const audioContainerRef = useRef();
+    const [isPlaying, setIsPlaying] = useState(false);
+    const wavesurfer = useWavesurfer(audioContainerRef, props);
 
-        // setup audio recorder
-        navigator.mediaDevices.getUserMedia({
-            audio: true,
-        }).then((stream) => {
-            const mediaRecorder = new MediaRecorder(stream);
+    // On play button click
+    const onPlayClick = useCallback(() => {
+        wavesurfer.isPlaying() ? wavesurfer.pause() : wavesurfer.play()
+    }, [wavesurfer])
 
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data.size > 0) {
-                    chunks.push(event.data);
-                }
-            };
+    // Initialize wavesurfer when the container mounts
+    // or any of the props change
+    useEffect(() => {
+        if (!wavesurfer) return
 
-            mediaRecorder.onstop = async () => {
-                //create the Blob from the chunks
-                const audioBlob = new Blob(chunks, { type: "audio/mp3" });
-                const recordedAudioDataPath = URL.createObjectURL(audioBlob);
-                audioRef.current.src = recordedAudioDataPath;
-                // audioRef.current.play();
-            };
+        setIsPlaying(false)
 
-            mediaRecorderRef.current = mediaRecorder;
+        const subscriptions = [
+            wavesurfer.on('play', () => setIsPlaying(true)),
+            wavesurfer.on('pause', () => setIsPlaying(false)),
+        ]
 
-            if (mediaRecorderRef.current.state === "inactive") {
-                // start recording
-                mediaRecorderRef.current.start();
-            } else if (mediaRecorderRef.current.state === "recording") {
-                // stop recording
-                mediaRecorderRef.current.stop();
-            }
-
-        }).catch((err) => {
-            alert(`The following error occurred: ${err}`);
-        });
-    }
-};
-
-export const transcribeAudio = async (audioData, setTranscribedText) => {
-    try {
-        // You would need to implement audio recording or file selection logic here.
-        // For simplicity, this example assumes you have an audio recording in a variable called "audioData."
-
-        // Whisper API key.
-        const apiKey = process.env.OPENAI_API_KEY;
-
-        const formData = new FormData();
-        formData.append("audio", audioData, 'kaito_prompt.mp3');
-
-        const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
-            method: "POST",
-            body: formData,
-            headers: {
-                Authorization: `Bearer ${apiKey}`,
-            },
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            setTranscribedText(result.transcription);
-        } else {
-            console.error("Error transcribing audio.");
+        return () => {
+            subscriptions.forEach((unsub) => unsub())
         }
-    } catch (error) {
-        console.error("Error:", error);
-    }
-};
+    }, [wavesurfer]);
 
-// export const handleAudioRecording = () => {
-//     if (!mediaRecorderRef.current) {
-//         const mediaRecorder = new MediaRecorder({ audio: true });
-//         const chunks = [];
+    return (
+        <>
+            <div ref={audioContainerRef} className="border border-kaito-brand-ash-green rounded-full" />
 
-//         mediaRecorder.ondataavailable = (event) => {
-//             if (event.data.size > 0) {
-//                 chunks.push(event.data);
-//             }
-//         };
+            <button 
+                onClick={onPlayClick} 
+                className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+            >
+                {isPlaying ? <PauseFillIcon /> : <PlayFillIcon />}
+            </button>
+        </>
+    );
+}
 
-//         mediaRecorder.onstop = async () => {
-//             const audioBlob = new Blob(chunks, { type: "audio/wav" });
-//             const audioDataFromRecording = URL.createObjectURL(audioBlob);
-//             audioRef.current.src = audioDataFromRecording;
-//             audioRef.current.play();
-//         };
+const WaveSurferAudioRecoder = (props) => {
+    const micSelectRef = useRef();
+    const liveAudioVisualiserRef = useRef();
+    const recorderCtrlrRef = useRef();
+    const recdAudioWaveVisualiserRef = useRef();
 
-//         mediaRecorderRef.current = mediaRecorder;
-//     }
+    const [isRecording, setIsRecording] = useState(false);
+    const [recBtnIcon, setRecbtnIcon] = useState(<MicMuteFillIcon2 />)
+    
 
-//     if (mediaRecorderRef.current.state === "inactive") {
-//         mediaRecorderRef.current.start();
-//     } else if (mediaRecorderRef.current.state === "recording") {
-//         mediaRecorderRef.current.stop();
-//     }
-// };
+    const wavesurfer = useWavesurfer(liveAudioVisualiserRef, props);
+    
+
+    // Initialize the Record plugin
+    const [recorder, setRecorder] = useState(null);
+    useEffect(() => {
+        if (!wavesurfer) return
+
+        const recPlugin = wavesurfer.registerPlugin(RecordPlugin.create());
+        setRecorder(recPlugin);
+    }, [wavesurfer]);
+
+    // Populate mic selection list
+    useEffect(() => {
+        if (!micSelectRef) return
+        // Mic selection
+        RecordPlugin.getAvailableAudioDevices().then((devices) => {
+            devices.forEach((device) => {
+                const option = document.createElement('option')
+                option.value = device.deviceId
+                option.text = device.label || device.deviceId
+                micSelectRef.current.appendChild(option)
+            })
+        })
+    }, [micSelectRef])
+
+    // handle record button click event
+    const onRecordClick = useCallback(() => {   
+        if (recorder.isRecording()) {
+            recorder.stopRecording()
+            setRecbtnIcon(<MicMuteFillIcon2 />)
+            recorderCtrlrRef.innerHTML = recBtnIcon
+            return
+        }
+
+        // get selected device
+        const deviceId = micSelectRef.current //value
+        recorder.startRecording({ deviceId }).then(() => {
+            setRecbtnIcon(<MicFillIcon2 />)
+            recorderCtrlrRef.innerHTML = recBtnIcon
+            recorderCtrlrRef.disabled = false
+        })
+    }, [recorder, micSelectRef, recorderCtrlrRef, recBtnIcon]);
+
+    // Render recorded audio
+    useEffect(() => {
+        if (!recorder || !recdAudioWaveVisualiserRef) return
+
+        recorder.on('record-end', (blob) => {
+            // const recordingContainer = document.querySelector('#recordings')
+            const recordedUrl = URL.createObjectURL(blob)
+
+            // Create wavesurfer from the recorded audio
+            // const ws = WaveSurfer.create({
+            //     container: recdAudioWaveVisualiserRef,
+            //     waveColor: '#D9E2D5',
+            //     progressColor: '#3E6765',
+            //     url: recordedUrl,
+            // });
+        });
+    }, [recorder, recdAudioWaveVisualiserRef]);
+
+    return (
+        <>
+            <select 
+                id="mic-select" 
+                ref={micSelectRef}
+                className="inline-flex items-center py-2 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 mb-2"
+            >
+                <option value="" hidden>--Select Mic--</option>
+            </select>
+
+            <div id="recordings" ref={recdAudioWaveVisualiserRef}></div>
+
+            <div id="liveAudioVisualizer" ref={liveAudioVisualiserRef} className="border border-kaito-brand-ash-green rounded-md px-15 " />
+
+            <button 
+                id="record"
+                ref={recorderCtrlrRef}
+                className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+                onClick={onRecordClick}
+            >
+                <MicMuteFillIcon2 />
+            </button>
+            {/* <button id="pause" style="display: none;">Pause</button> */}
+            
+        </>
+    );
+
+}
+
+export {WaveSurferAudioPlayer, WaveSurferAudioRecoder};

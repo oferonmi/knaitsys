@@ -6,8 +6,8 @@ import { Footer } from '../../components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'KAITO - Authentication',
-  description: 'Your AI research assistant',
+  title: 'KAITOSYS - Authentication',
+  description: 'Your AI tools kit',
 }
 
 export default function AuthLayout({children}: {children: React.ReactNode}) {

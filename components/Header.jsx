@@ -20,8 +20,8 @@ export const Header = async () => {
                             <div>
                                 <Image src="/logos/D9E2D5_3E6765/KAITO_logos_transparent.png" alt="App logo" width={115} height={115} />
                             </div>
-                            <div>
-                                <Image src="/kaito_app_logo.png" alt="App logo" width={199} height={115} />
+                            <div className="mt-2">
+                                <Image src="/kaitosys_app_logo.png" alt="App logo" width={322} height={112} />
                             </div>
                         </div>
                     </Link>

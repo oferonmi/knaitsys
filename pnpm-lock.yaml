@@ -65,6 +65,9 @@ dependencies:
   typescript:
     specifier: 5.1.3
     version: 5.1.3
+  wavesurfer.js:
+    specifier: ^7.4.2
+    version: 7.4.2
 
 packages:
 
@@ -3713,6 +3716,10 @@ packages:
       '@vue/runtime-dom': 3.3.4
       '@vue/server-renderer': 3.3.4(vue@3.3.4)
       '@vue/shared': 3.3.4
+    dev: false
+
+  /wavesurfer.js@7.4.2:
+    resolution: {integrity: sha512-4pNQ1porOCUBYBmd2F1TqVuBnB2wBPipaw2qI920zYLuPnada0Rd1CURgh8HRuPGKxijj2iyZDFN2UZwsaEuhA==}
     dev: false
 
   /web-streams-polyfill@3.2.1:
