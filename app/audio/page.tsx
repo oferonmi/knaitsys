@@ -24,8 +24,9 @@ import { redirect } from "next/navigation";
 
 function AudioPage() {
   const [audioInputType, setAudioInputType] = useState("microphone");
-  const [micState, setMicState] = useState("ready"); // ready or stopped
+  // const [micState, setMicState] = useState("ready"); // ready or stopped
   const [transcribedText, setTranscribedText] = useState("");
+  const [recordedAudioUrl, setRecordedAudioUrl] = useState("");
 
   const audioRef = useRef(null);
   const mediaRecorderRef = useRef(null);
@@ -150,7 +151,7 @@ function AudioPage() {
   return (
     <>
       <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
-        {messages.length == 0 && (
+        {messages.length == 0 && recordedAudioUrl.length == 0 && (
           <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
             <div>
               <Emoji symbol="👋" label="waving hand" /> Hello! Select your LLM
@@ -167,7 +168,17 @@ function AudioPage() {
           </div>
         )}
 
-        {messages.length > 0 && <ChatThread messages={messages} />}
+        {/* {messages.length > 0 && <ChatThread messages={messages} />} */}
+        {recordedAudioUrl.length > 0 && (
+          <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
+            {recordedAudioUrl}
+            <WaveSurferAudioPlayer
+              waveColor="#CBD5E0"
+              progressColor="#EF4444"
+              url={recordedAudioUrl}
+            />
+          </output>
+        )}
 
         <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
           <div className="container max-w-3xl mx-auto my-5 py-3 space-x-2">
@@ -200,6 +211,7 @@ function AudioPage() {
               <WaveSurferAudioRecoder
                 waveColor="#D9E2D5"
                 progressColor="#3E6765"
+                setRecordedAudioUrl={setRecordedAudioUrl}
               />
             )}
 

@@ -62,14 +62,19 @@ const WaveSurferAudioPlayer = (props) => {
 
     return (
         <>
-            <div ref={audioContainerRef} className="border border-kaito-brand-ash-green rounded-full" />
+            <div className="flex flex-row">
+                <div>
+                    <button 
+                        onClick={onPlayClick} 
+                        className="inline-flex items-center  py-5 px-5 mt-8 font-medium text-center text-gray-200 bg-gray-400 rounded-full hover:bg-kaito-brand-ash-green"
+                    >
+                        {isPlaying ? <PauseFillIcon /> : <PlayFillIcon />}
+                    </button>
+                </div>
 
-            <button 
-                onClick={onPlayClick} 
-                className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-            >
-                {isPlaying ? <PauseFillIcon /> : <PlayFillIcon />}
-            </button>
+                <div ref={audioContainerRef} className="border bg-gray-100 rounded-md w-full ml-2" />
+
+            </div>
         </>
     );
 }
@@ -134,17 +139,18 @@ const WaveSurferAudioRecoder = (props) => {
 
         recorder.on('record-end', (blob) => {
             // const recordingContainer = document.querySelector('#recordings')
-            const recordedUrl = URL.createObjectURL(blob)
+            const recordedAudioUrl = URL.createObjectURL(blob)
+            props.setRecordedAudioUrl(recordedAudioUrl)
 
             // Create wavesurfer from the recorded audio
             // const ws = WaveSurfer.create({
             //     container: recdAudioWaveVisualiserRef,
             //     waveColor: '#D9E2D5',
             //     progressColor: '#3E6765',
-            //     url: recordedUrl,
+            //     url: recordedAudioUrl,
             // });
         });
-    }, [recorder, recdAudioWaveVisualiserRef]);
+    }, [recorder, props]);
 
     return (
         <>
@@ -156,7 +162,7 @@ const WaveSurferAudioRecoder = (props) => {
                 <option value="" hidden>--Select Mic--</option>
             </select>
 
-            <div id="recordings" ref={recdAudioWaveVisualiserRef}></div>
+            {/* <div id="recordings" ref={recdAudioWaveVisualiserRef}></div> */}
 
             <div id="liveAudioVisualizer" ref={liveAudioVisualiserRef} className="border border-kaito-brand-ash-green rounded-md px-15 " />
 
@@ -166,9 +172,9 @@ const WaveSurferAudioRecoder = (props) => {
                 className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
                 onClick={onRecordClick}
             >
-                <MicMuteFillIcon2 />
+                {recBtnIcon}
             </button>
-            {/* <button id="pause" style="display: none;">Pause</button> */}
+            {/* <button id="pausrecBtnIcone" style="display: none;">Pause</button> */}
             
         </>
     );
