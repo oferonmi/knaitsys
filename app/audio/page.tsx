@@ -20,6 +20,7 @@ import { Footer } from "@/components/Footer";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import Timeline from "wavesurfer.js/dist/plugins/timeline.js";
 
 
 function AudioPage() {
@@ -176,6 +177,8 @@ function AudioPage() {
               waveColor="#CBD5E0"
               progressColor="#EF4444"
               url={recordedAudioUrl}
+              plugins={[Timeline.create()]}
+              height={80}
             />
           </output>
         )}
@@ -212,6 +215,7 @@ function AudioPage() {
                 waveColor="#D9E2D5"
                 progressColor="#3E6765"
                 setRecordedAudioUrl={setRecordedAudioUrl}
+                height={100}
               />
             )}
 

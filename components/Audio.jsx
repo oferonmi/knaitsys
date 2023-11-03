@@ -36,6 +36,7 @@ const useWavesurfer = (containerRef, options) => {
 const WaveSurferAudioPlayer = (props) => {
     const audioContainerRef = useRef();
     const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0)
     const wavesurfer = useWavesurfer(audioContainerRef, props);
 
     // On play button click
@@ -48,11 +49,13 @@ const WaveSurferAudioPlayer = (props) => {
     useEffect(() => {
         if (!wavesurfer) return
 
+        setCurrentTime(0)
         setIsPlaying(false)
 
         const subscriptions = [
             wavesurfer.on('play', () => setIsPlaying(true)),
             wavesurfer.on('pause', () => setIsPlaying(false)),
+            wavesurfer.on('timeupdate', (currentTime) => setCurrentTime(currentTime)),
         ]
 
         return () => {
@@ -66,13 +69,13 @@ const WaveSurferAudioPlayer = (props) => {
                 <div>
                     <button 
                         onClick={onPlayClick} 
-                        className="inline-flex items-center  py-5 px-5 mt-8 font-medium text-center text-gray-200 bg-gray-400 rounded-full hover:bg-kaito-brand-ash-green"
+                        className="inline-flex items-center  py-5 px-5 mt-6 font-medium text-center text-gray-200 bg-gray-400 rounded-full hover:bg-kaito-brand-ash-green"
                     >
                         {isPlaying ? <PauseFillIcon /> : <PlayFillIcon />}
                     </button>
                 </div>
 
-                <div ref={audioContainerRef} className="border bg-gray-100 rounded-md w-full ml-2" />
+                <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full ml-2" />
 
             </div>
         </>
