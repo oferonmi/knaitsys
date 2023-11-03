@@ -76,7 +76,6 @@ const WaveSurferAudioPlayer = (props) => {
                 </div>
 
                 <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full ml-2" />
-
             </div>
         </>
     );
@@ -88,9 +87,7 @@ const WaveSurferAudioRecoder = (props) => {
     const recorderCtrlrRef = useRef();
     const recdAudioWaveVisualiserRef = useRef();
 
-    const [isRecording, setIsRecording] = useState(false);
     const [recBtnIcon, setRecbtnIcon] = useState(<MicMuteFillIcon2 />)
-    
 
     const wavesurfer = useWavesurfer(liveAudioVisualiserRef, props);
     
@@ -123,7 +120,6 @@ const WaveSurferAudioRecoder = (props) => {
         if (recorder.isRecording()) {
             recorder.stopRecording()
             setRecbtnIcon(<MicMuteFillIcon2 />)
-            recorderCtrlrRef.innerHTML = recBtnIcon
             return
         }
 
@@ -131,17 +127,15 @@ const WaveSurferAudioRecoder = (props) => {
         const deviceId = micSelectRef.current //value
         recorder.startRecording({ deviceId }).then(() => {
             setRecbtnIcon(<MicFillIcon2 />)
-            recorderCtrlrRef.innerHTML = recBtnIcon
             recorderCtrlrRef.disabled = false
         })
-    }, [recorder, micSelectRef, recorderCtrlrRef, recBtnIcon]);
+    }, [recorder, micSelectRef, recorderCtrlrRef]);
 
     // Render recorded audio
     useEffect(() => {
         if (!recorder || !recdAudioWaveVisualiserRef) return
 
         recorder.on('record-end', (blob) => {
-            // const recordingContainer = document.querySelector('#recordings')
             const recordedAudioUrl = URL.createObjectURL(blob)
             props.setRecordedAudioUrl(recordedAudioUrl)
 
@@ -177,7 +171,7 @@ const WaveSurferAudioRecoder = (props) => {
             >
                 {recBtnIcon}
             </button>
-            {/* <button id="pausrecBtnIcone" style="display: none;">Pause</button> */}
+            {/* <button id="pause" style="display: none;">Pause</button> */}
             
         </>
     );
