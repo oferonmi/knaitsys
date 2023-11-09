@@ -149,6 +149,47 @@ function AudioPage() {
     }
   };
 
+  const handleSendButtonClick = async () => {
+    try {
+
+      // get recorded audio blob from blob URL
+      let audioBlob = await fetch(recordedAudioUrl).then( resp => resp.blob());
+
+      const reader = new FileReader();
+      reader.readAsDataURL(audioBlob);
+
+      reader.onloadend = async function () {
+        // Remove the data URL prefix
+        const base64Audio = reader.result?.split(",")[1];
+        
+        // transcribe audio
+        const response = await fetch("/api/speech_to_text/whisper", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ audio: base64Audio }),
+        });
+
+        // get transcript data
+        const responseData = await response.json();
+        // console.log(responseData.transcript.text)
+
+        if (response.status !== 200) {
+          throw (
+            responseData.error ||
+            new Error(`Request failed with status ${response.status}`)
+          );
+        }
+
+        setTranscribedText(responseData.transcript.text);
+      };
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message);
+    }
+  }
+
   return (
     <>
       <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
@@ -158,7 +199,7 @@ function AudioPage() {
               <Emoji symbol="👋" label="waving hand" /> Hello! Select your LLM
               of choice and click on the microphone button{" "}
               <div className="inline-flex text-2xl font-extrabold">
-                <MicFillIcon2 />
+                <MicMuteFillIcon2 />
               </div>{" "}
               to record your question. Click on the send button{" "}
               <div className="inline-flex text-2xl font-extrabold">
@@ -172,20 +213,20 @@ function AudioPage() {
         {/* {messages.length > 0 && <ChatThread messages={messages} />} */}
         {recordedAudioUrl.length > 0 && (
           <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
-            {recordedAudioUrl}
+            {transcribedText != "" ? transcribedText : recordedAudioUrl}
             <WaveSurferAudioPlayer
               waveColor="#CBD5E0"
               progressColor="#EF4444"
               url={recordedAudioUrl}
               plugins={[Timeline.create()]}
               height={80}
+              // ctrlsPosition="left"
             />
           </output>
         )}
 
         <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
           <div className="container max-w-3xl mx-auto my-5 py-3 space-x-2">
-            {/* <label className="text-black" htmlFor="llm-selector">Select LLM: </label> */}
 
             <select
               onChange={handleLlmApiChange}
@@ -203,14 +244,6 @@ function AudioPage() {
             </select>
 
             {audioInputType === "microphone" && (
-              // <button
-              //   onClick={handleAudioRecording}
-              //   className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-              // >
-              //   {micState === "ready" && <MicFillIcon2 />}
-              //   {micState === "stopped" && <MicMuteFillIcon2 />}
-              // </button>
-
               <WaveSurferAudioRecoder
                 waveColor="#D9E2D5"
                 progressColor="#3E6765"
@@ -243,7 +276,8 @@ function AudioPage() {
 
             <button
               className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-              type="submit"
+              // type="submit"
+              onClick={handleSendButtonClick}
             >
               <SendIcon />
             </button>
@@ -272,54 +306,6 @@ function AudioPage() {
           <Footer />
         </div>
       </div>
-
-      {/* <div className="flex flex-col bg-teal-100 bg-cover bg-center items-center justify-center h-screen text-black">
-          <div>
-            <label>
-              Select Audio Input Type:
-              <select
-                value={audioInputType}
-                onChange={handleAudioInputTypeChange}
-              >
-                <option value="microphone">Microphone</option>
-                <option value="file">Audio File</option>
-              </select>
-            </label>
-          </div>
-
-          {audioInputType === "file" && (
-            <div>
-              <label>
-                Upload Audio File:
-                <input
-                  type="file"
-                  accept="audio/*"
-                  onChange={handleAudioFileSelect}
-                />
-              </label>
-            </div>
-          )}
-
-          <button
-            onClick={handleAudioRecording}
-            className="inline-flex items-center py-1.5 px-3 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green"
-          >
-            {audioInputType === "microphone" ? (
-              <MicFillIcon2 />
-            ) : (
-              <PlayFillIcon />
-            )}
-          </button>
-
-          <audio controls ref={audioRef}></audio> */}
-
-      {/* {transcribedText && (
-            <div>
-              <h2>Transcribed Text:</h2>
-              <p>{transcribedText}</p>
-            </div>
-          )} */}
-      {/* </div> */}
     </>
   );
 }

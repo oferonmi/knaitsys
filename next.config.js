@@ -11,6 +11,15 @@ const nextConfig = {
       },
     ]
   },
+
+  // webpack: (config) => {
+  //   config.resolve.fallback = { 
+  //     fs: require.resolve('browserify-fs'), //false 
+  //     // child_process: false,
+  //   };
+
+  //   return config;
+  // },
 }
 
 module.exports = nextConfig

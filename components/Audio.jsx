@@ -9,6 +9,7 @@ import {
     MicMuteFillIcon2,
 } from "@/components/Icons"
 
+// Audio visualization/control wigjets
 // WaveSurfer hook
 const useWavesurfer = (containerRef, options) => {
   const [wavesurfer, setWavesurfer] = useState(null);
@@ -33,11 +34,19 @@ const useWavesurfer = (containerRef, options) => {
   return wavesurfer;
 }
 
-const WaveSurferAudioPlayer = (props) => {
+// Wavesurfer audio player
+const WaveSurferAudioPlayer = (waveSurferOptions) => {
     const audioContainerRef = useRef();
+    // const [audioCtrlsPosition, setAudioCtrlsPosition] = useState(ctrlsPosition=="left"? "left":"right"); //ctrlsPosition ?  "left" : "right"
     const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0)
-    const wavesurfer = useWavesurfer(audioContainerRef, props);
+    const [currentTime, setCurrentTime] = useState(0);
+    const wavesurfer = useWavesurfer(audioContainerRef, waveSurferOptions);
+
+    //set controls position
+    // const audioCtrlsPosition = ctrlsPosition;
+    // useEffect(() => {
+    //     ctrlsPosition == "right"? setAudioCtrlsPosition("right") : setAudioCtrlsPosition("left")
+    // }, [ctrlsPosition])
 
     // On play button click
     const onPlayClick = useCallback(() => {
@@ -63,24 +72,48 @@ const WaveSurferAudioPlayer = (props) => {
         }
     }, [wavesurfer]);
 
+    const audioCtrlButton = (
+        <button 
+            onClick={onPlayClick} 
+            className="inline-flex items-center  py-5 px-5 mt-6 font-medium text-center text-gray-200 bg-gray-400 rounded-full hover:bg-kaito-brand-ash-green"
+        >
+            {isPlaying ? <PauseFillIcon /> : <PlayFillIcon />}
+        </button>
+    );
+
     return (
-        <>
+        <> 
             <div className="flex flex-row">
                 <div>
-                    <button 
-                        onClick={onPlayClick} 
-                        className="inline-flex items-center  py-5 px-5 mt-6 font-medium text-center text-gray-200 bg-gray-400 rounded-full hover:bg-kaito-brand-ash-green"
-                    >
-                        {isPlaying ? <PauseFillIcon /> : <PlayFillIcon />}
-                    </button>
+                    {audioCtrlButton}
                 </div>
 
                 <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full ml-2" />
             </div>
+
+            {/* {audioCtrlsPosition == "left" && (
+                <div className="flex flex-row">
+                    <div>
+                        {audioCtrlButton}
+                    </div>
+
+                    <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full ml-2" />
+                </div>
+            )}
+            
+            {audioCtrlsPosition == "right" && (
+                <div className="flex flex-row">
+                    <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full mr-2" />
+                    <div>
+                        {audioCtrlButton}
+                    </div>
+                </div>
+            )} */}
         </>
     );
 }
 
+// Wavesurfer audio recorder
 const WaveSurferAudioRecoder = (props) => {
     const micSelectRef = useRef();
     const liveAudioVisualiserRef = useRef();
@@ -90,7 +123,6 @@ const WaveSurferAudioRecoder = (props) => {
     const [recBtnIcon, setRecbtnIcon] = useState(<MicMuteFillIcon2 />)
 
     const wavesurfer = useWavesurfer(liveAudioVisualiserRef, props);
-    
 
     // Initialize the Record plugin
     const [recorder, setRecorder] = useState(null);
@@ -178,4 +210,7 @@ const WaveSurferAudioRecoder = (props) => {
 
 }
 
-export {WaveSurferAudioPlayer, WaveSurferAudioRecoder};
+export {
+    WaveSurferAudioPlayer, 
+    WaveSurferAudioRecoder
+};
