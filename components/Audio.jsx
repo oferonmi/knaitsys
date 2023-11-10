@@ -183,27 +183,31 @@ const WaveSurferAudioRecoder = (props) => {
 
     return (
         <>
-            <select 
-                id="mic-select" 
-                ref={micSelectRef}
-                className="inline-flex items-center py-2 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 mb-2"
-            >
-                <option value="" hidden>--Select Mic--</option>
-            </select>
+            <div className="flex flex-row">
+                <div>
+                    <select 
+                        id="mic-select" 
+                        ref={micSelectRef}
+                        className="inline-flex items-center py-5 px-1 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 mb-2"
+                    >
+                        <option value="" hidden>--Select Mic--</option>
+                    </select>
+                </div>
 
-            {/* <div id="recordings" ref={recdAudioWaveVisualiserRef}></div> */}
+                <div id="liveAudioVisualizer" ref={liveAudioVisualiserRef} className="border border-kaito-brand-ash-green rounded-md px-15 mr-2 w-full" />
 
-            <div id="liveAudioVisualizer" ref={liveAudioVisualiserRef} className="border border-kaito-brand-ash-green rounded-md px-15 " />
-
-            <button 
-                id="record"
-                ref={recorderCtrlrRef}
-                className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-                onClick={onRecordClick}
-            >
-                {recBtnIcon}
-            </button>
-            {/* <button id="pause" style="display: none;">Pause</button> */}
+                <div>
+                    <button 
+                        id="record"
+                        ref={recorderCtrlrRef}
+                        className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+                        onClick={onRecordClick}
+                    >
+                        {recBtnIcon}
+                    </button>
+                </div>
+                {/* <button id="pause" style="display: none;">Pause</button> */}
+            </div>
             
         </>
     );

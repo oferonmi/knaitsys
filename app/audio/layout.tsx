@@ -20,7 +20,7 @@ export default function audioPageLayout({
       <body className={inter.className}>
         <Header />
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );

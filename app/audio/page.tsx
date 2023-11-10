@@ -17,7 +17,7 @@ import {
 } from "@/components/Icons";
 import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
-import { useChat } from "ai/react";
+import { useChat, useCompletion } from "ai/react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.js";
@@ -39,14 +39,32 @@ function AudioPage() {
   const { data: session, status } = useSession();
 
   //LLM engine API route
-  const [llmApiRoute, setLlmApiRoute] = useState("/api/chat/openai");
+  // const [llmApiRoute, setLlmApiRoute] = useState("/api/chat/openai");
+
+  // const handleLlmApiChange = (event: { target: { value: any } }) => {
+  //   setLlmApiRoute("/api/chat/" + event.target.value);
+  // };
+
+  // // use OpenAI chat completion
+  // const { messages, input, handleInputChange, handleSubmit } = useChat({
+  //   api: llmApiRoute,
+  // });
+
+  const [llmApiRoute, setLlmApiRoute] = useState("/api/completion/fireworksai");
 
   const handleLlmApiChange = (event: { target: { value: any } }) => {
-    setLlmApiRoute("/api/chat/" + event.target.value);
+    setLlmApiRoute("/api/completion/" + event.target.value);
   };
 
-  // use OpenAI chat completion
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
+  // text OpenAI completion function call
+  const {
+    completion,
+    input,
+    stop,
+    isLoading,
+    handleInputChange,
+    handleSubmit,
+  } = useCompletion({
     api: llmApiRoute,
   });
 
@@ -67,87 +85,87 @@ function AudioPage() {
     }
   };
 
-  const handleAudioRecording = () => {
-    //check if browser supports getUserMedia
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      alert("Your browser does not support recording!");
-      return;
-    }
+  // const handleAudioRecording = () => {
+  //   //check if browser supports getUserMedia
+  //   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+  //     alert("Your browser does not support recording!");
+  //     return;
+  //   }
 
-    if (!mediaRecorderRef.current) {
-      //will be used later to record audio
-      const chunks = [];
+  //   if (!mediaRecorderRef.current) {
+  //     //will be used later to record audio
+  //     const chunks = [];
 
-      // setup audio recorder
-      navigator.mediaDevices
-        .getUserMedia({
-          audio: true,
-        })
-        .then((stream) => {
-          const mediaRecorder = new MediaRecorder(stream);
+  //     // setup audio recorder
+  //     navigator.mediaDevices
+  //       .getUserMedia({
+  //         audio: true,
+  //       })
+  //       .then((stream) => {
+  //         const mediaRecorder = new MediaRecorder(stream);
 
-          mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) {
-              chunks.push(event.data);
-            }
-          };
+  //         mediaRecorder.ondataavailable = (event) => {
+  //           if (event.data.size > 0) {
+  //             chunks.push(event.data);
+  //           }
+  //         };
 
-          mediaRecorder.onstop = async () => {
-            //create the Blob from the chunks
-            const audioBlob = new Blob(chunks, { type: "audio/mp3" });
-            const recordedAudioDataPath = URL.createObjectURL(audioBlob);
-            audioRef.current.src = recordedAudioDataPath;
-            // audioRef.current.play();
-          };
+  //         mediaRecorder.onstop = async () => {
+  //           //create the Blob from the chunks
+  //           const audioBlob = new Blob(chunks, { type: "audio/mp3" });
+  //           const recordedAudioDataPath = URL.createObjectURL(audioBlob);
+  //           audioRef.current.src = recordedAudioDataPath;
+  //           // audioRef.current.play();
+  //         };
 
-          mediaRecorderRef.current = mediaRecorder;
+  //         mediaRecorderRef.current = mediaRecorder;
 
-          if (mediaRecorderRef.current.state === "inactive") {
-            // start recording
-            mediaRecorderRef.current.start();
-          } else if (mediaRecorderRef.current.state === "recording") {
-            // stop recording
-            mediaRecorderRef.current.stop();
-          }
-        })
-        .catch((err) => {
-          alert(`The following error occurred: ${err}`);
-        });
-    }
-  };
+  //         if (mediaRecorderRef.current.state === "inactive") {
+  //           // start recording
+  //           mediaRecorderRef.current.start();
+  //         } else if (mediaRecorderRef.current.state === "recording") {
+  //           // stop recording
+  //           mediaRecorderRef.current.stop();
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         alert(`The following error occurred: ${err}`);
+  //       });
+  //   }
+  // };
 
-  const transcribeAudio = async (audioData: Blob) => {
-    try {
-      // You would need to implement audio recording or file selection logic here.
-      // For simplicity, this example assumes you have an audio recording in a variable called "audioData."
+  // const transcribeAudio = async (audioData: Blob) => {
+  //   try {
+  //     // You would need to implement audio recording or file selection logic here.
+  //     // For simplicity, this example assumes you have an audio recording in a variable called "audioData."
 
-      // Whisper API key.
-      const apiKey = process.env.OPENAI_API_KEY;
+  //     // Whisper API key.
+  //     const apiKey = process.env.OPENAI_API_KEY;
 
-      const formData = new FormData();
-      formData.append("audio", audioData, "kaito_prompt.mp3");
+  //     const formData = new FormData();
+  //     formData.append("audio", audioData, "kaito_prompt.mp3");
 
-      const response = await fetch(
-        "https://api.openai.com/v1/audio/transcriptions",
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
-      );
+  //     const response = await fetch(
+  //       "https://api.openai.com/v1/audio/transcriptions",
+  //       {
+  //         method: "POST",
+  //         body: formData,
+  //         headers: {
+  //           Authorization: `Bearer ${apiKey}`,
+  //         },
+  //       }
+  //     );
 
-      if (response.ok) {
-        const result = await response.json();
-        setTranscribedText(result.transcription);
-      } else {
-        console.error("Error transcribing audio.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  //     if (response.ok) {
+  //       const result = await response.json();
+  //       setTranscribedText(result.transcription);
+  //     } else {
+  //       console.error("Error transcribing audio.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
 
   const handleSendButtonClick = async () => {
     try {
@@ -193,7 +211,7 @@ function AudioPage() {
   return (
     <>
       <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
-        {messages.length == 0 && recordedAudioUrl.length == 0 && (
+        {completion.length == 0 && recordedAudioUrl.length == 0 && (
           <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
             <div>
               <Emoji symbol="👋" label="waving hand" /> Hello! Select your LLM
@@ -210,7 +228,6 @@ function AudioPage() {
           </div>
         )}
 
-        {/* {messages.length > 0 && <ChatThread messages={messages} />} */}
         {recordedAudioUrl.length > 0 && (
           <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
             {transcribedText != "" ? transcribedText : recordedAudioUrl}
@@ -222,35 +239,80 @@ function AudioPage() {
               height={80}
               // ctrlsPosition="left"
             />
+            {completion.length > 0 && completion}
           </output>
         )}
 
         <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
-          <div className="container max-w-3xl mx-auto my-5 py-3 space-x-2">
+          <div className="container max-w-3xl mx-auto my-5 py-3 space-x-2 ">
+            <div className="flex flex-row">
+              <div>
+                <select
+                  onChange={handleLlmApiChange}
+                  className="inline-flex  py-5 px-1 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green ml-2 mr-2 mb-2"
+                  id="llm-selector"
+                  required
+                >
+                  <option value="">--Select LLM--</option>
+                  <option value="openai">GPT-3.5</option>
+                  <option value="fireworksai">Llama-2-Fwks</option>
+                  {/* <option value="replicate">Llama-2-Rplte</option> */}
+                  <option value="cohere">Co:here</option>
+                  <option value="huggingface">OpenAssistant-HF</option>
+                  {/* <option value="anthropic">Claude-2</option> */}
+                </select>
+              </div>
 
-            <select
-              onChange={handleLlmApiChange}
-              className="inline-flex items-center py-2 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green ml-2 mr-2 mb-2"
-              id="llm-selector"
-              required
-            >
-              <option value="">--Select LLM--</option>
-              <option value="openai">GPT-3.5</option>
-              {/* <option value="replicate">Llama-2-Rplcte</option> */}
-              <option value="fireworksai">Llama-2-Fwks</option>
-              <option value="langchain">LangChain</option>
-              <option value="huggingface">OpenAssistant-HF</option>
-              {/* <option value="anthropic">Claude-1</option> */}
-            </select>
+              <div className="w-full">
+                {audioInputType === "microphone" && (
+                  <WaveSurferAudioRecoder
+                    waveColor="#D9E2D5"
+                    progressColor="#3E6765"
+                    setRecordedAudioUrl={setRecordedAudioUrl}
+                    height={50}
+                    width={100}
+                  />
+                )}
+              </div>
 
-            {audioInputType === "microphone" && (
-              <WaveSurferAudioRecoder
-                waveColor="#D9E2D5"
-                progressColor="#3E6765"
-                setRecordedAudioUrl={setRecordedAudioUrl}
-                height={100}
-              />
-            )}
+              <div>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    type="hidden"
+                    value={input}
+                    onChange={handleInputChange}
+                  />
+
+                  <button
+                    className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+                    type="submit"
+                    onClick={handleSendButtonClick}
+                  >
+                    <SendIcon />
+                  </button>
+                </form>
+              </div>
+
+              {/* <button
+              className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+              // type="submit"
+              onClick={handleSendButtonClick}
+              >
+                <SendIcon />
+              </button> */}
+              <div>
+                {audioInputType === "microphone" && (
+                  <button
+                    type="button"
+                    className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer py-5 px-5 hover:text-white border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green  "
+                    onClick={() => setAudioInputType("file")}
+                  >
+                    <FileEarmarkMusicIcon />
+                    <span className="sr-only">Attach file</span>
+                  </button>
+                )}
+              </div>
+            </div>
 
             {audioInputType === "file" && (
               <div className="flex flex-col items-center justify-center">
@@ -268,37 +330,12 @@ function AudioPage() {
               </div>
             )}
 
-            {/* <audio
-              controls
-              ref={audioRef}
-              className=" border border-kaito-brand-ash-green rounded-full"
-            ></audio> */}
-
-            <button
-              className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-              // type="submit"
-              onClick={handleSendButtonClick}
-            >
-              <SendIcon />
-            </button>
-
             {audioInputType === "file" && (
               <button
                 className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer py-5 px-5 hover:text-white border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green"
                 onClick={() => setAudioInputType("microphone")}
               >
                 <MicFillIcon2 />
-                <span className="sr-only">Attach file</span>
-              </button>
-            )}
-
-            {audioInputType === "microphone" && (
-              <button
-                type="button"
-                className="inline-flex justify-center items-center p-2 text-gray-500 rounded-full cursor-pointer py-5 px-5 hover:text-white border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green  "
-                onClick={() => setAudioInputType("file")}
-              >
-                <FileEarmarkMusicIcon />
                 <span className="sr-only">Attach file</span>
               </button>
             )}
