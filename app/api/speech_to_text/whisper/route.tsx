@@ -20,13 +20,13 @@ const openai = new OpenAI(openAiConfig);
 export async function POST(request: NextRequest) {
   // Check if the OpenAI API key is configured
   if (!openAiConfig.apiKey) {
-    return NextResponse.json(
-      {
-        error:
-          "OpenAI API key not configured, please follow instructions in README.md",
-      },
-      { status: 500 }
-    );
+      return NextResponse.json(
+        {
+          error:
+            "OpenAI API key not configured, please follow instructions in README.md",
+        },
+        { status: 500 }
+      );
   }
 
   // Parse the request body
