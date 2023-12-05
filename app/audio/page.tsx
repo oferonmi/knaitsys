@@ -1,7 +1,8 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import ChatThread from "@/components/ChatThread"
 import {
+  transcribeAudio,
   WaveSurferAudioRecoder,
   WaveSurferAudioPlayer,
 } from "@/components/Audio";
@@ -21,7 +22,7 @@ import { useChat, useCompletion } from "ai/react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.js";
-
+import { AuthHandler } from "next-auth/core";
 
 function AudioPage() {
   const [audioInputType, setAudioInputType] = useState("microphone");
@@ -30,6 +31,7 @@ function AudioPage() {
   const [recordedAudioUrl, setRecordedAudioUrl] = useState("");
 
   const audioRef = useRef(null);
+  const transcriptTextInputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
 
   //will be used later to record audio
@@ -85,93 +87,10 @@ function AudioPage() {
     }
   };
 
-  // const handleAudioRecording = () => {
-  //   //check if browser supports getUserMedia
-  //   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-  //     alert("Your browser does not support recording!");
-  //     return;
-  //   }
-
-  //   if (!mediaRecorderRef.current) {
-  //     //will be used later to record audio
-  //     const chunks = [];
-
-  //     // setup audio recorder
-  //     navigator.mediaDevices
-  //       .getUserMedia({
-  //         audio: true,
-  //       })
-  //       .then((stream) => {
-  //         const mediaRecorder = new MediaRecorder(stream);
-
-  //         mediaRecorder.ondataavailable = (event) => {
-  //           if (event.data.size > 0) {
-  //             chunks.push(event.data);
-  //           }
-  //         };
-
-  //         mediaRecorder.onstop = async () => {
-  //           //create the Blob from the chunks
-  //           const audioBlob = new Blob(chunks, { type: "audio/mp3" });
-  //           const recordedAudioDataPath = URL.createObjectURL(audioBlob);
-  //           audioRef.current.src = recordedAudioDataPath;
-  //           // audioRef.current.play();
-  //         };
-
-  //         mediaRecorderRef.current = mediaRecorder;
-
-  //         if (mediaRecorderRef.current.state === "inactive") {
-  //           // start recording
-  //           mediaRecorderRef.current.start();
-  //         } else if (mediaRecorderRef.current.state === "recording") {
-  //           // stop recording
-  //           mediaRecorderRef.current.stop();
-  //         }
-  //       })
-  //       .catch((err) => {
-  //         alert(`The following error occurred: ${err}`);
-  //       });
-  //   }
-  // };
-
-  // const transcribeAudio = async (audioData: Blob) => {
-  //   try {
-  //     // You would need to implement audio recording or file selection logic here.
-  //     // For simplicity, this example assumes you have an audio recording in a variable called "audioData."
-
-  //     // Whisper API key.
-  //     const apiKey = process.env.OPENAI_API_KEY;
-
-  //     const formData = new FormData();
-  //     formData.append("audio", audioData, "kaito_prompt.mp3");
-
-  //     const response = await fetch(
-  //       "https://api.openai.com/v1/audio/transcriptions",
-  //       {
-  //         method: "POST",
-  //         body: formData,
-  //         headers: {
-  //           Authorization: `Bearer ${apiKey}`,
-  //         },
-  //       }
-  //     );
-
-  //     if (response.ok) {
-  //       const result = await response.json();
-  //       setTranscribedText(result.transcription);
-  //     } else {
-  //       console.error("Error transcribing audio.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
-
-  const handleSendButtonClick = async () => {
+  const onSendButtonClick = async () => {
     try {
-
       // get recorded audio blob from blob URL
-      let audioBlob = await fetch(recordedAudioUrl).then( resp => resp.blob());
+      let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
 
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
@@ -179,7 +98,7 @@ function AudioPage() {
       reader.onloadend = async function () {
         // Remove the data URL prefix
         const base64Audio = reader.result?.split(",")[1];
-        
+
         // transcribe audio
         const response = await fetch("/api/speech_to_text/whisper", {
           method: "POST",
@@ -191,7 +110,6 @@ function AudioPage() {
 
         // get transcript data
         const responseData = await response.json();
-        // console.log(responseData.transcript.text)
 
         if (response.status !== 200) {
           throw (
@@ -200,8 +118,13 @@ function AudioPage() {
           );
         }
 
-        setTranscribedText(responseData.transcript.text);
+        const respText = responseData.transcript.text;
+        console.log(respText);
+
+        setTranscribedText(respText);
+        console.log(transcribedText);
       };
+
     } catch (error: any) {
       console.error(error);
       alert(error.message);
@@ -276,21 +199,25 @@ function AudioPage() {
               </div>
 
               <div>
-                <form onSubmit={handleSubmit}>
-                  <input
-                    type="hidden"
-                    value={input}
-                    onChange={handleInputChange}
-                  />
+                {/* <form onSubmit={onSendButtonClick}> */}
+                <input
+                  ref={transcriptTextInputRef}
+                  type="hidden"
+                  value={input}
+                  onChange={(e) => setTranscribedText(e.target.value)}
+                  // value={input}
+                  // onChange={handleInputChange}
+                />
 
-                  <button
-                    className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-                    type="submit"
-                    onClick={handleSendButtonClick}
-                  >
-                    <SendIcon />
-                  </button>
-                </form>
+                <button
+                  className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+                  // type="submit"
+                  onClick={onSendButtonClick}
+                  disabled={isLoading}
+                >
+                  <SendIcon />
+                </button>
+                {/* </form> */}
               </div>
 
               {/* <button

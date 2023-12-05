@@ -9,6 +9,36 @@ import {
     MicMuteFillIcon2,
 } from "@/components/Icons"
 
+// transcription functions
+const transcribeAudio =  async (base64AudioDataUrl) => {
+    // Remove the data URL prefix.
+    const base64Audio = base64AudioDataUrl.split(",")[1];
+
+    // transcribe audio
+    const response = await fetch("/api/speech_to_text/whisper", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ audio: base64Audio }),
+    });
+
+    // get transcript data
+    const responseData = await response.json();
+
+    if (response.status !== 200) {
+        throw (
+            responseData.error ||
+            new Error(`Request failed with status ${response.status}`)
+        );
+    }
+
+    let respText = responseData.transcript.text
+    // console.log(respText)
+
+    return (respText).toString();
+}
+
 // Audio visualization/control wigjets
 // WaveSurfer hook
 const useWavesurfer = (containerRef, options) => {
@@ -215,6 +245,7 @@ const WaveSurferAudioRecoder = (props) => {
 }
 
 export {
+    transcribeAudio,
     WaveSurferAudioPlayer, 
     WaveSurferAudioRecoder
 };
