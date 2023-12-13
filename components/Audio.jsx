@@ -11,7 +11,7 @@ import {
 
 // transcription functions
 const transcribeAudio =  async (base64AudioDataUrl) => {
-    // Remove the data URL prefix.
+    // Remove the data URL prefix from FileReader generated URL
     const base64Audio = base64AudioDataUrl.split(",")[1];
 
     // transcribe audio
@@ -201,13 +201,6 @@ const WaveSurferAudioRecoder = (props) => {
             const recordedAudioUrl = URL.createObjectURL(blob)
             props.setRecordedAudioUrl(recordedAudioUrl)
 
-            // Create wavesurfer from the recorded audio
-            // const ws = WaveSurfer.create({
-            //     container: recdAudioWaveVisualiserRef,
-            //     waveColor: '#D9E2D5',
-            //     progressColor: '#3E6765',
-            //     url: recordedAudioUrl,
-            // });
         });
     }, [recorder, props]);
 

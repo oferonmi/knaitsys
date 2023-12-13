@@ -19,6 +19,7 @@ import {
 import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
 import { useChat, useCompletion } from "ai/react";
+import { useDebouncedCallback } from "use-debounce";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.js";
@@ -59,16 +60,13 @@ function AudioPage() {
   };
 
   // text OpenAI completion function call
-  const {
-    completion,
-    input,
-    stop,
-    isLoading,
-    handleInputChange,
-    handleSubmit,
-  } = useCompletion({
+  const {complete, completion, isLoading,} = useCompletion({
     api: llmApiRoute,
   });
+
+  const handleInputChange = useDebouncedCallback((e) => {
+    complete(e.target.value);
+  }, 500);
 
   const handleAudioInputTypeChange = (event: { target: { value: any } }) => {
     setAudioInputType(event.target.value);
@@ -179,7 +177,7 @@ function AudioPage() {
                   <option value="">--Select LLM--</option>
                   <option value="openai">GPT-3.5</option>
                   <option value="fireworksai">Llama-2-Fwks</option>
-                  {/* <option value="replicate">Llama-2-Rplte</option> */}
+                  {/* <option value="replicate">Llama-2-Rplcte</option> */}
                   <option value="cohere">Co:here</option>
                   <option value="huggingface">OpenAssistant-HF</option>
                   {/* <option value="anthropic">Claude-2</option> */}
@@ -203,10 +201,10 @@ function AudioPage() {
                 <input
                   ref={transcriptTextInputRef}
                   type="hidden"
-                  value={input}
-                  onChange={(e) => setTranscribedText(e.target.value)}
+                  value={transcribedText}
+                  // onChange={(e) => setTranscribedText(e.target.value)}
                   // value={input}
-                  // onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
 
                 <button
