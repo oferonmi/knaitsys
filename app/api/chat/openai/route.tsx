@@ -18,14 +18,6 @@ export async function POST(req: Request) {
     model: "gpt-3.5-turbo",
     stream: true,
     messages,
-    // messages: [
-    //   {
-    //     role: "system",
-    //     content:
-    //       "You are a helpful assistant who explains concept from first principles.",
-    //   },
-    //   { role: "user", content: "Hello!" },
-    // ],
   });
   
   // Convert the response into a friendly text-stream

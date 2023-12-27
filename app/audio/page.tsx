@@ -30,6 +30,7 @@ function AudioPage() {
   // const [micState, setMicState] = useState("ready"); // ready or stopped
   const [transcribedText, setTranscribedText] = useState("");
   const [recordedAudioUrl, setRecordedAudioUrl] = useState("");
+  const [responseAudioUrl, setResponseAudioUrl] = useState("");
 
   const audioRef = useRef(null);
   const transcriptTextInputRef = useRef(null);
@@ -60,13 +61,9 @@ function AudioPage() {
   };
 
   // text OpenAI completion function call
-  const {complete, completion, isLoading,} = useCompletion({
+  const {completion, complete, input, setInput, isLoading,} = useCompletion({
     api: llmApiRoute,
   });
-
-  const handleInputChange = useDebouncedCallback((e) => {
-    complete(e.target.value);
-  }, 500);
 
   const handleAudioInputTypeChange = (event: { target: { value: any } }) => {
     setAudioInputType(event.target.value);
@@ -98,7 +95,7 @@ function AudioPage() {
         const base64Audio = reader.result?.split(",")[1];
 
         // transcribe audio
-        const response = await fetch("/api/speech_to_text/whisper", {
+        const stt_response = await fetch("/api/speech_to_text/whisper", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -107,31 +104,65 @@ function AudioPage() {
         });
 
         // get transcript data
-        const responseData = await response.json();
+        const stt_resp_data = await stt_response.json();
 
-        if (response.status !== 200) {
+        if (stt_response.status !== 200) {
           throw (
-            responseData.error ||
-            new Error(`Request failed with status ${response.status}`)
+            stt_resp_data.error ||
+            new Error(
+              `speech to text failed with status ${stt_response.status}`
+            )
           );
         }
 
-        const respText = responseData.transcript.text;
-        console.log(respText);
+        const stt_resp_txt = stt_resp_data.transcript.text;
+        // console.log(`STT response: ${stt_resp_txt}`);
 
-        setTranscribedText(respText);
-        console.log(transcribedText);
+        setTranscribedText(stt_resp_txt);
+
+        // update input data to only current input
+        setInput(stt_resp_txt);
+
+        // pass transcribed text to LLM text completion API end point and update completion data state
+        complete(stt_resp_txt);
       };
+
+      // TO DO: pass LLM response to TTS API end point to get audio response
+      const tts_response = await fetch("/api/text_to_speech/openai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: completion }),
+      });
+
+      const tts_resp_data = await tts_response.json();
+
+      if (tts_response.status !== 200) {
+        throw (
+          tts_resp_data.error ||
+          new Error(
+            `text to speech failed with status ${tts_response.status}`
+          )
+        );
+      }
+
+      const tts_resp_path = tts_resp_data.audio_file_path;
+
+      // TO DO: store generated audio URL
+      setResponseAudioUrl(tts_resp_path);
 
     } catch (error: any) {
       console.error(error);
       alert(error.message);
     }
+
   }
 
   return (
     <>
       <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
+        {/* {transcribedText !="" && console.log(transcribedText)} */}
         {completion.length == 0 && recordedAudioUrl.length == 0 && (
           <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
             <div>
@@ -160,7 +191,22 @@ function AudioPage() {
               height={80}
               // ctrlsPosition="left"
             />
+
             {completion.length > 0 && completion}
+
+            {/* {responseAudioUrl.length > 0 
+              // && responseAudioUrl
+              && (
+                <WaveSurferAudioPlayer
+                  waveColor="#CBD5E0"
+                  progressColor="#EF4444"
+                  url={responseAudioUrl}
+                  plugins={[Timeline.create()]}
+                  height={80}
+                  // ctrlsPosition="left"
+                />
+              )
+            } */}
           </output>
         )}
 
@@ -197,34 +243,16 @@ function AudioPage() {
               </div>
 
               <div>
-                {/* <form onSubmit={onSendButtonClick}> */}
-                <input
-                  ref={transcriptTextInputRef}
-                  type="hidden"
-                  value={transcribedText}
-                  // onChange={(e) => setTranscribedText(e.target.value)}
-                  // value={input}
-                  onChange={handleInputChange}
-                />
 
                 <button
                   className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-                  // type="submit"
                   onClick={onSendButtonClick}
-                  disabled={isLoading}
+                  // disabled={isLoading}
                 >
                   <SendIcon />
                 </button>
-                {/* </form> */}
               </div>
 
-              {/* <button
-              className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-              // type="submit"
-              onClick={handleSendButtonClick}
-              >
-                <SendIcon />
-              </button> */}
               <div>
                 {audioInputType === "microphone" && (
                   <button

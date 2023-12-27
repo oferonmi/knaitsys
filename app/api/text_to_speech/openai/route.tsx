@@ -45,5 +45,5 @@ export async function POST(request: NextRequest) {
     await fs.promises.writeFile(speech_file, buffer);
 
     // Return audio response
-    return NextResponse.json({ audio: speech_file }, { status: 200 });
+    return NextResponse.json({ audio_file_path: speech_file }, { status: 200 });
 }
