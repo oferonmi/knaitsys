@@ -82,6 +82,35 @@ function AudioPage() {
     }
   };
 
+  // covert text to speech and return path to speech file
+  const doTextToSpeech = async (text_input: string) => {
+    try {
+      const tts_response = await fetch("/api/text_to_speech/openai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: text_input }),
+      });
+
+      const tts_resp_data = await tts_response.json();
+
+      if (tts_response.status !== 200) {
+        throw (
+          tts_resp_data.error ||
+          new Error(`text to speech failed with status ${tts_response.status}`)
+        );
+      }
+
+      // console.log(tts_resp_data.audio_file_path);
+
+      return tts_resp_data.audio_file_path;
+    } catch (error: any) {
+      console.error(error);
+      alert(error.message);
+    }
+  }
+
   const onSendButtonClick = async () => {
     try {
       // get recorded audio blob from blob URL
@@ -90,11 +119,11 @@ function AudioPage() {
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
 
-      reader.onloadend = async function () {
+      reader.onloadend = async () => {
         // Remove the data URL prefix
         const base64Audio = reader.result?.split(",")[1];
 
-        // transcribe audio
+        // transcribe audio prompt
         const stt_response = await fetch("/api/speech_to_text/whisper", {
           method: "POST",
           headers: {
@@ -127,31 +156,25 @@ function AudioPage() {
         complete(stt_resp_txt);
       };
 
+      // DEBUG: log
+      // console.log(completion);
+
       // TO DO: pass LLM response to TTS API end point to get audio response
-      const tts_response = await fetch("/api/text_to_speech/openai", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text: completion }),
-      });
+      const tts_resp_path = await doTextToSpeech(completion);
 
-      const tts_resp_data = await tts_response.json();
-
-      if (tts_response.status !== 200) {
-        throw (
-          tts_resp_data.error ||
-          new Error(
-            `text to speech failed with status ${tts_response.status}`
-          )
-        );
-      }
-
-      const tts_resp_path = tts_resp_data.audio_file_path;
-
-      // TO DO: store generated audio URL
+      // TO DO: get and store generated audio URL
       setResponseAudioUrl(tts_resp_path);
+      // get recorded audio blob from blob URL
+      // let ttsBlob = await fetch(tts_resp_path).then((resp) => resp.blob());
 
+      // const tts_reader = new FileReader();
+      // tts_reader.readAsDataURL(ttsBlob);
+      // tts_reader.onloadend = async () => {
+      //   // Remove the data URL prefix
+      //   const text_path = tts_reader.result?.split(",")[1];
+
+      //   setResponseAudioUrl(text_path);
+      // };
     } catch (error: any) {
       console.error(error);
       alert(error.message);
@@ -194,19 +217,19 @@ function AudioPage() {
 
             {completion.length > 0 && completion}
 
-            {/* {responseAudioUrl.length > 0 
-              // && responseAudioUrl
-              && (
-                <WaveSurferAudioPlayer
-                  waveColor="#CBD5E0"
-                  progressColor="#EF4444"
-                  url={responseAudioUrl}
-                  plugins={[Timeline.create()]}
-                  height={80}
-                  // ctrlsPosition="left"
-                />
-              )
-            } */}
+            {responseAudioUrl?.length > 0 
+              && responseAudioUrl
+              // && (
+              //   <WaveSurferAudioPlayer
+              //     waveColor="#CBD5E0"
+              //     progressColor="#EF4444"
+              //     url={responseAudioUrl}
+              //     plugins={[Timeline.create()]}
+              //     height={80}
+              //     // ctrlsPosition="left"
+              //   />
+              // )
+            }
           </output>
         )}
 

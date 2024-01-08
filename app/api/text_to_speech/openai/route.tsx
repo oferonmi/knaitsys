@@ -33,17 +33,27 @@ export async function POST(request: NextRequest) {
 
     // covert to audio
     const mp3 = await openai.audio.speech.create({
-        model: "tts-1",
-        voice: "onyx",
-        input: tts_text,
+      model: "tts-1",
+      voice: "fable",
+      input: tts_text,
     });
     
     console.log(speech_file);
+    
+    try{
 
-    const buffer = Buffer.from(await mp3.arrayBuffer());
+      const buffer = Buffer.from(await mp3.arrayBuffer());
+      await fs.promises.writeFile(speech_file, buffer);
 
-    await fs.promises.writeFile(speech_file, buffer);
+    } catch(err) {
+
+      console.log(err);
+
+    }
 
     // Return audio response
-    return NextResponse.json({ audio_file_path: speech_file }, { status: 200 });
+    return NextResponse.json(
+      { audio_file_path: speech_file }, 
+      { status: 200 }
+    );
 }

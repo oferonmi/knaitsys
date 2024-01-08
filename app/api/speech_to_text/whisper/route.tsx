@@ -1,6 +1,5 @@
 "use server";
 import { OpenAI } from "openai";
-import { OpenAIStream, StreamingTextResponse } from "ai";
 import fs from "fs";
 import { exec } from "child_process";
 import util from "util";
@@ -39,15 +38,22 @@ export async function POST(request: NextRequest) {
   const audio = Buffer.from(base64Audio, "base64");
 
   try {
+
     // Convert the audio data to text
     const text = await transcribeAudio(audio);
+    
     // Return the transcribed text in the response
     return NextResponse.json({ transcript: text }, { status: 200 });
+
   } catch (error: any) {
+
     // Handle any errors that occur during the request
     if (error.response) {
       console.error(error.response.status, error.response.data);
-      return NextResponse.json({ error: error.response.data }, { status: 500 });
+      return NextResponse.json(
+        { error: error.response.data }, 
+        { status: 500 }
+      );
     } else {
       console.error(`Error with OpenAI API request: ${error.message}`);
       return NextResponse.json(
@@ -55,6 +61,7 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
   }
 }
 
