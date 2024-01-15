@@ -102,7 +102,7 @@ export default function AgentsPage() {
   return (
     <>
       <ChatWindow
-        endpoint="api/retrieval_aug_gen"
+        endpoint="api/rag"
         emptyStateComponent={InfoCard}
         showIngestForm={true}
         placeholder={

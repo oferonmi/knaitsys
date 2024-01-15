@@ -9,7 +9,7 @@ export function UploadDocumentsForm() {
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    const response = await fetch("/api/retrieval/ingest", {
+    const response = await fetch("/api/rag/ingest", {
       method: "POST",
       body: JSON.stringify({
         text: document,
