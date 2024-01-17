@@ -10,6 +10,7 @@ import type { AgentStep } from "langchain/schema";
 
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { UploadDocumentsForm } from "@/components/UploadDocumentsForm";
+import { EmbedPdfsForm } from "@/components/EmbedPdfsForm";
 import { IntermediateStep } from "./IntermediateStep";
 
 export function ChatWindow(props: {
@@ -34,11 +35,14 @@ export function ChatWindow(props: {
   } = props;
 
   const [showIntermediateSteps, setShowIntermediateSteps] = useState(false);
-  const [intermediateStepsLoading, setIntermediateStepsLoading] =
-    useState(false);
+  const [intermediateStepsLoading, setIntermediateStepsLoading] = useState(false);
+
+  const embedForm = (<EmbedPdfsForm></EmbedPdfsForm>)
+
   const ingestForm = showIngestForm && (
     <UploadDocumentsForm></UploadDocumentsForm>
   );
+
   const intemediateStepsToggle = showIntermediateStepsToggle && (
     <div>
       <input
@@ -202,6 +206,8 @@ export function ChatWindow(props: {
             })
           : ""}
       </div>
+
+      {messages.length ===0 && embedForm}
 
       {messages.length === 0 && ingestForm}
 
