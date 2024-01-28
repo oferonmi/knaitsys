@@ -19,16 +19,42 @@ import { StringOutputParser } from "langchain/schema/output_parser";
 import { AIMessage, BaseMessage, HumanMessage } from "langchain/schema";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-const embeddings = new HuggingFaceTransformersEmbeddings({
-  modelName: "Xenova/all-MiniLM-L6-v2",
-});
+import { createClient } from "@supabase/supabase-js";
+import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { ChatOpenAI } from "langchain/chat_models/openai";
 
-const voyClient = new VoyClient();
-const vectorstore = new VoyVectorStore(voyClient, embeddings);
-const ollama = new ChatOllama({
-  baseUrl: "http://localhost:11435",
-  temperature: 0.3,
-  model: "mistral",
+// const voyClient = new VoyClient();
+const client = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_PRIVATE_KEY!,
+);
+
+// const embeddings = new HuggingFaceTransformersEmbeddings({
+//   modelName: "Xenova/all-MiniLM-L6-v2",
+// });
+const embeddings = new OpenAIEmbeddings();
+
+
+// const vectorstore = new VoyVectorStore(voyClient, embeddings);
+const vectorstore = new SupabaseVectorStore(
+    embeddings,
+    {
+        client,
+        tableName: "documents",
+        queryName: "match_documents",
+    },
+);
+
+// const ollama = new ChatOllama({
+//   baseUrl: "http://localhost:11435",
+//   temperature: 0.3,
+//   model: "mistral",
+// });
+
+const openai = new ChatOpenAI({
+  modelName: "gpt-3.5-turbo-1106",
+  temperature: 0.2,
 });
 
 const REPHRASE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
@@ -70,6 +96,7 @@ const formatDocs = (docs: Document[]) => {
 
 const createRetrievalChain = (
   llm: BaseLanguageModel,
+  // llm: any,
   retriever: BaseRetriever,
   chatHistory: ChatWindowMessage[],
 ) => {
@@ -126,13 +153,14 @@ const queryVectorStore = async (messages: ChatWindowMessage[]) => {
   const chatHistory: ChatWindowMessage[] = messages.slice(0, -1);
 
   const retrievalChain = createRetrievalChain(
-    ollama,
+    openai,
     vectorstore.asRetriever(),
     chatHistory,
   );
+
   const responseChain = RunnableSequence.from([
     responseChainPrompt,
-    ollama,
+    openai,
     new StringOutputParser(),
   ]);
 
@@ -202,7 +230,7 @@ self.addEventListener("message", async (event: any) => {
   } else {
     try {
       await queryVectorStore(event.data.messages);
-    } catch (e: any) {
+    } catch (e: any) {createRetrievalChain
       self.postMessage({
         type: "error",
         error: `${e.message}. Make sure you are running Ollama.`,

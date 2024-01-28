@@ -20,6 +20,19 @@ const nextConfig = {
 
   //   return config;
   // },
+
+  webpack5: true,
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+
+    return config;
+  },
+
+  externals: {
+    bufferutil: 'bufferutil',
+    'utf-8-validate': 'utf-8-validate',
+  },
+
 }
 
 module.exports = nextConfig

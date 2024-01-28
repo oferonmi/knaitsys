@@ -176,7 +176,7 @@ export function ChatWindow(props: {
 
   return (
     <div
-      className={`flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden ${
+      className={`flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black ${
         messages.length > 0 ? "border" : ""
       }`}
     >
@@ -208,7 +208,7 @@ export function ChatWindow(props: {
       </div>
 
       {messages.length ===0 && embedForm}
-
+      
       {messages.length === 0 && ingestForm}
 
       <form onSubmit={sendMessage} className="flex w-full flex-col">

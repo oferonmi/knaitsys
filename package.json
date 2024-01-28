@@ -21,6 +21,7 @@
     "ai": "^2.2.25",
     "autoprefixer": "10.4.14",
     "browserify-fs": "^1.0.0",
+    "bufferutil": "^4.0.8",
     "cheerio": "1.0.0-rc.12",
     "encoding": "^0.1.13",
     "eslint": "8.41.0",
@@ -31,6 +32,8 @@
     "node-fetch": "^3.3.2",
     "openai": "^4.20.0",
     "path": "^0.12.7",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^4.0.379",
     "postcss": "8.4.24",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -42,5 +45,11 @@
     "use-debounce": "^10.0.0",
     "voy-search": "^0.6.3",
     "wavesurfer.js": "^7.4.6"
+  },
+  "devDependencies": {
+    "webpack": "^5.89.0"
+  },
+  "optionalDependencies": {
+    "utf-8-validate": "^6.0.3"
   }
 }
