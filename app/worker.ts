@@ -25,10 +25,9 @@ import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 
 // const voyClient = new VoyClient();
-const client = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PRIVATE_KEY!,
-);
+const supabase_url = process.env.SUPABASE_URL as string;
+const supabase_anon_key = process.env.SUPABASE_PRIVATE_KEY as string;
+const client = createClient(supabase_url, supabase_anon_key);
 
 // const embeddings = new HuggingFaceTransformersEmbeddings({
 //   modelName: "Xenova/all-MiniLM-L6-v2",
@@ -96,7 +95,6 @@ const formatDocs = (docs: Document[]) => {
 
 const createRetrievalChain = (
   llm: BaseLanguageModel,
-  // llm: any,
   retriever: BaseRetriever,
   chatHistory: ChatWindowMessage[],
 ) => {

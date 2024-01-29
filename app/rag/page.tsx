@@ -8,7 +8,7 @@ export default function AgentsPage() {
         Explore your document by Chatting to it.
       </h1>
       <p>
-        Paste the document text in the textaera below and upload or, upload the PDF of the document and embed. Then try asking any question about the documents content.
+        Paste the a body of text in the textarea below and click upload or, upload the PDF of a document and click embed. Then try asking any question about the content of the uploaded text/document.
       </p>
     </div>
   );
@@ -18,9 +18,7 @@ export default function AgentsPage() {
         endpoint="api/rag"
         emptyStateComponent={InfoCard}
         showIngestForm={true}
-        placeholder={
-          'I\'ve got a thing for finding the right documents! Ask, "What is a document loader?"'
-        }
+        placeholder={'Ask questions about the content of the document you\'ve just uploaded.'}
         emoji="🥸"
         titleText="Chat to your Document"
       ></ChatWindow>

@@ -17,21 +17,21 @@ const nextConfig = {
   //     fs: require.resolve('browserify-fs'), //false 
   //     // child_process: false,
   //   };
-
   //   return config;
   // },
 
-  webpack5: true,
-  webpack: (config) => {
+  webpack: (
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  ) => {
     config.resolve.fallback = { fs: false };
-
     return config;
   },
 
-  externals: {
-    bufferutil: 'bufferutil',
-    'utf-8-validate': 'utf-8-validate',
-  },
+  // externals: {
+  //   bufferutil: 'bufferutil',
+  //   'utf-8-validate': 'utf-8-validate',
+  // },
 
 }
 
