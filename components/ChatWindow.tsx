@@ -13,28 +13,24 @@ import { EmbedPdfsForm } from "@/components/EmbedPdfsForm";
 
 export function ChatWindow(props: {
   endpoint: string;
-  emptyStateComponent: ReactElement;
+  // emptyStateComponent: ReactElement;
   placeholder?: string;
   titleText?: string;
   emoji?: string;
-  showIngestForm?: boolean;
-  showIntermediateStepsToggle?: boolean;
 }) {
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
 
   const {
     endpoint,
-    emptyStateComponent,
+    // emptyStateComponent,
     placeholder,
     titleText = "An LLM",
-    showIngestForm,
     emoji,
   } = props;
 
-  const embedForm = (<EmbedPdfsForm></EmbedPdfsForm>)
-
-  const ingestForm = showIngestForm && (<UploadDocumentsForm></UploadDocumentsForm>);
-
+  const [readyToChat, setReadyToChat] = useState(false);
+  const [showIngestForm, setShowIngestForm] = useState(true);
+  const [showDocEmbedForm, setShowDocEmbedForm] = useState(!showIngestForm);
   const [sourcesForMessages, setSourcesForMessages] = useState<
     Record<string, any>
   >({});
@@ -67,6 +63,58 @@ export function ChatWindow(props: {
     },
   });
 
+  const embedForm = showDocEmbedForm && (
+    <EmbedPdfsForm setReadyToChat={setReadyToChat} />
+  );
+  const ingestForm = showIngestForm && (
+    <UploadDocumentsForm setReadyToChat={setReadyToChat} />
+  );
+
+  const emptyStateComponent = (
+    <>
+      <div className="p-4 md:p-8 rounded bg-[#25252d00] w-full max-h-[85%] overflow-hidden text-black">
+        <h1 className="text-3xl md:text-4xl mb-4">
+          Explore your document by Chatting to it.
+        </h1>
+
+        <p>
+          Paste the a body of text in the textarea below and click upload or,
+          upload the PDF of a document and click embed. Then try asking any
+          question about the content of the uploaded text/document.
+        </p>
+        {"\n \n"}
+
+        {messages.length === 0 && embedForm}
+        {messages.length === 0 && ingestForm}
+
+        {showDocEmbedForm && (
+          <button
+            className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
+            type="button"
+            onClick={() => {
+              setShowIngestForm(true);
+              setShowDocEmbedForm(false);
+            }}
+          >
+            Text Upload
+          </button>
+        )}
+        {showIngestForm && (
+          <button
+            className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
+            type="button"
+            onClick={() => {
+              setShowDocEmbedForm(true);
+              setShowIngestForm(false);
+            }}
+          >
+            PDF Upload
+          </button>
+        )}
+      </div>
+    </>
+  );
+
   async function sendMessage(e: FormEvent<HTMLFormElement>) {
 
     e.preventDefault();
@@ -86,18 +134,16 @@ export function ChatWindow(props: {
     handleSubmit(e);
   }
 
-  return (
-    <div
-      className={`flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black ${
-        messages.length > 0 ? "border" : ""
-      }`}
-    >
-      <h2 className={`${messages.length > 0 ? "" : "hidden"} text-2xl`}>
-        {emoji} {titleText}
-      </h2>
+  const textUploadComponent = (
+    <>
+      {messages.length === 0 && emptyStateComponent}
+      {messages.length === 0 && embedForm}
+      {messages.length === 0 && ingestForm}
+    </>
+  );
 
-      {messages.length === 0 ? emptyStateComponent : ""}
-
+  const chatInterfaceComponent = (
+    <>
       <div
         className="flex flex-col-reverse w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out"
         ref={messageContainerRef}
@@ -117,16 +163,12 @@ export function ChatWindow(props: {
           : ""}
       </div>
 
-      {messages.length ===0 && embedForm}
-      
-      {messages.length === 0 && ingestForm}
-
       <form onSubmit={sendMessage} className="flex w-full flex-col">
         <div className="flex w-full mt-4">
           <input
             className="grow mr-8 p-4 rounded border border-kaito-brand-ash-green"
             value={input}
-            placeholder={placeholder ?? "What's it like to be a pirate?"}
+            placeholder={placeholder ?? "What is truth?"}
             onChange={handleInputChange}
           />
           <button
@@ -135,7 +177,9 @@ export function ChatWindow(props: {
           >
             <div
               role="status"
-              className={`${chatEndpointIsLoading ? "" : "hidden"} flex justify-center`}
+              className={`${
+                chatEndpointIsLoading ? "" : "hidden"
+              } flex justify-center`}
             >
               <svg
                 aria-hidden="true"
@@ -155,14 +199,25 @@ export function ChatWindow(props: {
               </svg>
               <span className="sr-only">Loading...</span>
             </div>
-            <span
-              className={chatEndpointIsLoading ? "hidden": ""}
-            >
-              Send
-            </span>
+            <span className={chatEndpointIsLoading ? "hidden" : ""}>Send</span>
           </button>
         </div>
       </form>
+    </>
+  );
+
+  return (
+    <div
+      className={`flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black ${
+        messages.length > 0 ? "border" : ""
+      }`}
+    >
+      <h2 className={`${messages.length > 0 ? "" : "hidden"} text-2xl`}>
+        {emoji} {titleText}
+      </h2>
+
+      {readyToChat ? chatInterfaceComponent : emptyStateComponent}
+
       <ToastContainer />
     </div>
   );

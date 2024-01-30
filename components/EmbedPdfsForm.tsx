@@ -1,12 +1,16 @@
 "use client";
 
-import { useRef,useState, useEffect, type FormEvent } from "react";
+import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
 
-export function EmbedPdfsForm() {
+export function EmbedPdfsForm(props: {
+  setReadyToChat: Dispatch<SetStateAction<boolean>>;
+}) {
+  const {setReadyToChat} = props;
+
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
-  const [readyToChat, setReadyToChat] = useState(false);
+  // const [readyToChat, setReadyToChat] = useState(false);
 
   const worker = useRef<Worker | null>(null);
 

@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
 import DEFAULT_RETRIEVAL_TEXT from "@/data/DefaultRetrievalText";
 
-export function UploadDocumentsForm() {
+export function UploadDocumentsForm(props: {
+  setReadyToChat: Dispatch<SetStateAction<boolean>>;
+}) {
+  const { setReadyToChat } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [document, setDocument] = useState(DEFAULT_RETRIEVAL_TEXT);
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
@@ -30,6 +33,7 @@ export function UploadDocumentsForm() {
       <textarea
         className="grow mr-8 p-4 rounded border border-kaito-brand-ash-green"
         value={document}
+        rows={10}
         onChange={(e) => setDocument(e.target.value)}
       ></textarea>
       <button

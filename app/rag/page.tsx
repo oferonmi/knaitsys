@@ -1,7 +1,11 @@
+"use client";
+
 import { ChatWindow } from "@/components/ChatWindow";
 import { Footer } from "@/components/Footer";
+import { useState } from "react";
 
 export default function AgentsPage() {
+
   const InfoCard = (
     <div className="p-4 md:p-8 rounded bg-[#25252d00] w-full max-h-[85%] overflow-hidden text-black">
       <h1 className="text-3xl md:text-4xl mb-4">
@@ -16,9 +20,12 @@ export default function AgentsPage() {
     <>
       <ChatWindow
         endpoint="api/rag"
-        emptyStateComponent={InfoCard}
-        showIngestForm={true}
-        placeholder={'Ask questions about the content of the document you\'ve just uploaded.'}
+        // emptyStateComponent={InfoCard}
+        // showIngestForm={true}
+        // showDocEmbedForm={false}
+        placeholder={
+          "Ask questions about the content of the document you've just uploaded."
+        }
         emoji="🥸"
         titleText="Chat to your Document"
       ></ChatWindow>
