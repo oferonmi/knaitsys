@@ -20,6 +20,7 @@ export function UploadDocumentsForm(props: {
     });
     if (response.status === 200) {
       setDocument("Uploaded!");
+      setReadyToChat(true);
     } else {
       const json = await response.json();
       if (json.error) {
