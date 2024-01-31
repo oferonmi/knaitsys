@@ -82,7 +82,8 @@ export function ChatWindow(props: {
           upload the PDF of a document and click embed. Then try asking any
           question about the content of the uploaded text/document.
         </p>
-        {"\n \n"}
+
+        <br></br>
 
         {messages.length === 0 && embedForm}
         {messages.length === 0 && ingestForm}
@@ -166,14 +167,14 @@ export function ChatWindow(props: {
       <form onSubmit={sendMessage} className="flex w-full flex-col">
         <div className="flex w-full mt-4">
           <input
-            className="grow mr-8 p-4 rounded border border-kaito-brand-ash-green"
+            className="grow mr-2 p-4 rounded-full border border-kaito-brand-ash-green"
             value={input}
             placeholder={placeholder ?? "What is truth?"}
             onChange={handleInputChange}
           />
           <button
             type="submit"
-            className="shrink-0 px-8 py-4 bg-kaito-brand-ash-green text-gray-200 rounded w-28"
+            className="shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full w-14"
           >
             <div
               role="status"
@@ -199,7 +200,18 @@ export function ChatWindow(props: {
               </svg>
               <span className="sr-only">Loading...</span>
             </div>
-            <span className={chatEndpointIsLoading ? "hidden" : ""}>Send</span>
+            <span className={chatEndpointIsLoading ? "hidden" : ""}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                className="bi bi-send-fill"
+                viewBox="0 0 16 16"
+              >
+                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+              </svg>
+            </span>
           </button>
         </div>
       </form>

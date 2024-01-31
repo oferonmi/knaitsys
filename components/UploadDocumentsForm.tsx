@@ -32,14 +32,14 @@ export function UploadDocumentsForm(props: {
   return (
     <form onSubmit={ingest} className="flex w-full mb-4">
       <textarea
-        className="grow mr-8 p-4 rounded border border-kaito-brand-ash-green"
+        className="grow mr-8 p-4 rounded border border-kaito-brand-ash-green w-5/6"
         value={document}
         rows={10}
         onChange={(e) => setDocument(e.target.value)}
       ></textarea>
       <button
         type="submit"
-        className="shrink-0 px-8 py-4 bg-kaito-brand-ash-green text-gray-200 rounded w-28"
+        className="shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full w-1/6 max-w-24 h-full max-h-24 items-center"
       >
         <div
           role="status"
@@ -63,7 +63,7 @@ export function UploadDocumentsForm(props: {
           </svg>
           <span className="sr-only">Loading...</span>
         </div>
-        <span className={isLoading ? "hidden" : ""}>Upload</span>
+        <span className={isLoading ? "hidden" : ""}>Upload Text</span>
       </button>
     </form>
   );

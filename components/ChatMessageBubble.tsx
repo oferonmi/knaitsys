@@ -6,7 +6,7 @@ export function ChatMessageBubble(props: {
   sources: any[];
 }) {
   const colorClassName =
-    props.message.role === "user" ? "bg-blue-200" : "bg-amber-50 text-black";
+    props.message.role === "user" ? "bg-slate-300" : "bg-[#96b7a5] text-black";
   const alignmentClassName =
     props.message.role === "user" ? "ml-auto" : "mr-auto";
   const prefix = props.message.role === "user" ? "🤔" : props.aiEmoji;

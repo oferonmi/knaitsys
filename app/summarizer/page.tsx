@@ -96,7 +96,7 @@ const SummarizerPage = () => {
         <div className="px-2 py-2 bg-white rounded-t-lg ">
           <textarea
             id="textInput"
-            rows="4"
+            rows={4}
             className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
             value={input}
             onChange={handleInputChange}
@@ -205,7 +205,7 @@ const SummarizerPage = () => {
 
           <textarea
             id="pg_content_disp"
-            rows="4"
+            rows={4}
             className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
             value={input}
             onChange={handleInputChange}

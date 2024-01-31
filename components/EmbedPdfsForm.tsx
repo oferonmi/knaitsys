@@ -87,7 +87,7 @@ export function EmbedPdfsForm(props: {
         ></input>
         <button
           type="submit"
-          className="shrink-0 px-8 py-4 bg-kaito-brand-ash-green text-gray-200 rounded w-28"
+          className="shrink-0 px-8 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full w-28 items-center"
         >
           <div
             role="status"
