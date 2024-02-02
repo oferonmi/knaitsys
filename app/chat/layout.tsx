@@ -6,9 +6,9 @@ import { Footer } from '../../components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'KAITOSYS - Chatbot',
-  description: 'AI chatbot',
-}
+  title: "Kaitosys - Chatbot",
+  description: "AI chatbot",
+};
 
 export default function ChatBotLayout({children}: {children: React.ReactNode}) {
   return (

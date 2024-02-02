@@ -6,7 +6,7 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "KAITOSYS - Audio",
+  title: "Kaitosys - Audio",
   description: "Process Audio using AI",
 };
 

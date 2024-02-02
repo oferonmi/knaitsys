@@ -6,7 +6,7 @@ import NextAuthProvider from "@/context/NextAuthProvider";
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'KAITOSYS - Knowledge-work AI Tools System',
+  title: 'Kaitosys - Knowledge-work AI Tools System',
   description: 'Your AI tools kit',
 }
 
