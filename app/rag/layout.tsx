@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Kaitosys - RAG",
-  description: "Process text documents using NLP",
+  description: "Query text documents using NLP",
 };
 
 export default function ragChatLayout({
@@ -18,7 +18,7 @@ export default function ragChatLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-          <Header />
+          <Header menu={[{id:1, value:'Tool Kit', url:'/ai_tools'}, {id:2, value:'Upload', url:'/rag'}]} />
           {children}
           <Footer />
       </body>

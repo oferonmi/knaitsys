@@ -13,7 +13,6 @@ import { EmbedPdfsForm } from "@/components/EmbedPdfsForm";
 
 export function ChatWindow(props: {
   endpoint: string;
-  // emptyStateComponent: ReactElement;
   placeholder?: string;
   titleText?: string;
   emoji?: string;
@@ -22,7 +21,6 @@ export function ChatWindow(props: {
 
   const {
     endpoint,
-    // emptyStateComponent,
     placeholder,
     titleText = "An LLM",
     emoji,

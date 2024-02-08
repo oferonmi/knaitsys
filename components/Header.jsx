@@ -6,7 +6,7 @@ import {AuthHeader} from "./AuthHeader";
 import { UnAuthHeader } from "./UnAuthHeader";
 // import Logo from "../public/kaito_app_logo.png";
 
-export const Header = async () => {
+export const Header = async ({menu}) => {
     const session = await getServerSession(authOptions);
 
     return (
@@ -25,8 +25,21 @@ export const Header = async () => {
                             </div>
                         </div>
                     </Link>
-                    
-                    
+
+                    (<div className="flex flex-row">
+                        {menu?.length > 0
+                            ?  [...menu].map((m) => {
+                                return (
+                                    <div key={m.id} className="text-black mr-2">
+                                        <Link href={m.url} passHref prefetch={false}>
+                                            {m.value}
+                                        </Link>
+                                    </div>
+                                );
+                            }) : ""
+                        }
+                    </div>
+                     
                     {session ? (
                         <AuthHeader />
                     ):(
