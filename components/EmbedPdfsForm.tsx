@@ -2,6 +2,8 @@
 
 import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
+import {CloudUploadIcon,} from "@/components/Icons";
+
 
 export function EmbedPdfsForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
@@ -76,18 +78,32 @@ export function EmbedPdfsForm(props: {
         onSubmit={embedPDF}
         className="mt-4 flex justify-between items-center w-full"
       >
-        <input
-          id="file_input"
-          type="file"
-          accept="pdf"
-          className="text-black"
-          onChange={(e) =>
-            e.target.files ? setSelectedPDF(e.target.files[0]) : null
-          }
-        ></input>
+        <label
+          htmlFor="dropzone-file"
+          className="flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-kaito-brand-ash-green"
+        >
+          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+            <CloudUploadIcon />
+            <p className="mb-2 text-sm text-gray-500 ">
+              <span className="font-semibold">
+                Click to upload or drag and drop
+              </span>
+            </p>
+            <p className="text-xs text-gray-500 ">PDF files</p>
+          </div>
+          <input
+            id="dropzone-file"
+            type="file"
+            accept="pdf"
+            className="text-black hidden "
+            onChange={(e) =>
+              e.target.files ? setSelectedPDF(e.target.files[0]) : null
+            }
+          ></input>
+        </label>
         <button
           type="submit"
-          className="shrink-0 px-8 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full w-28 items-center"
+          className="shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full h-full max-h-24 w-1/6 max-w-24 items-center"
         >
           <div
             role="status"
@@ -111,7 +127,7 @@ export function EmbedPdfsForm(props: {
             </svg>
             <span className="sr-only">Loading...</span>
           </div>
-          <span className={isLoading ? "hidden" : ""}>Embed</span>
+          <span className={isLoading ? "hidden" : ""}>Upload</span>
         </button>
       </form>
     </>

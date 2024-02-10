@@ -18,7 +18,7 @@ export default function ragChatLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-          <Header menu={[{id:1, value:'Tool Kit', url:'/ai_tools'}, {id:2, value:'Upload', url:'/rag'}]} />
+          <Header menu={[{id:1, value:'Tools', url:'/ai_tools'}, {id:2, value:'Upload', url:'/rag'}]} />
           {children}
           <Footer />
       </body>

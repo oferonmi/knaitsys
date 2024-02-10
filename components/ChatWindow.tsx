@@ -8,7 +8,7 @@ import { useRef, useState, ReactElement } from "react";
 import type { FormEvent } from "react";
 
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
-import { UploadDocumentsForm } from "@/components/UploadDocumentsForm";
+import { TextUploadForm } from "@/components/TextUploadForm";
 import { EmbedPdfsForm } from "@/components/EmbedPdfsForm";
 
 export function ChatWindow(props: {
@@ -65,17 +65,17 @@ export function ChatWindow(props: {
     <EmbedPdfsForm setReadyToChat={setReadyToChat} />
   );
   const ingestForm = showIngestForm && (
-    <UploadDocumentsForm setReadyToChat={setReadyToChat} />
+    <TextUploadForm setReadyToChat={setReadyToChat} />
   );
 
   const emptyStateComponent = (
     <>
-      <div className="p-4 md:p-8 rounded bg-[#25252d00] w-full max-h-[85%] overflow-hidden text-black">
-        <h1 className="text-3xl md:text-4xl mb-4">
+      <div className="p-4 md:p-8 rounded bg-[#25252d00] w-full max-h-[85%] overflow-hidden">
+        <h1 className="text-3xl md:text-4xl mb-4 text-gray-500">
           Explore your document by Chatting to it.
         </h1>
 
-        <p>
+        <p className="text-gray-500">
           Paste the a body of text in the textarea below and click upload or,
           upload the PDF of a document and click embed. Then try asking any
           question about the content of the uploaded text/document.

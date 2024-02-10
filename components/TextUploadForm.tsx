@@ -3,7 +3,7 @@
 import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
 import DEFAULT_RETRIEVAL_TEXT from "@/data/DefaultRetrievalText";
 
-export function UploadDocumentsForm(props: {
+export function TextUploadForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
 }) {
   const { setReadyToChat } = props;
@@ -30,11 +30,11 @@ export function UploadDocumentsForm(props: {
     setIsLoading(false);
   };
   return (
-    <form onSubmit={ingest} className="flex w-full mb-4">
+    <form onSubmit={ingest} className="flex w-full mb-4 rounded-lg">
       <textarea
-        className="grow mr-8 p-4 rounded border border-kaito-brand-ash-green w-5/6"
+        className="grow mr-8 p-4 rounded-lg border border-kaito-brand-ash-green w-5/6"
         value={document}
-        rows={10}
+        rows={14}
         onChange={(e) => setDocument(e.target.value)}
       ></textarea>
       <button
@@ -63,7 +63,7 @@ export function UploadDocumentsForm(props: {
           </svg>
           <span className="sr-only">Loading...</span>
         </div>
-        <span className={isLoading ? "hidden" : ""}>Upload Text</span>
+        <span className={isLoading ? "hidden" : ""}>Upload</span>
       </button>
     </form>
   );
