@@ -76,13 +76,13 @@ export function EmbedPdfsForm(props: {
     <>
       <form
         onSubmit={embedPDF}
-        className="mt-4 flex justify-between items-center w-full"
+        className="flex w-full"
       >
         <label
           htmlFor="dropzone-file"
           className="flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-kaito-brand-ash-green"
         >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+          <div className="flex flex-col items-center justify-center pt-6 pb-6">
             <CloudUploadIcon />
             <p className="mb-2 text-sm text-gray-500 ">
               <span className="font-semibold">
@@ -103,7 +103,7 @@ export function EmbedPdfsForm(props: {
         </label>
         <button
           type="submit"
-          className="shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full h-full max-h-24 w-1/6 max-w-24 items-center"
+          className="flex flex-col shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full h-full max-h-24 w-1/6 max-w-24 items-center"
         >
           <div
             role="status"

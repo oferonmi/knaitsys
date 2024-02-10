@@ -76,8 +76,8 @@ export function ChatWindow(props: {
         </h1>
 
         <p className="text-gray-500">
-          Paste the a body of text in the textarea below and click upload or,
-          upload the PDF of a document and click embed. Then try asking any
+          Paste the a body of text in the textarea below or upload the PDF of a
+          document (click PDF Upload) and click upload. A chat interface appears with successfull upload, try asking any
           question about the content of the uploaded text/document.
         </p>
 

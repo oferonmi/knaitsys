@@ -30,9 +30,9 @@ export function TextUploadForm(props: {
     setIsLoading(false);
   };
   return (
-    <form onSubmit={ingest} className="flex w-full mb-4 rounded-lg">
+    <form onSubmit={ingest} className="flex w-full">
       <textarea
-        className="grow mr-8 p-4 rounded-lg border border-kaito-brand-ash-green w-5/6"
+        className="grow mb-4 mr-8 p-4 rounded-lg border border-kaito-brand-ash-green w-5/6"
         value={document}
         rows={14}
         onChange={(e) => setDocument(e.target.value)}
