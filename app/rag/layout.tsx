@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Kaitosys - RAG",
-  description: "Query text documents using NLP",
+  description: "Query text documents by leveraging LLMs",
 };
 
 export default function ragChatLayout({

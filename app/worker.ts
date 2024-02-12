@@ -24,15 +24,21 @@ import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 
+export const runtime = "edge";
+
 // const voyClient = new VoyClient();
-const supabase_url = process.env.SUPABASE_URL as string;
-const supabase_anon_key = process.env.SUPABASE_PRIVATE_KEY as string;
+const supabase_url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+if (!supabase_url) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_URL`);
+
+const supabase_anon_key = process.env.NEXT_PUBLIC_SUPABASE_API_KEY;
+if (!supabase_anon_key) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_API_KEY`);
+
 const client = createClient(supabase_url, supabase_anon_key);
 
 // const embeddings = new HuggingFaceTransformersEmbeddings({
 //   modelName: "Xenova/all-MiniLM-L6-v2",
 // });
-const embeddings = new OpenAIEmbeddings();
+const embeddings = new OpenAIEmbeddings({openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY});
 
 
 // const vectorstore = new VoyVectorStore(voyClient, embeddings);
@@ -54,6 +60,7 @@ const vectorstore = new SupabaseVectorStore(
 const openai = new ChatOpenAI({
   modelName: "gpt-3.5-turbo-1106",
   temperature: 0.2,
+  openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
 });
 
 const REPHRASE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
