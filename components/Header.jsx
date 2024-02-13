@@ -1,13 +1,18 @@
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { authOptions } from "../app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
-import {AuthHeader} from "./AuthHeader";
+import { AuthHeader } from "./AuthHeader";
 import { UnAuthHeader } from "./UnAuthHeader";
 // import Logo from "../public/kaito_app_logo.png";
 
 export const Header = async ({menu}) => {
     const session = await getServerSession(authOptions);
+    // const router = useRouter();
+
+    // const handleClick = (url) => {
+    //     router.push(url);
+    // };
 
     return (
         <div className="flex flex-col border-b-2">
@@ -34,6 +39,9 @@ export const Header = async ({menu}) => {
                                         <Link href={m.url} passHref prefetch={false}>
                                             {m.value}
                                         </Link>
+                                        {/* <button onClick={handleClick(m.url)}>
+                                            {m.value}
+                                        </button> */}
                                     </div>
                                 );
                             }) : ""

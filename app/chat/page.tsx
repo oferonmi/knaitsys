@@ -7,6 +7,8 @@ import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ChatbotPage = () => {
   // sessions
@@ -14,23 +16,58 @@ const ChatbotPage = () => {
 
   //LLM engine API route
   const [llmApiRoute, setLlmApiRoute] = useState("/api/chat/openai");
+  const [sourcesForMessages, setSourcesForMessages] = useState<
+    Record<string, any>
+  >({});
 
   const handleLlmApiChange = (event: { target: { value: any } }) => {
     setLlmApiRoute("/api/chat/"+ event.target.value);
   };
 
   // use OpenAI chat completion
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading: chatEndpointIsLoading,
+  } = useChat({
     api: llmApiRoute,
+    onResponse(response) {
+      const sourcesHeader = response.headers.get("x-sources");
+      const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
+      const messageIndexHeader = response.headers.get("x-message-index");
+
+      if (sources.length && messageIndexHeader !== null) {
+        setSourcesForMessages({
+          ...sourcesForMessages,
+          [messageIndexHeader]: sources,
+        });
+      }
+    },
+    onError: (e) => {
+      toast(e.message, {
+        theme: "dark",
+      });
+    },
   });
 
   return (
     <>
       {status === "authenticated" && (
-        <div className="flex flex-auto max-w-2xl pt-27 pb-5 mx-auto mt-4 sm:px-4 grow">
+        <div
+          // className="flex flex-auto max-w-2xl pt-27 pb-5 mx-auto mt-4 sm:px-4 grow"
+          className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black"
+        >
           {messages.length == 0 && <EmptyThreadState />}
 
-          {messages.length > 0 && <ChatThread messages={messages} />}
+          {messages.length > 0 && (
+            <ChatThread
+              messages={messages}
+              sysEmoji="🥸"
+              sources={sourcesForMessages}
+            />
+          )}
 
           <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
             <div className="container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9">

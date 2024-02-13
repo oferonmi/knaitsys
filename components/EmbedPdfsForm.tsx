@@ -2,17 +2,30 @@
 
 import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction } from "react";
 import { toast } from "react-toastify";
+import { useDropzone } from "react-dropzone";
 import {CloudUploadIcon,} from "@/components/Icons";
 
 
 export function EmbedPdfsForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
 }) {
-  const {setReadyToChat} = props;
+  const { setReadyToChat } = props;
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
   // const [readyToChat, setReadyToChat] = useState(false);
+  // drag state
+  // const [dragActive, setDragActive] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      setUploadedFiles(acceptedFiles[0]);
+    },
+    // onDrop: (e) => {
+    //   setUploadedFiles(e.target.files[0]);
+    // },
+  });
 
   const worker = useRef<Worker | null>(null);
 
@@ -76,11 +89,19 @@ export function EmbedPdfsForm(props: {
     <>
       <form
         onSubmit={embedPDF}
+        // onDragEnter={handleDrag}
         className="flex w-full"
       >
         <label
-          htmlFor="dropzone-file"
-          className="flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-kaito-brand-ash-green"
+          {...getRootProps(
+            {
+              htmlFor: "dropzone-file", 
+              className: "flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-dashed border-kaito-brand-ash-green"
+            }
+          )}
+          // htmlFor="dropzone-file"
+          // className={`
+          //  flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-dashed border-kaito-brand-ash-green`}
         >
           <div className="flex flex-col items-center justify-center pt-32 pb-36">
             <CloudUploadIcon />
@@ -92,15 +113,25 @@ export function EmbedPdfsForm(props: {
             <p className="text-xs text-gray-500 ">PDF files</p>
           </div>
           <input
-            id="dropzone-file"
-            type="file"
-            accept="pdf"
-            className="text-black hidden "
-            onChange={(e) =>
-              e.target.files ? setSelectedPDF(e.target.files[0]) : null
-            }
+            {...getInputProps(
+              {
+                id: "dropzone-file",
+                type: "file",
+                accept: "pdf",
+                className: "text-black hidden ",
+                onChange: (e) => e.target.files ? setSelectedPDF(e.target.files[0]) : null
+              }
+            )}
+            // id="dropzone-file"
+            // type="file"
+            // accept="pdf"
+            // className="text-black hidden "
+            // onChange={(e) =>
+            //   e.target.files ? setSelectedPDF(e.target.files[0]) : null
+            // }
           ></input>
         </label>
+
         <button
           type="submit"
           className="flex flex-col shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full h-full max-h-24 w-1/6 max-w-24 items-center"
