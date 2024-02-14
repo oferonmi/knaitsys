@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction } from "react";
+import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
 import {CloudUploadIcon,} from "@/components/Icons";
@@ -13,19 +13,16 @@ export function EmbedPdfsForm(props: {
 
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
-  // const [readyToChat, setReadyToChat] = useState(false);
-  // drag state
-  // const [dragActive, setDragActive] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedFiles, setUploadedFiles] = useState<FileList | []>([]);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (acceptedFiles) => {
-      setUploadedFiles(acceptedFiles[0]);
-    },
-    // onDrop: (e) => {
-    //   setUploadedFiles(e.target.files[0]);
-    // },
-  });
+  const onDrop = useCallback((acceptedFiles:any) => {
+    // Do something with the files
+    setUploadedFiles(acceptedFiles);
+    setSelectedPDF(acceptedFiles[0]);
+    
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({onDrop});
 
   const worker = useRef<Worker | null>(null);
 
@@ -89,47 +86,48 @@ export function EmbedPdfsForm(props: {
     <>
       <form
         onSubmit={embedPDF}
-        // onDragEnter={handleDrag}
         className="flex w-full"
       >
         <label
-          {...getRootProps(
-            {
-              htmlFor: "dropzone-file", 
-              className: "flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-dashed border-kaito-brand-ash-green"
-            }
-          )}
-          // htmlFor="dropzone-file"
-          // className={`
-          //  flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-dashed border-kaito-brand-ash-green`}
+          {...getRootProps({
+            htmlFor: "dropzone-file",
+            className:
+              "flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-dashed border-kaito-brand-ash-green",
+          })}
         >
           <div className="flex flex-col items-center justify-center pt-32 pb-36">
             <CloudUploadIcon />
             <p className="mb-2 text-sm text-gray-500 ">
               <span className="font-semibold">
-                Click to upload or drag and drop
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : (
+                  <p>Click to upload or drag and drop</p>
+                )}
               </span>
             </p>
-            <p className="text-xs text-gray-500 ">PDF files</p>
+            {selectedPDF === null ? (
+              <p className="text-xs text-gray-500 ">PDF files</p>
+            ) : (
+              <p>{selectedPDF.name} file attached</p>
+            )}
           </div>
           <input
-            {...getInputProps(
-              {
-                id: "dropzone-file",
-                type: "file",
-                accept: "pdf",
-                className: "text-black hidden ",
-                onChange: (e) => e.target.files ? setSelectedPDF(e.target.files[0]) : null
-              }
-            )}
-            // id="dropzone-file"
-            // type="file"
-            // accept="pdf"
-            // className="text-black hidden "
-            // onChange={(e) =>
-            //   e.target.files ? setSelectedPDF(e.target.files[0]) : null
-            // }
+            {...getInputProps({
+              id: "dropzone-file",
+              // type: "file",
+              // accept: "pdf",
+              // className: "text-black hidden ",
+              // onChange: (e) =>
+              //   e.target.files ? setSelectedPDF(e.target.files[0]) : null,
+            })}
           ></input>
+
+          {/* <ul>
+            {uploadedFiles.map((file) => (
+              <li key={file.name}>{file.name}</li>
+            ))}
+          </ul> */}
         </label>
 
         <button
