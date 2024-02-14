@@ -11,12 +11,12 @@ export default function AgentsPage() {
       <ChatWindow
         endpoint="api/rag"
         placeholder={
-          "Ask questions about the content of the document you've just uploaded."
+          "Ask questions about the content of the text/document uploaded."
         }
         emoji="🥸"
         titleText="Chat to your Document"
       ></ChatWindow>
-      {/* <Footer /> */}
+      <Footer />
     </>
   );
 }
