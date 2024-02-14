@@ -91,6 +91,7 @@ const ChatbotPage = () => {
                 userInput={input}
                 onChangeHandler={handleInputChange}
                 onSubmitHandler={handleSubmit}
+                isLoading={chatEndpointIsLoading}
               />
             </div>
             <Footer />
