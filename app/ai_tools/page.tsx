@@ -43,23 +43,31 @@ const AiToolsPage = () => {
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <FilmIcon />
-          <p>Video</p>
+          <Link href="/#">
+            <FilmIcon />
+            <p>Video</p>
+          </Link>
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <ImagesIcon />
-          <p>Image</p>
+          <Link href="/#">
+            <ImagesIcon />
+            <p>Image</p>
+          </Link>
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <CodeSlashIcon />
-          <p>Code</p>
+          <Link href="/code">
+            <CodeSlashIcon />
+            <p>Code</p>
+          </Link>
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <BraceAsteriskIcon />
-          <p>Agent</p>
+          <Link href="/#">
+            <BraceAsteriskIcon />
+            <p>Agent</p>
+          </Link>
         </div>
       </div>
     </div>

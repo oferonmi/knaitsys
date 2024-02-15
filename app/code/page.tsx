@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import ChatForm from "@/components/ChatForm";
 import ChatThread from "@/components/ChatThread";
 import EmptyThreadState from "@/components/EmptyThreadState";
@@ -10,7 +10,7 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const ChatbotPage = () => {
+const CodebotPage = () => {
   // sessions
   const { data: session, status } = useSession();
 
@@ -21,7 +21,7 @@ const ChatbotPage = () => {
   >({});
 
   const handleLlmApiChange = (event: { target: { value: any } }) => {
-    setLlmApiRoute("/api/chat/"+ event.target.value);
+    setLlmApiRoute("/api/code_generation/" + event.target.value);
   };
 
   // use OpenAI chat completion
@@ -79,14 +79,10 @@ const ChatbotPage = () => {
                 required
               >
                 <option value="">--Select LLM--</option>
-                <option value="openai">GPT-3.5</option>
-                {/* <option value="replicate">Llama-2-Rplcte</option> */}
-                <option value="llamaII_fireworks">Llama-2-70b-Fwks</option>
-                <option value="qwen_72b_fireworks">Qwen-72b-Fwks</option>
-                <option value="mixtral_MoE8x7B_Instruct_fireworks">Mixtral-MoE8x7B-Fwks</option>
-                <option value="langchain">LangChain</option>
-                <option value="huggingface">OpenAssistant-HF</option>
-                {/* <option value="anthropic">Claude-1</option> */}
+                <option value="code_llamaII_70b_instruct">
+                  Code-Llama2-70b-Fwks
+                </option>
+                <option value="starcoder_7b_int8">StarCoder-7b-Int8-Fwks</option>
               </select>
 
               <ChatForm
@@ -103,6 +99,6 @@ const ChatbotPage = () => {
       {status === "unauthenticated" && redirect("/auth/signIn")};
     </>
   );
-}
+};
 
-export default ChatbotPage;
+export default CodebotPage;

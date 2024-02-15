@@ -19,7 +19,7 @@ export default function ChatBotLayout({children}: {children: React.ReactNode}) {
           " bg-gradient-to-r from-teal-100 to-teal-100"
         }
       >
-        <Header />
+        <Header menu={[]}/>
         {children}
         {/* <Footer /> */}
       </body>
