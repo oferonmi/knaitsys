@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Emoji from "@/components/Emoji";
 
 const CodebotPage = () => {
   // sessions
@@ -52,6 +53,16 @@ const CodebotPage = () => {
     },
   });
 
+  const EmptyThreadState = (
+    <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
+      <p>
+        <Emoji symbol="👋" label="waving hand" /> Hello! Here you would find LLMs fine-tuned to answer queries related to coding tasks. Choose one of them and
+        post your message/questions in the chat box below, and get a response,
+        that hopefully helps with your software development.
+      </p>
+    </div>
+);
+
   return (
     <>
       {status === "authenticated" && (
@@ -59,7 +70,7 @@ const CodebotPage = () => {
           // className="flex flex-auto max-w-2xl pt-27 pb-5 mx-auto mt-4 sm:px-4 grow"
           className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black"
         >
-          {messages.length == 0 && <EmptyThreadState />}
+          {messages.length == 0 && EmptyThreadState}
 
           {messages.length > 0 && (
             <ChatThread

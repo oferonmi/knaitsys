@@ -63,13 +63,13 @@ export function ChatWindow(props: {
     },
   });
 
-  // const bottomRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  // useEffect(() => {
-  //   if (messages?.length > 0) {
-  //     bottomRef?.current.scrollIntoView({ behavior: "smooth" });
-  //   }
-  // }, [messages]);
+  useEffect(() => {
+    if (messages?.length > 0) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const embedForm = showDocEmbedForm && (
     <EmbedPdfsForm setReadyToChat={setReadyToChat} />
@@ -177,6 +177,7 @@ export function ChatWindow(props: {
 
         {/* <div ref={bottomRef} /> */}
       </div>
+      <div ref={bottomRef} />
 
       <div
         // className="flex w-full sticky bottom-0"
