@@ -18,10 +18,15 @@ export async function POST(req: Request) {
   // Ask Fireworks for a streaming chat completion using Llama 2 70b model
   // @see https://fireworks.ai/models/fireworks/llama-v2-70b-code-instruct
   const response = await fireworks.chat.completions.create({
-    model: "accounts/fireworks/models/llama-v2-70b-code-instruct",
+    // model: "accounts/fireworks/models/llama-v2-70b-code-instruct",
+    model: "accounts/fireworks/models/llama-v2-34b-code-instruct",
     stream: true,
     max_tokens: 1000,
     messages,
+    // messages + `You a very experienced software developer with knowlege of various programming languages. Provide just code or script response to text. Remove any response that is not directly relevant to the answer. If answers contains programming scripts or code, enclose them within the HTML \<code\>\<\/code\> tag like described next.
+    // <code>
+    //   {programming scripts or code}
+    // </code> `,
   });
 
   // Convert the response into a friendly text-stream.

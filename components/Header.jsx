@@ -1,18 +1,23 @@
+// "use client"
 import Image from "next/image";
 import Link from "next/link";
+// import { useEffect } from "react";
 import { authOptions } from "../app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
 import { AuthHeader } from "./AuthHeader";
 import { UnAuthHeader } from "./UnAuthHeader";
+// import { useRouter } from "next/router";
+// import { usePathname } from 'next/navigation';
 // import Logo from "../public/kaito_app_logo.png";
 
 export const Header = async ({menu}) => {
     const session = await getServerSession(authOptions);
-    // const router = useRouter();
+    // const pgPathName = usePathname();
 
-    // const handleClick = (url) => {
-    //     router.push(url);
-    // };
+    const handleClick = (url) => {
+        // window.location.reload()
+        // router.reload();
+    };
 
     return (
         <div className="flex flex-col border-b-2">
@@ -39,7 +44,7 @@ export const Header = async ({menu}) => {
                                         <Link href={m.url} passHref prefetch={false}>
                                             {m.value}
                                         </Link>
-                                        {/* <button onClick={handleClick(m.url)}>
+                                        {/* <button key={m.id} className="text-black mr-2" onClick={handleClick(m.url)}>
                                             {m.value}
                                         </button> */}
                                     </div>

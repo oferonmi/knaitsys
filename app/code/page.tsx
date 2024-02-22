@@ -16,7 +16,9 @@ const CodebotPage = () => {
   const { data: session, status } = useSession();
 
   //LLM engine API route
-  const [llmApiRoute, setLlmApiRoute] = useState("/api/chat/openai");
+  const [llmApiRoute, setLlmApiRoute] = useState(
+    "/api/code_generation/code_llamaII_34b_instruct"
+  );
   const [sourcesForMessages, setSourcesForMessages] = useState<
     Record<string, any>
   >({});
@@ -90,10 +92,10 @@ const CodebotPage = () => {
                 required
               >
                 <option value="">--Select LLM--</option>
-                <option value="code_llamaII_70b_instruct">
-                  Code-Llama2-70b-Fwks
+                <option value="code_llamaII_34b_instruct">
+                  Code-Llama2-34b-Fwks
                 </option>
-                <option value="starcoder_7b_int8">StarCoder-7b-Int8-Fwks</option>
+                {/* <option value="starcoder_7b_int8">StarCoder-7b-Fwks</option> */}
               </select>
 
               <ChatForm
