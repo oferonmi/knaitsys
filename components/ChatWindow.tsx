@@ -122,6 +122,16 @@ export function ChatWindow(props: {
               PDF Upload
             </button>
           )}
+
+          <button
+            className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 ml-2"
+            type="button"
+            onClick={() => {
+              setReadyToChat(true);
+            }}
+          >
+            Chat with Corpus
+          </button>
         </div>
         {/* {!readyToChat && <Footer />} */}
       </div>
@@ -236,6 +246,16 @@ export function ChatWindow(props: {
                     <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
                   </svg>
                 </span>
+              </button>
+
+              <button
+                className=" px-5 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full ml-2"
+                type="button"
+                onClick={() => {
+                  setReadyToChat(false);
+                }}
+              >
+                Upload
               </button>
             </div>
           </form>

@@ -24,6 +24,8 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import Timeline from "wavesurfer.js/dist/plugins/timeline.js";
 import { AuthHandler } from "next-auth/core";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AudioPage() {
   const [audioInputType, setAudioInputType] = useState("microphone");
@@ -42,45 +44,87 @@ function AudioPage() {
   // sessions
   const { data: session, status } = useSession();
 
+  const [sourcesForMessages, setSourcesForMessages] = useState<
+    Record<string, any>
+  >({});
+
   //LLM engine API route
-  // const [llmApiRoute, setLlmApiRoute] = useState("/api/chat/openai");
-
-  // const handleLlmApiChange = (event: { target: { value: any } }) => {
-  //   setLlmApiRoute("/api/chat/" + event.target.value);
-  // };
-
-  // // use OpenAI chat completion
-  // const { messages, input, handleInputChange, handleSubmit } = useChat({
-  //   api: llmApiRoute,
-  // });
-
-  const [llmApiRoute, setLlmApiRoute] = useState("/api/completion/fireworksai");
+  const [llmApiRoute, setLlmApiRoute] = useState("/api/chat/mixtral_MoE8x7B_Instruct_fireworks");
 
   const handleLlmApiChange = (event: { target: { value: any } }) => {
-    setLlmApiRoute("/api/completion/" + event.target.value);
+    setLlmApiRoute("/api/chat/" + event.target.value);
   };
 
-  // text OpenAI completion function call
-  const {completion, complete, input, setInput, isLoading,} = useCompletion({
+  // // use OpenAI chat completion
+  const { messages, append, input, setInput, handleInputChange, handleSubmit } = useChat({
     api: llmApiRoute,
+    onResponse(response) {
+      const sourcesHeader = response.headers.get("x-sources");
+      const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
+      const messageIndexHeader = response.headers.get("x-message-index");
+
+      if (sources.length && messageIndexHeader !== null) {
+        setSourcesForMessages({
+          ...sourcesForMessages,
+          [messageIndexHeader]: sources,
+        });
+      }
+    },
+    onError: (e) => {
+      toast(e.message, {
+        theme: "dark",
+      });
+    },
   });
+
+  // const [llmApiRoute, setLlmApiRoute] = useState("/api/completion/fireworksai");
+
+  // const handleLlmApiChange = (event: { target: { value: any } }) => {
+  //   setLlmApiRoute("/api/completion/" + event.target.value);
+  // };
+
+  // // text OpenAI completion function call
+  // const { completion, complete, input, setInput, isLoading } = useCompletion({
+  //   api: llmApiRoute,
+  //   onResponse(response) {
+  //     const sourcesHeader = response.headers.get("x-sources");
+  //     const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
+  //     const messageIndexHeader = response.headers.get("x-message-index");
+
+  //     if (sources.length && messageIndexHeader !== null) {
+  //       setSourcesForMessages({
+  //         ...sourcesForMessages,
+  //         [messageIndexHeader]: sources,
+  //       });
+  //     }
+  //   },
+  //   onError: (e) => {
+  //     toast(e.message, {
+  //       theme: "dark",
+  //     });
+  //   },
+  // });
 
   const handleAudioInputTypeChange = (event: { target: { value: any } }) => {
     setAudioInputType(event.target.value);
   };
 
-  const handleAudioFileSelect = (event: { target: { value: any } }) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        const audioDataFromFile = e.target.result;
-        audioRef.current.src = audioDataFromFile;
-        audioRef.current.play();
-      };
-      fileReader.readAsDataURL(selectedFile);
-    }
-  };
+  const handleAudioFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedFile = e.target.files[0]; 
+
+      if (selectedFile) {
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+          const audioDataFromFile = e.target?.result;
+          audioRef.current.src = audioDataFromFile;
+          audioRef.current.play();
+        };
+        fileReader.readAsDataURL(selectedFile);
+      }
+    },
+    [audioRef]
+  );
 
   // covert text to speech and return path to speech file
   const doTextToSpeech = async (text_input: string) => {
@@ -103,13 +147,13 @@ function AudioPage() {
       }
 
       // console.log(tts_resp_data.audio_file_path);
-
       return tts_resp_data.audio_file_path;
+
     } catch (error: any) {
       console.error(error);
       alert(error.message);
     }
-  }
+  };
 
   const onSendButtonClick = async () => {
     try {
@@ -152,15 +196,18 @@ function AudioPage() {
         // update input data to only current input
         setInput(stt_resp_txt);
 
-        // pass transcribed text to LLM text completion API end point and update completion data state
-        complete(stt_resp_txt);
+        // pass transcribed text to LLM API end point and update completion data state
+        // complete(stt_resp_txt);
+        append(stt_resp_txt); //TO DO modify string into a Message type before appending
       };
 
       // DEBUG: log
       // console.log(completion);
 
       // TO DO: pass LLM response to TTS API end point to get audio response
-      const tts_resp_path = await doTextToSpeech(completion);
+      // const tts_resp_path = await doTextToSpeech(completion);
+      const tts_resp_path = await doTextToSpeech(input);
+
 
       // TO DO: get and store generated audio URL
       setResponseAudioUrl(tts_resp_path);
@@ -179,59 +226,75 @@ function AudioPage() {
       console.error(error);
       alert(error.message);
     }
+  };
 
-  }
+  const emptyStateComponent = (
+    <>
+      <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
+        <div>
+          <Emoji symbol="👋" label="waving hand" /> Hello! Select your LLM of
+          choice and click on the microphone button{" "}
+          <div className="inline-flex text-2xl font-extrabold">
+            <MicMuteFillIcon2 />
+          </div>{" "}
+          to record your question. Click on the send button{" "}
+          <div className="inline-flex text-2xl font-extrabold">
+            <SendIcon />
+          </div>{" "}
+          to get a response to your question.
+        </div>
+      </div>
+    </>
+  );
+
+  const activeThreadComponent = (
+    <>
+      <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
+        {transcribedText != "" ? transcribedText : recordedAudioUrl}
+        <WaveSurferAudioPlayer
+          waveColor="#CBD5E0"
+          progressColor="#EF4444"
+          url={recordedAudioUrl}
+          plugins={[Timeline.create()]}
+          height={80}
+          // ctrlsPosition="left"
+        />
+
+        {messages.length > 0 &&
+          // completion
+          <ChatThread
+            messages={messages}
+            sysEmoji="🥸"
+            sources={sourcesForMessages}
+          />
+        }
+
+        {
+          responseAudioUrl?.length > 0 && responseAudioUrl
+          // && (
+          //   <WaveSurferAudioPlayer
+          //     waveColor="#CBD5E0"
+          //     progressColor="#EF4444"
+          //     url={responseAudioUrl}
+          //     plugins={[Timeline.create()]}
+          //     height={80}
+          //     // ctrlsPosition="left"
+          //   />
+          // )
+        }
+      </output>
+    </>
+  );
 
   return (
     <>
       <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
         {/* {transcribedText !="" && console.log(transcribedText)} */}
-        {completion.length == 0 && recordedAudioUrl.length == 0 && (
-          <div className="mt-12 sm:mt-24 space-y-6 text-gray-500 text-base mx-8 sm:mx-4 sm:text-2xl leading-12 flex flex-col mb-12 sm:mb-24 h-screen">
-            <div>
-              <Emoji symbol="👋" label="waving hand" /> Hello! Select your LLM
-              of choice and click on the microphone button{" "}
-              <div className="inline-flex text-2xl font-extrabold">
-                <MicMuteFillIcon2 />
-              </div>{" "}
-              to record your question. Click on the send button{" "}
-              <div className="inline-flex text-2xl font-extrabold">
-                <SendIcon />
-              </div>{" "}
-              to get a response to your question.
-            </div>
-          </div>
-        )}
+        {messages.length == 0 &&
+          recordedAudioUrl.length == 0 &&
+          emptyStateComponent}
 
-        {recordedAudioUrl.length > 0 && (
-          <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
-            {transcribedText != "" ? transcribedText : recordedAudioUrl}
-            <WaveSurferAudioPlayer
-              waveColor="#CBD5E0"
-              progressColor="#EF4444"
-              url={recordedAudioUrl}
-              plugins={[Timeline.create()]}
-              height={80}
-              // ctrlsPosition="left"
-            />
-
-            {completion.length > 0 && completion}
-
-            {responseAudioUrl?.length > 0 
-              && responseAudioUrl
-              // && (
-              //   <WaveSurferAudioPlayer
-              //     waveColor="#CBD5E0"
-              //     progressColor="#EF4444"
-              //     url={responseAudioUrl}
-              //     plugins={[Timeline.create()]}
-              //     height={80}
-              //     // ctrlsPosition="left"
-              //   />
-              // )
-            }
-          </output>
-        )}
+        {recordedAudioUrl.length > 0 && activeThreadComponent}
 
         <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
           <div className="container max-w-3xl mx-auto my-5 py-3 space-x-2 ">
@@ -245,10 +308,15 @@ function AudioPage() {
                 >
                   <option value="">--Select LLM--</option>
                   <option value="openai">GPT-3.5</option>
-                  <option value="fireworksai">Llama-2-Fwks</option>
+                  <option value="llamaII_fireworks">Llama-2-70b-Fwks</option>
+                  <option value="qwen_72b_fireworks">Qwen-72b-Fwks</option>
+                  <option value="mixtral_MoE8x7B_Instruct_fireworks">
+                    Mixtral-MoE8x7B-Fwks
+                  </option>
+                  {/* <option value="fireworksai">Llama-2-Fwks</option> */}
                   {/* <option value="replicate">Llama-2-Rplcte</option> */}
-                  <option value="cohere">Co:here</option>
-                  <option value="huggingface">OpenAssistant-HF</option>
+                  {/* <option value="cohere">Co:here</option> */}
+                  {/* <option value="huggingface">OpenAssistant-HF</option> */}
                   {/* <option value="anthropic">Claude-2</option> */}
                 </select>
               </div>
@@ -266,7 +334,6 @@ function AudioPage() {
               </div>
 
               <div>
-
                 <button
                   className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
                   onClick={onSendButtonClick}
