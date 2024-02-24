@@ -26,6 +26,8 @@
     "encoding": "^0.1.13",
     "eslint": "8.41.0",
     "eslint-config-next": "^12.3.4",
+    "flowbite": "^2.3.0",
+    "flowbite-react": "^0.7.2",
     "langchain": "^0.0.173",
     "next": "13.4.4",
     "next-auth": "^4.24.5",

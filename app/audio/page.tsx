@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useCallback, useEffect } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import ChatThread from "@/components/ChatThread"
 import {
   transcribeAudio,
@@ -110,7 +111,7 @@ function AudioPage() {
   };
 
   const handleAudioFileSelect = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       const selectedFile = e.target.files[0]; 
 
       if (selectedFile) {

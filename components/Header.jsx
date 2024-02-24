@@ -6,17 +6,18 @@ import { authOptions } from "../app/api/auth/[...nextauth]/options";
 import { getServerSession } from "next-auth/next";
 import { AuthHeader } from "./AuthHeader";
 import { UnAuthHeader } from "./UnAuthHeader";
-// import { useRouter } from "next/router";
-// import { usePathname } from 'next/navigation';
+// import { useRouter, usePathname } from 'next/navigation';
 // import Logo from "../public/kaito_app_logo.png";
 
 export const Header = async ({menu}) => {
     const session = await getServerSession(authOptions);
     // const pgPathName = usePathname();
+    // const router = useRouter();
+
 
     const handleClick = (url) => {
         // window.location.reload()
-        // router.reload();
+        // router.refresh();
     };
 
     return (
