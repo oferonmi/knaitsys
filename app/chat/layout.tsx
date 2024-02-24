@@ -15,11 +15,16 @@ export default function ChatBotLayout({children}: {children: React.ReactNode}) {
     <html lang="en">
       <body
         className={
-          inter.className +
-          " bg-gradient-to-r from-teal-100 to-teal-100"
+          inter.className + " bg-gradient-to-r from-teal-100 to-teal-100"
         }
       >
-        <Header menu={[]}/>
+        <Header
+          menu={[
+            { id: 1, value: "Text", url: "/text" },
+            { id: 2, value: "Audio", url: "/audio" },
+            { id: 2, value: "Code", url: "/code" },
+          ]}
+        />
         {children}
         {/* <Footer /> */}
       </body>
