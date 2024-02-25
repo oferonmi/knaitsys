@@ -87,7 +87,7 @@ export function ChatWindow(props: {
     <>
       <div className="flex flex-col w-full">
         <div className="p-4 md:p-8 rounded bg-[#25252d00] w-full max-h-[85%] overflow-hidden">
-          <h1 className="text-3xl md:text-4xl mb-4 text-gray-700">
+          <h1 className="text-2xl md:text-4xl mb-4 text-gray-700">
             Explore your document by Chatting to it.
           </h1>
 
@@ -217,7 +217,7 @@ export function ChatWindow(props: {
   const chatInterfaceComponent = (
     <>
       <div
-        className="flex flex-col-reverse w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-20"
+        className={`flex flex-col-reverse w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-20 ${messages.length > 0 ? "": "h-screen"}`}
         ref={messageContainerRef}
       >
         {messages.length > 0
@@ -233,8 +233,6 @@ export function ChatWindow(props: {
               );
             })
           : ""}
-
-        {/* <div ref={bottomRef} /> */}
       </div>
       <div ref={bottomRef} />
 
