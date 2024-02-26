@@ -22,49 +22,49 @@ export function WebpageUploadForm(props: {
       const loader = new CheerioWebBaseLoader(inputUrl);
       const page_data = await loader.load();
       console.log(page_data);
-    //   //split document to chunks
-    //   const textSplitter = new RecursiveCharacterTextSplitter({
-    //     chunkSize: 500,
-    //     chunkOverlap: 0,
-    //   });
+      // //split document to chunks
+      // const textSplitter = new RecursiveCharacterTextSplitter({
+      //   chunkSize: 500,
+      //   chunkOverlap: 0,
+      // });
 
-    //   const splitDocs = await textSplitter.splitDocuments(page_data);
+      // const splitDocs = await textSplitter.splitDocuments(page_data);
 
-    //   //embed and store the document chunks in a vector database
-    //   const embeddings = new OpenAIEmbeddings();
+      // //embed and store the document chunks in a vector database
+      // const embeddings = new OpenAIEmbeddings();
 
-    //   const vectorStore = await MemoryVectorStore.fromDocuments(
-    //     splitDocs,
-    //     embeddings
-    //   );
-        setIsLoading(true);
-        const response = await fetch("/api/rag/ingest", {
-            // mode: 'no-cors',
-            method: "POST",
-            body: JSON.stringify({
-                text: page_data,
-            }),
-        });
-        if (response.status === 200) {
-            setReadyToChat(true);
-            toast(
-                `Text ingest successfull! Now try asking a question about the text you uploaded.`,
-                {
-                    theme: "dark",
-                }
-            );
-        } else {
-            const json = await response.json();
-            if (json.error) {
-                toast(
-                    `Text ingest unsuccessfull! There was a problem ingesting your text: ${json.error}`,
-                    {
-                        theme: "dark",
-                    }
-                );
-            }
-        }
-        setIsLoading(false);
+      // const vectorStore = await MemoryVectorStore.fromDocuments(
+      //   splitDocs,
+      //   embeddings
+      // );
+      setIsLoading(true);
+      const response = await fetch("/api/rag/ingest", {
+          // mode: 'no-cors',
+          method: "POST",
+          body: JSON.stringify({
+              text: page_data,
+          }),
+      });
+      if (response.status === 200) {
+          setReadyToChat(true);
+          toast(
+              `Text ingest successfull! Now try asking a question about the text you uploaded.`,
+              {
+                  theme: "dark",
+              }
+          );
+      } else {
+          const json = await response.json();
+          if (json.error) {
+              toast(
+                  `Text ingest unsuccessfull! There was a problem ingesting your text: ${json.error}`,
+                  {
+                      theme: "dark",
+                  }
+              );
+          }
+      }
+      setIsLoading(false);
     }
     return (
       <form className="w-full flex space-x-2" onSubmit={ingest}>

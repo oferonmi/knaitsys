@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const text = body.text;
 
+    console.log(typeof text);
+
     if (process.env.NEXT_PUBLIC_DEMO === "true") {
         return NextResponse.json(
         {
@@ -44,7 +46,20 @@ export async function POST(req: NextRequest) {
             chunkOverlap: 20,
         });
 
-        const splitDocuments = await splitter.createDocuments([text]);
+        // TO DO: Specify consition to decide on chunking call approach to be made
+        // for raw text chunking
+        // const splitDocuments = await splitter.createDocuments([text]);
+        // for web content chunking
+        const splitDocuments = await splitter.splitDocuments(text);
+
+        // const splitDocuments = [];
+
+        // if (typeof (text) == "Document"){
+        //     splitDocuments = await splitter.splitDocuments(text);
+        // }
+        // if (typeof(text) == "String")
+        //     splitDocuments = await splitter.createDocuments([text]);
+        // }
 
         const vectorstore = await SupabaseVectorStore.fromDocuments(
             splitDocuments,

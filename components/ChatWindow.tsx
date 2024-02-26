@@ -363,7 +363,7 @@ export function ChatWindow(props: {
 
   return (
     <div
-      className={`flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden h-screen text-black ${
+      className={`flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black ${
         readyToChat ? "border" : ""
       }`}
     >
