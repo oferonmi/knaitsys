@@ -4,7 +4,7 @@ import { ChatWindow } from "@/components/ChatWindow";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
 
-export default function AgentsPage() {
+export default function RagPage() {
 
   return (
     <>

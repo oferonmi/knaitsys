@@ -13,7 +13,6 @@ const ChatThread = ({messages, sysEmoji, sources}) => {
 
     return(
         <div 
-            // className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md py-5 px-5 pb-60 grow"
             className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black"
         >
             {/* {messages.map((m) => (

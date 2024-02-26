@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
 import DEFAULT_RETRIEVAL_TEXT from "@/data/DefaultRetrievalText";
+import { toast } from "react-toastify";
 
 export function TextUploadForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
@@ -9,6 +10,7 @@ export function TextUploadForm(props: {
   const { setReadyToChat } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [document, setDocument] = useState(DEFAULT_RETRIEVAL_TEXT);
+
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -21,10 +23,19 @@ export function TextUploadForm(props: {
     if (response.status === 200) {
       setDocument("Uploaded!");
       setReadyToChat(true);
+      toast(`Text ingest successfull! Now try asking a question about the text you uploaded.`, {
+        theme: "dark",
+      });
     } else {
       const json = await response.json();
       if (json.error) {
-        setDocument(json.error);
+        setDocument(json.error)
+        toast(
+          `Text ingest unsuccessfull! There was a problem ingesting your text: ${json.error}`,
+          {
+            theme: "dark",
+          }
+        );;
       }
     }
     setIsLoading(false);
