@@ -55,15 +55,13 @@ const ChatbotPage = () => {
   return (
     <>
       {status === "authenticated" && (
-        <div
-          className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black"
-        >
+        <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black">
           {messages.length == 0 && <EmptyThreadState />}
 
           {messages.length > 0 && (
             <ChatThread
               messages={messages}
-              sysEmoji="🥸"
+              sysEmoji="🤖"
               sources={sourcesForMessages}
             />
           )}
@@ -82,7 +80,9 @@ const ChatbotPage = () => {
                 {/* <option value="replicate">Llama-2-Rplcte</option> */}
                 <option value="llamaII_fireworks">Llama-2-70b-Fwks</option>
                 <option value="qwen_72b_fireworks">Qwen-72b-Fwks</option>
-                <option value="mixtral_MoE8x7B_Instruct_fireworks">Mixtral-MoE8x7B-Fwks</option>
+                <option value="mixtral_MoE8x7B_Instruct_fireworks">
+                  Mixtral-MoE8x7B-Fwks
+                </option>
                 <option value="langchain">LangChain</option>
                 <option value="huggingface">OpenAssistant-HF</option>
                 {/* <option value="anthropic">Claude-1</option> */}

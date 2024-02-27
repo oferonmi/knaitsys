@@ -4,6 +4,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { useState } from "react";
 
 export const runtime = "edge";
 
@@ -22,6 +23,8 @@ export async function POST(req: NextRequest) {
     const text = body.text;
 
     console.log(typeof text);
+
+    // const [splitDocuments, setSplitDocuments] = useState<Document<Record<string, any>>[] | []>([])
 
     if (process.env.NEXT_PUBLIC_DEMO === "true") {
         return NextResponse.json(
@@ -46,20 +49,8 @@ export async function POST(req: NextRequest) {
             chunkOverlap: 20,
         });
 
-        // TO DO: Specify consition to decide on chunking call approach to be made
         // for raw text chunking
-        // const splitDocuments = await splitter.createDocuments([text]);
-        // for web content chunking
-        const splitDocuments = await splitter.splitDocuments(text);
-
-        // const splitDocuments = [];
-
-        // if (typeof (text) == "Document"){
-        //     splitDocuments = await splitter.splitDocuments(text);
-        // }
-        // if (typeof(text) == "String")
-        //     splitDocuments = await splitter.createDocuments([text]);
-        // }
+        const splitDocuments = await splitter.createDocuments([text]);
 
         const vectorstore = await SupabaseVectorStore.fromDocuments(
             splitDocuments,

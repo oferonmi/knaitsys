@@ -17,7 +17,7 @@ const ChatThread = ({messages, sysEmoji, sources}) => {
         >
             {/* {messages.map((m) => (
             <div key={m.id}>
-                <b>{m.role === "user" ? <Emoji symbol="🤔: " label="thinking face"/> : <Emoji symbol="🥸: " label="bespectacled face"/>}</b>
+                <b>{m.role === "user" ? <Emoji symbol="🤔: " label="thinking face"/> : <Emoji symbol="🤖: " label="bespectacled face"/>}</b>
                 {m.content}
             </div>
             ))} */}

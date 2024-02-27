@@ -38,8 +38,8 @@ export function WebpageUploadForm(props: {
       //   embeddings
       // );
       setIsLoading(true);
-      const response = await fetch("/api/rag/ingest", {
-          // mode: 'no-cors',
+      const response = await fetch("/api/rag/webpage_ingest", {
+          mode: 'no-cors',
           method: "POST",
           body: JSON.stringify({
               text: page_data,

@@ -13,7 +13,7 @@ export default function RagPage() {
         placeholder={
           "Ask questions about the content of the text/document uploaded."
         }
-        emoji="🥸"
+        emoji="🤖"
         titleText="Chat to your Document"
       ></ChatWindow>
       <Footer />
