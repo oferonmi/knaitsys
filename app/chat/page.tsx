@@ -83,6 +83,9 @@ const ChatbotPage = () => {
                 <option value="mixtral_MoE8x7B_Instruct_fireworks">
                   Mixtral-MoE8x7B-Fwks
                 </option>
+                <option value="gemma_7b_instruct_fireworks">
+                  Gemma-7b-Fwks
+                </option>
                 <option value="langchain">LangChain</option>
                 <option value="huggingface">OpenAssistant-HF</option>
                 {/* <option value="anthropic">Claude-1</option> */}
