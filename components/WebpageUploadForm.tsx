@@ -1,7 +1,7 @@
 
 import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
 import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
-import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
+// import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
 import { SendIcon } from "@/components/Icons";
 import { toast } from "react-toastify";
 

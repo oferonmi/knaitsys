@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     //NOTE: Usually empty by default.
+    // output: 'export',
+
     // redirect default landing page to routable home directory
     async redirects() {
     return [

@@ -1,4 +1,3 @@
-import 'app/globals.css'
 import { Inter } from 'next/font/google'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
@@ -23,7 +22,7 @@ export default function SummarizerLayout({
           " bg-gradient-to-r from-teal-100 to-teal-100 flex flex-col h-screen overflow-hidden"
         }
       >
-        <Header />
+        <Header menu={[]}/>
         {children}
         {/* <Footer /> */}
       </body>
