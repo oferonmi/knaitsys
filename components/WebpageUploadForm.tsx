@@ -1,9 +1,7 @@
 
 import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
 import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
 import { SendIcon } from "@/components/Icons";
 import { toast } from "react-toastify";
 
@@ -17,52 +15,59 @@ export function WebpageUploadForm(props: {
     async function ingest(e: FormEvent<HTMLFormElement>) {
       e.preventDefault();
 
-      //TO DO: implement local logic or API request for URL RAG
-      // load webpage data
-      const loader = new CheerioWebBaseLoader(inputUrl);
+      // load webpage data using Cheerio
+      // const loader = new CheerioWebBaseLoader(inputUrl);
+      // const page_data = await loader.load();
+      
+      //load webpage data using Puppeteer
+      // const loader = new PuppeteerWebBaseLoader(inputUrl);
+      const loader = new PuppeteerWebBaseLoader(inputUrl, {
+        launchOptions: {
+          headless: true,
+        },
+        gotoOptions: {
+          waitUntil: "domcontentloaded",
+        },
+        /**  Pass custom evaluate , in this case you get page and browser instances */
+        async evaluate(page, browser) {
+          await page.waitForResponse(inputUrl);
+
+          const result = await page.evaluate(() => document.body.innerHTML);
+          await browser.close();
+          return result;
+        },
+      });
       const page_data = await loader.load();
-      console.log(page_data);
-      // //split document to chunks
-      // const textSplitter = new RecursiveCharacterTextSplitter({
-      //   chunkSize: 500,
-      //   chunkOverlap: 0,
-      // });
 
-      // const splitDocs = await textSplitter.splitDocuments(page_data);
+      // console.log(page_data);
 
-      // //embed and store the document chunks in a vector database
-      // const embeddings = new OpenAIEmbeddings();
-
-      // const vectorStore = await MemoryVectorStore.fromDocuments(
-      //   splitDocs,
-      //   embeddings
-      // );
       setIsLoading(true);
+      //API request for URL RAG
       const response = await fetch("/api/rag/webpage_ingest", {
-          mode: 'no-cors',
-          method: "POST",
-          body: JSON.stringify({
-              text: page_data,
-          }),
+        // mode: "no-cors",
+        method: "POST",
+        body: JSON.stringify({
+          text: page_data,
+        }),
       });
       if (response.status === 200) {
-          setReadyToChat(true);
-          toast(
-              `Text ingest successfull! Now try asking a question about the text you uploaded.`,
-              {
-                  theme: "dark",
-              }
-          );
-      } else {
-          const json = await response.json();
-          if (json.error) {
-              toast(
-                  `Text ingest unsuccessfull! There was a problem ingesting your text: ${json.error}`,
-                  {
-                      theme: "dark",
-                  }
-              );
+        setReadyToChat(true);
+        toast(
+          `Text ingest successfull! Now try asking a question about the text you uploaded.`,
+          {
+            theme: "dark",
           }
+        );
+      } else {
+        const json = await response.json();
+        if (json.error) {
+          toast(
+            `Text ingest unsuccessfull! There was a problem ingesting your text: ${json.error}`,
+            {
+              theme: "dark",
+            }
+          );
+        }
       }
       setIsLoading(false);
     }

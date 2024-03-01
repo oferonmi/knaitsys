@@ -22,9 +22,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const text = body.text;
 
-    console.log(typeof text);
-
-    // const [splitDocuments, setSplitDocuments] = useState<Document<Record<string, any>>[] | []>([])
+    // console.log(typeof text);
 
     if (process.env.NEXT_PUBLIC_DEMO === "true") {
         return NextResponse.json(
