@@ -16,27 +16,26 @@ export function WebpageUploadForm(props: {
       e.preventDefault();
 
       // load webpage data using Cheerio
-      // const loader = new CheerioWebBaseLoader(inputUrl);
-      // const page_data = await loader.load();
+      const loader = new CheerioWebBaseLoader(inputUrl);
       
-      //load webpage data using Puppeteer
+      //load webpage data using Puppeteer. Still needs fix with extensive dependency issues
       // const loader = new PuppeteerWebBaseLoader(inputUrl);
-      const loader = new PuppeteerWebBaseLoader(inputUrl, {
-        launchOptions: {
-          headless: true,
-        },
-        gotoOptions: {
-          waitUntil: "domcontentloaded",
-        },
-        /**  Pass custom evaluate , in this case you get page and browser instances */
-        async evaluate(page, browser) {
-          await page.waitForResponse(inputUrl);
+      // const loader = new PuppeteerWebBaseLoader(inputUrl, {
+      //   launchOptions: {
+      //     headless: true,
+      //   },
+      //   gotoOptions: {
+      //     waitUntil: "domcontentloaded",
+      //   },
+      //   /**  Pass custom evaluate , in this case you get page and browser instances */
+      //   async evaluate(page, browser) {
+      //     await page.waitForResponse(inputUrl);
 
-          const result = await page.evaluate(() => document.body.innerHTML);
-          await browser.close();
-          return result;
-        },
-      });
+      //     const result = await page.evaluate(() => document.body.innerHTML);
+      //     await browser.close();
+      //     return result;
+      //   },
+      // });
       const page_data = await loader.load();
 
       // console.log(page_data);
