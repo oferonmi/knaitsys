@@ -1,0 +1,178 @@
+import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
+import { SendIcon } from "@/components/Icons";
+import { toast } from "react-toastify";
+
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+// import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { HNSWLib } from "@langchain/community/vectorstores/hnswlib";
+import { SerpAPILoader } from "langchain/document_loaders/web/serpapi";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
+import { createRetrievalChain } from "langchain/chains/retrieval";
+
+import {
+  RunnableSequence,
+  RunnablePassthrough,
+} from "@langchain/core/runnables";
+import { formatDocumentsAsString } from "langchain/util/document";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+
+export function SearchIndexUploadForm(){
+    const [isLoading, setIsLoading] = useState(false);
+    const [readyToChat, setReadyToChat] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [question, setQuestion] = useState("");
+
+    async function search(e: FormEvent<HTMLFormElement>) {
+      e.preventDefault();
+
+      // Initialize the necessary components
+      const llm = new ChatOpenAI({
+        openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
+        modelName: "gpt-3.5-turbo-1106",
+        temperature: 0.2,
+      });
+      const embeddings = new OpenAIEmbeddings({
+        openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
+      });
+      // const apiKey = process.env.SERPAPI_API_KEY!;
+
+      // Define your question and query
+      // const question = "Your question here";
+      // const query = "Your query here";
+
+      // Use SerpAPILoader to load web search results
+      const loader = new SerpAPILoader({
+        q: searchQuery,
+        apiKey: process.env.NEXT_PUBLIC_SERPAPI_API_KEY!,
+      });
+      const search_page_data = await loader.load();
+
+      // setIsLoading(true);
+      // //API request for URL RAG
+      // const response = await fetch("/api/rag/search_index_rag", {
+      //   // mode: "no-cors",
+      //   method: "POST",
+      //   body: JSON.stringify({
+      //     text: search_page_data,
+      //   }),
+      // });
+
+      // if (response.status === 200) {
+      //   setReadyToChat(true);
+      //   toast(
+      //     `Search engine result page ingest successfull! Now try asking a question about search results.`,
+      //     {
+      //       theme: "dark",
+      //     }
+      //   );
+      // } else {
+      //   const json = await response.json();
+      //   if (json.error) {
+      //     toast(
+      //       `Search engine result page ingest unsuccessfull! There was a problem : ${json.error}`,
+      //       {
+      //         theme: "dark",
+      //       }
+      //     );
+      //   }
+      // }
+      // setIsLoading(false);
+
+      // Use MemoryVectorStore to store the loaded documents in memory
+      const vectorStore = await MemoryVectorStore.fromDocuments(
+        search_page_data,
+        embeddings
+      );
+
+      // Load the docs into the vector store
+      // const vectorStore = await HNSWLib.fromDocuments(
+      //   search_page_data,
+      //   embeddings
+      // );
+
+      const retriever = vectorStore.asRetriever();
+
+      const questionAnsweringPrompt = ChatPromptTemplate.fromMessages([
+        [
+          "system",
+          "Answer the user's questions based on the below context:\n\n{context}",
+        ],
+        ["human", "{input}"],
+      ]);
+
+      const combineDocsChain = await createStuffDocumentsChain({
+          llm,
+          prompt: questionAnsweringPrompt,
+      });
+
+      const chain = await createRetrievalChain({
+        retriever,
+        combineDocsChain,
+      });
+
+    //   const chain = RunnableSequence.from([
+    //     {
+    //       context: retriever.pipe(formatDocumentsAsString),
+    //       question: new RunnablePassthrough(),
+    //     },
+    //     prompt,
+    //     llm,
+    //     new StringOutputParser(),
+    //   ]);
+
+      const res = await chain.invoke({
+        input: question,
+      });
+
+      console.log(res.answer);
+    }
+
+    const searchFormInterface = (
+      <form className="flex w-full space-x-2" onSubmit={search}>
+        <input
+          type="text"
+          autoComplete="off"
+          autoFocus={false}
+          name="url_input_bar"
+          className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+          placeholder="  Search"
+          required={true}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button
+          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+          type="submit"
+        >
+          <div
+            role="status"
+            className={`${isLoading ? "" : "hidden"} flex justify-center`}
+          >
+            <svg
+              aria-hidden="true"
+              className="w-6 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+            <span className="sr-only">Loading...</span>
+          </div>
+          <span className={isLoading ? "hidden" : ""}>
+            <SendIcon />
+          </span>
+        </button>
+      </form>
+    );
+    
+    return <>{searchFormInterface}</>;
+}

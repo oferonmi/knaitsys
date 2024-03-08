@@ -7,22 +7,34 @@ import { HuggingFaceTransformersEmbeddings } from "langchain/embeddings/hf_trans
 import { VoyVectorStore } from "langchain/vectorstores/voy";
 import { ChatOllama } from "langchain/chat_models/ollama";
 import { Document } from "langchain/document";
+// import {
+//   ChatPromptTemplate,
+//   MessagesPlaceholder,
+//   PromptTemplate,
+// } from "langchain/prompts";
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,
   PromptTemplate,
-} from "langchain/prompts";
+} from "@langchain/core/prompts";
 import { BaseLanguageModel } from "langchain/base_language";
-import { BaseRetriever } from "langchain/schema/retriever";
-import { RunnableSequence } from "langchain/schema/runnable";
-import { StringOutputParser } from "langchain/schema/output_parser";
-import { AIMessage, BaseMessage, HumanMessage } from "langchain/schema";
+// import { BaseRetriever } from "langchain/schema/retriever";
+import { BaseRetriever } from "@langchain/core/retrievers";
+// import { RunnableSequence } from "langchain/schema/runnable";
+import { RunnableSequence } from "@langchain/core/runnables";
+// import { StringOutputParser } from "langchain/schema/output_parser";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+// import { AIMessage, BaseMessage, HumanMessage } from "langchain/schema";
+import { AIMessage, BaseMessage, HumanMessage } from "@langchain/core/messages";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 import { createClient } from "@supabase/supabase-js";
-import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
-import { ChatOpenAI } from "langchain/chat_models/openai";
+// import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+// import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+// import { ChatOpenAI } from "langchain/chat_models/openai";
+import { ChatOpenAI, OpenAIEmbeddings} from "@langchain/openai";
+
 
 export const runtime = "edge";
 

@@ -12,11 +12,15 @@ export const metadata = {
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-          <Header menu={[]}/>
-          {children}
-          <Footer />
+      <body
+        className={
+          inter.className + +" bg-gradient-to-r from-teal-100 to-teal-100"
+        }
+      >
+        <Header menu={[]} />
+        {children}
+        <Footer />
       </body>
     </html>
-  )
+  );
 }

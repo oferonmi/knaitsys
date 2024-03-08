@@ -21,7 +21,7 @@ export default function ChatBotLayout({children}: {children: React.ReactNode}) {
           menu={[
             { id: 1, value: "Text", url: "/text" },
             { id: 2, value: "Audio", url: "/audio" },
-            { id: 2, value: "Code", url: "/code" },
+            { id: 3, value: "Code", url: "/code" },
           ]}
         />
         {children}

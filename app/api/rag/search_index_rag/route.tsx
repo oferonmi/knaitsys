@@ -3,8 +3,10 @@ import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 
 import { createClient } from "@supabase/supabase-js";
 
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { ChatOpenAI } from "@langchain/openai";
+import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { Document } from "@langchain/core/documents";
 import { RunnableSequence } from "@langchain/core/runnables";
@@ -73,21 +75,30 @@ export async function POST(req: NextRequest) {
     const previousMessages = messages.slice(0, -1);
     const currentMessageContent = messages[messages.length - 1].content;
 
+    const search_page_data = body.results;
+
     const model = new ChatOpenAI({
       modelName: "gpt-3.5-turbo-1106",
       temperature: 0.2,
     });
 
-    const client = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_API_KEY!
+    // const client = createClient(
+    //   process.env.SUPABASE_URL!,
+    //   process.env.SUPABASE_PRIVATE_KEY!
+    // );
+
+    // const vectorStore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
+    //   client,
+    //   tableName: "documents",
+    //   queryName: "match_documents",
+    // });
+    const embeddings = new OpenAIEmbeddings();
+
+    // Use MemoryVectorStore to store the loaded documents in memory
+    const vectorStore = await MemoryVectorStore.fromDocuments(
+      search_page_data,
+      embeddings
     );
-    
-    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
-      client,
-      tableName: "documents",
-      queryName: "match_documents",
-    });
 
     /**
      * We use LangChain Expression Language to compose two chains.
@@ -109,7 +120,7 @@ export async function POST(req: NextRequest) {
       resolveWithDocuments = resolve;
     });
 
-    const retriever = vectorstore.asRetriever({
+    const retriever = vectorStore.asRetriever({
       callbacks: [
         {
           handleRetrieverEnd(documents) {

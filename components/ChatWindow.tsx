@@ -8,13 +8,13 @@ import { useChat } from "ai/react";
 import { useRef, useState, useEffect, ReactElement } from "react";
 import type { FormEvent } from "react";
 
-// import { useRouter } from "next/router";
 import { useRouter, usePathname } from 'next/navigation';
 
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { TextUploadForm } from "@/components/TextUploadForm";
 import { EmbedPdfsForm } from "@/components/EmbedPdfsForm";
 import { WebpageUploadForm } from "@/components/WebpageUploadForm";
+import { SearchIndexUploadForm } from "@/components/SearchIndexUploadForm";
 import { Footer } from "@/components/Footer";
 
 export function ChatWindow(props: {
@@ -37,6 +37,7 @@ export function ChatWindow(props: {
   const [showIngestForm, setShowIngestForm] = useState(true);
   const [showDocEmbedForm, setShowDocEmbedForm] = useState(!showIngestForm);
   const [showUrlEntryForm, setShowUrlEntryForm] = useState(false);
+  const [showSearchForm, setShowSearchForm] = useState(false);
   const [sourcesForMessages, setSourcesForMessages] = useState<
     Record<string, any>
   >({});
@@ -87,18 +88,19 @@ export function ChatWindow(props: {
   const urlForm = showUrlEntryForm && (
     <WebpageUploadForm setReadyToChat={setReadyToChat} />
   );
+  const searchForm = showSearchForm && <SearchIndexUploadForm />;
 
   const emptyStateComponent = (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full h-screen items-center mt-4">
       <div className="p-4 md:p-8 rounded bg-[#25252d00] w-full max-h-[85%] overflow-hidden">
         <h1 className="text-center text-2xl md:text-4xl mb-4 text-gray-700">
           Explore your document by Chatting to it.
         </h1>
 
         <p className="text-black text-xl text-center">
-          Upload raw, PDF or webpage text. A chat interface appears with
-          successfull upload, try asking any question about the content of the
-          uploaded text/document.
+          Upload raw, PDF, webpage or search results&apos; text corpus. A chat
+          interface appears with successfull upload, try asking any question
+          about the content of the uploaded text/document.
         </p>
 
         <br></br>
@@ -106,10 +108,13 @@ export function ChatWindow(props: {
         {messages.length === 0 && embedForm}
         {messages.length === 0 && ingestForm}
         {messages.length === 0 && urlForm}
+        {messages.length === 0 && searchForm}
       </div>
 
       <div
-        className={`flex ${showUrlEntryForm ?"justify-center":""} gap-2 px-4 md:px-8 w-full`}
+        className={`flex ${
+          showUrlEntryForm || showSearchForm ? "justify-center" : ""
+        } gap-2 px-4 md:px-8 w-full`}
       >
         <Tooltip content="Chat to Corpus" className="inline-flex">
           <button
@@ -134,7 +139,7 @@ export function ChatWindow(props: {
           </button>
         </Tooltip>
 
-        {(showDocEmbedForm || showUrlEntryForm) && (
+        {(showDocEmbedForm || showUrlEntryForm || showSearchForm) && (
           <Tooltip content="Upload Text" className="inline-flex">
             <button
               className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
@@ -143,6 +148,7 @@ export function ChatWindow(props: {
                 setShowIngestForm(true);
                 setShowDocEmbedForm(false);
                 setShowUrlEntryForm(false);
+                setShowSearchForm(false);
               }}
             >
               {/* Text Upload */}
@@ -155,7 +161,7 @@ export function ChatWindow(props: {
                 viewBox="0 0 16 16"
               >
                 <path
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                   d="M0 .5A.5.5 0 0 1 .5 0h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 0 .5m0 2A.5.5 0 0 1 .5 2h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m9 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-9 2A.5.5 0 0 1 .5 4h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m5 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m7 0a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5m-12 2A.5.5 0 0 1 .5 6h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m8 0a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m-8 2A.5.5 0 0 1 .5 8h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m7 0a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-7 2a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1h-8a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5"
                 />
               </svg>
@@ -163,7 +169,7 @@ export function ChatWindow(props: {
           </Tooltip>
         )}
 
-        {(showIngestForm || showUrlEntryForm) && (
+        {(showIngestForm || showUrlEntryForm || showSearchForm) && (
           <Tooltip content="Upload PDF File" className="inline-flex">
             <button
               className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
@@ -172,6 +178,7 @@ export function ChatWindow(props: {
                 setShowDocEmbedForm(true);
                 setShowIngestForm(false);
                 setShowUrlEntryForm(false);
+                setShowSearchForm(false);
               }}
             >
               {/* PDF Upload */}
@@ -190,7 +197,7 @@ export function ChatWindow(props: {
           </Tooltip>
         )}
 
-        {(showDocEmbedForm || showIngestForm) && (
+        {(showDocEmbedForm || showIngestForm || showSearchForm) && (
           <Tooltip content="Upload a Webpage Content" className="inline-flex">
             <button
               className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
@@ -199,6 +206,7 @@ export function ChatWindow(props: {
                 setShowUrlEntryForm(true);
                 setShowDocEmbedForm(false);
                 setShowIngestForm(false);
+                setShowSearchForm(false);
               }}
             >
               {/* Webpage Upload */}
@@ -211,6 +219,33 @@ export function ChatWindow(props: {
                 viewBox="0 0 16 16"
               >
                 <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m7.5-6.923c-.67.204-1.335.82-1.887 1.855q-.215.403-.395.872c.705.157 1.472.257 2.282.287zM4.249 3.539q.214-.577.481-1.078a7 7 0 0 1 .597-.933A7 7 0 0 0 3.051 3.05q.544.277 1.198.49zM3.509 7.5c.036-1.07.188-2.087.436-3.008a9 9 0 0 1-1.565-.667A6.96 6.96 0 0 0 1.018 7.5zm1.4-2.741a12.3 12.3 0 0 0-.4 2.741H7.5V5.091c-.91-.03-1.783-.145-2.591-.332M8.5 5.09V7.5h2.99a12.3 12.3 0 0 0-.399-2.741c-.808.187-1.681.301-2.591.332zM4.51 8.5c.035.987.176 1.914.399 2.741A13.6 13.6 0 0 1 7.5 10.91V8.5zm3.99 0v2.409c.91.03 1.783.145 2.591.332.223-.827.364-1.754.4-2.741zm-3.282 3.696q.18.469.395.872c.552 1.035 1.218 1.65 1.887 1.855V11.91c-.81.03-1.577.13-2.282.287zm.11 2.276a7 7 0 0 1-.598-.933 9 9 0 0 1-.481-1.079 8.4 8.4 0 0 0-1.198.49 7 7 0 0 0 2.276 1.522zm-1.383-2.964A13.4 13.4 0 0 1 3.508 8.5h-2.49a6.96 6.96 0 0 0 1.362 3.675c.47-.258.995-.482 1.565-.667m6.728 2.964a7 7 0 0 0 2.275-1.521 8.4 8.4 0 0 0-1.197-.49 9 9 0 0 1-.481 1.078 7 7 0 0 1-.597.933M8.5 11.909v3.014c.67-.204 1.335-.82 1.887-1.855q.216-.403.395-.872A12.6 12.6 0 0 0 8.5 11.91zm3.555-.401c.57.185 1.095.409 1.565.667A6.96 6.96 0 0 0 14.982 8.5h-2.49a13.4 13.4 0 0 1-.437 3.008M14.982 7.5a6.96 6.96 0 0 0-1.362-3.675c-.47.258-.995.482-1.565.667.248.92.4 1.938.437 3.008zM11.27 2.461q.266.502.482 1.078a8.4 8.4 0 0 0 1.196-.49 7 7 0 0 0-2.275-1.52c.218.283.418.597.597.932m-.488 1.343a8 8 0 0 0-.395-.872C9.835 1.897 9.17 1.282 8.5 1.077V4.09c.81-.03 1.577-.13 2.282-.287z" />
+              </svg>
+            </button>
+          </Tooltip>
+        )}
+
+        {(showDocEmbedForm || showIngestForm || showUrlEntryForm) && (
+          <Tooltip content="Upload Web Search Result" className="inline-flex">
+            <button
+              className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
+              type="button"
+              onClick={() => {
+                setShowSearchForm(true);
+                setShowDocEmbedForm(false);
+                setShowIngestForm(false);
+                setShowUrlEntryForm(false);
+              }}
+            >
+              {/* Search result upload */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-search"
+                viewBox="0 0 16 16"
+              >
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
               </svg>
             </button>
           </Tooltip>
@@ -288,6 +323,7 @@ export function ChatWindow(props: {
                     setShowIngestForm(true);
                     setShowDocEmbedForm(false);
                     setShowUrlEntryForm(false);
+                    setShowSearchForm(false);
                     setMessages([]);
                     setReadyToChat(false);
                   }}
@@ -312,6 +348,7 @@ export function ChatWindow(props: {
                 placeholder={placeholder ?? "What is truth?"}
                 onChange={handleInputChange}
               />
+
               <button
                 type="submit"
                 className=" px-5 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full"

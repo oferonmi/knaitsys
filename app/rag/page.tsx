@@ -9,7 +9,7 @@ export default function RagPage() {
   return (
     <>
       <ChatWindow
-        endpoint="api/rag"
+        endpoint="/api/rag"
         placeholder={
           "Ask questions about the content of the text/document uploaded."
         }

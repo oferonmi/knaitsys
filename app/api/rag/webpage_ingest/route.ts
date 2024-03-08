@@ -60,7 +60,10 @@ export async function POST(req: NextRequest) {
       }
     );
 
-    return NextResponse.json({ ok: true }, { status: 200 });
+    return NextResponse.json(
+      { ok: true }, 
+      { status: 200 },
+    );
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

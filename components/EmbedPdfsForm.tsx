@@ -92,12 +92,12 @@ export function EmbedPdfsForm(props: {
           {...getRootProps({
             htmlFor: "dropzone-file",
             className:
-              "flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded-lg mb-4 mr-8 border border-dashed border-kaito-brand-ash-green",
+              "flex flex-col items-center justify-center w-5/6 cursor-pointer bg-white  hover:bg-gray-50 rounded mb-4 mr-8 border border-dashed border-kaito-brand-ash-green",
           })}
         >
           <div className="flex flex-col items-center justify-center pt-32 pb-36">
             <CloudUploadIcon />
-            <p className="mb-2 text-sm text-gray-500 ">
+            <div className="mb-2 text-sm text-gray-500 ">
               <span className="font-semibold">
                 {isDragActive ? (
                   <p>Drop the files here ...</p>
@@ -105,7 +105,7 @@ export function EmbedPdfsForm(props: {
                   <p>Click to upload or drag and drop</p>
                 )}
               </span>
-            </p>
+            </div>
             {selectedPDF === null ? (
               <p className="text-xs text-gray-500 ">PDF files</p>
             ) : (

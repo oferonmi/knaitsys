@@ -1,4 +1,4 @@
-import { HomeContent } from '../../components/HomeContent'
+import { HomeContent } from '@/components/HomeContent'
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
