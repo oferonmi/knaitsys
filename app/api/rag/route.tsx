@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 
 import { createClient } from "@supabase/supabase-js";
+import { Voy as VoyClient } from "voy-search";
 
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
+import { HNSWLib } from "@langchain/community/vectorstores/hnswlib";
 import { Document } from "@langchain/core/documents";
 import { RunnableSequence } from "@langchain/core/runnables";
 import {
@@ -76,18 +79,28 @@ export async function POST(req: NextRequest) {
     const model = new ChatOpenAI({
       modelName: "gpt-3.5-turbo-1106",
       temperature: 0.2,
+      openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
     });
 
     const client = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_API_KEY!
     );
+
+    // const voyClient = new VoyClient();
+
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+    });
     
-    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
+    const vectorstore = new SupabaseVectorStore(embeddings, {
       client,
       tableName: "documents",
       queryName: "match_documents",
     });
+
+    // const vectorstore = new VoyVectorStore(voyClient, embeddings);
+    // const vectorstore = new HNSWLib(embeddings);
 
     /**
      * We use LangChain Expression Language to compose two chains.

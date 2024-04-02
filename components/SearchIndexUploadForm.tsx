@@ -36,7 +36,7 @@ export function SearchIndexUploadForm(){
       const embeddings = new OpenAIEmbeddings({
         openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY!,
       });
-      // const apiKey = process.env.SERPAPI_API_KEY!;
+      const apiKey = process.env.NEXT_PUBLIC_SERPAPI_API_KEY!;
 
       // Define your question and query
       // const question = "Your question here";
@@ -44,8 +44,8 @@ export function SearchIndexUploadForm(){
 
       // Use SerpAPILoader to load web search results
       const loader = new SerpAPILoader({
-        q: searchQuery,
-        apiKey: process.env.NEXT_PUBLIC_SERPAPI_API_KEY!,
+        q: searchQuery, apiKey
+        // apiKey: process.env.NEXT_PUBLIC_SERPAPI_API_KEY!,
       });
       const search_page_data = await loader.load();
 
@@ -130,7 +130,7 @@ export function SearchIndexUploadForm(){
     }
 
     const searchFormInterface = (
-      <form className="flex w-full space-x-2" onSubmit={search}>
+      <form className="flex w-full space-x-2" id="search-form" onSubmit={search}>
         <input
           type="text"
           autoComplete="off"

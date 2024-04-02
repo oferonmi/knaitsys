@@ -4,6 +4,7 @@ import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 // import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
 import { SendIcon } from "@/components/Icons";
 import { toast } from "react-toastify";
+import { Console } from "console";
 
 export function WebpageUploadForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
@@ -16,6 +17,7 @@ export function WebpageUploadForm(props: {
       e.preventDefault();
 
       // load webpage data using Cheerio
+      console.log(inputUrl); 
       const loader = new CheerioWebBaseLoader(inputUrl);
       
       //load webpage data using Puppeteer. Still needs fix with extensive dependency issues
@@ -71,7 +73,7 @@ export function WebpageUploadForm(props: {
       setIsLoading(false);
     }
     return (
-      <form className="w-full flex space-x-2" onSubmit={ingest}>
+      <form className="w-full flex space-x-2" id="url-form" onSubmit={ingest}>
         <input
           type="text"
           autoComplete="off"

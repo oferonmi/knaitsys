@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { useState } from "react";
 
 export default function RagPage() {
+  const [readyToChat, setReadyToChat] = useState(false);
 
   return (
     <>
@@ -15,8 +16,10 @@ export default function RagPage() {
         }
         emoji="🤖"
         titleText="Chat to your Document"
+        readyToChat={readyToChat}
+        setReadyToChat={setReadyToChat}
       ></ChatWindow>
-      <Footer />
+      {!readyToChat && <Footer />}
     </>
   );
 }

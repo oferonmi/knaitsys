@@ -18,7 +18,7 @@ const nextConfig = {
     return [
       {
         // matching all API routes
-        source: "/api/:path*",
+        source: "/:path*", ///api/:path*",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
           { key: "Access-Control-Allow-Origin", value: "*" },
@@ -36,36 +36,60 @@ const nextConfig = {
     ];
   },
 
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: '/api/:path*',
-  //       destination: 'https://api.example.com/:path*',
-  //     },
-  //   ]
-  // },
-
-  // webpack: (config) => {
-  //   config.resolve.fallback = { 
-  //     fs: require.resolve('browserify-fs'), //false 
-  //     // child_process: false,
+  // webpack: (
+  //   config,
+  //   options={ buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  // ) => {
+  //   // config.resolve.fallback = { fs: false };
+  //   config.experiments = { 
+  //     asyncWebAssembly: true, 
+  //     syncWebAssembly: true, 
+  //     layers: true, 
+  //     topLevelAwait: true 
   //   };
-  //   return config;
+  //   config.resolve.fallback = { 
+  //     fs: false, 
+  //     path: false, 
+  //     dns: false, 
+  //     net: false, 
+  //     tls: false 
+  //   };
+  // },
   // },
 
-  webpack: (
-    config,
-    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
-  ) => {
-    config.resolve.fallback = { fs: false };
-    return config;
+  // Override the default webpack configuration
+  webpack: (config, { isServer }) => {
+      // See https://webpack.js.org/configuration/resolve/#resolvealias
+      config.resolve.alias = {
+          ...config.resolve.alias,
+          "sharp$": false,
+          "onnxruntime-node$": false,
+      }
+      config.experiments = {
+        ...config.experiments,
+        topLevelAwait: true,
+        asyncWebAssembly: true,
+      };
+      config.module.rules.push({
+        test: /\.md$/i,
+        use: "raw-loader",
+      });
+
+      // Fixes npm packages that depend on `fs` module
+      if (!isServer) {
+        config.resolve.fallback = {
+          ...config.resolve.fallback, // if you miss it, all the other options in fallback, specified
+            // by next.js will be dropped. Doesn't make much sense, but how it is
+          fs: false, // the solution
+          "node:fs/promises": false,
+          module: false,
+          perf_hooks: false,
+        };
+      }
+    
+     return config;
   },
 
-  // externals: {
-  //   bufferutil: 'bufferutil',
-  //   'utf-8-validate': 'utf-8-validate',
-  // },
+};
 
-}
-
-module.exports = nextConfig
+module.exports = nextConfig;
