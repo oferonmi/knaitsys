@@ -14,7 +14,7 @@ export function TextUploadForm(props: {
   const ingest = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    const response = await fetch("/api/rag/raw_text_ingest", {
+    const response = await fetch("/api/retrieval/raw_text_ingest", {
       method: "POST",
       body: JSON.stringify({
         text: document,

@@ -4,13 +4,13 @@ import { ChatWindow } from "@/components/ChatWindow";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
 
-export default function RagPage() {
+export default function RetrievalPage() {
   const [readyToChat, setReadyToChat] = useState(false);
 
   return (
     <>
       <ChatWindow
-        endpoint="/api/rag"
+        endpoint="/api/chat/retrieval"
         placeholder={
           "Ask questions about the content of the text/document uploaded."
         }

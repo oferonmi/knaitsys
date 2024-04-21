@@ -34,7 +34,7 @@ export function ChatWindow(props: {
 
   // const [readyToChat, setReadyToChat] = useState(false);
   const [showIngestForm, setShowIngestForm] = useState(true);
-  const [showDocEmbedForm, setShowDocEmbedForm] = useState(!showIngestForm);
+  const [showDocEmbedForm, setShowDocEmbedForm] = useState(false);
   const [showUrlEntryForm, setShowUrlEntryForm] = useState(false);
   const [showSearchForm, setShowSearchForm] = useState(false);
   const [sourcesForMessages, setSourcesForMessages] = useState<

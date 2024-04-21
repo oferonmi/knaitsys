@@ -44,7 +44,7 @@ export function WebpageUploadForm(props: {
 
       setIsLoading(true);
       //API request for URL RAG
-      const response = await fetch("/api/rag/webpage_ingest", {
+      const response = await fetch("/api/retrieval/webpage_ingest", {
         // mode: "no-cors",
         method: "POST",
         body: JSON.stringify({

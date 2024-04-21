@@ -84,6 +84,18 @@ const nextConfig = {
           "node:fs/promises": false,
           module: false,
           perf_hooks: false,
+          "child_process": false,
+          net: false,
+          tls: false,
+          dns: false,
+          "aws4": false,
+          socks: false,
+          snappy: false,
+          kerberos: false,
+          "gcp-metadata": false,
+          "@mongodb-js/zstd": false,
+          "@aws-sdk/credential-providers": false,
+
         };
       }
     

@@ -51,7 +51,7 @@ export function SearchIndexUploadForm(){
 
       // setIsLoading(true);
       // //API request for URL RAG
-      // const response = await fetch("/api/rag/search_index_rag", {
+      // const response = await fetch("/api/retrieval/search_index_ingest", {
       //   // mode: "no-cors",
       //   method: "POST",
       //   body: JSON.stringify({

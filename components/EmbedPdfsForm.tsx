@@ -3,7 +3,7 @@
 import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction, useCallback } from "react";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
-import {CloudUploadIcon,} from "@/components/Icons";
+import { CloudUploadIcon } from "@/components/Icons";
 
 
 export function EmbedPdfsForm(props: {

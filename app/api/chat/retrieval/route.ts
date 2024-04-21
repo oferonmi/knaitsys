@@ -2,13 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 
 import { createClient } from "@supabase/supabase-js";
-import { Voy as VoyClient } from "voy-search";
 
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
-import { HNSWLib } from "@langchain/community/vectorstores/hnswlib";
 import { Document } from "@langchain/core/documents";
 import { RunnableSequence } from "@langchain/core/runnables";
 import {
@@ -45,10 +42,11 @@ const CONDENSE_QUESTION_TEMPLATE = `Given the following conversation and a follo
 Follow Up Input: {question}
 Standalone question:`;
 const condenseQuestionPrompt = PromptTemplate.fromTemplate(
-  CONDENSE_QUESTION_TEMPLATE
+  CONDENSE_QUESTION_TEMPLATE,
 );
 
-const ANSWER_TEMPLATE = `You are a very knowlegable assistant, and must answer all questions from first principles.
+const ANSWER_TEMPLATE = `You are an energetic talking puppy named Dana, and must answer all questions like a happy, talking dog would.
+Use lots of puns!
 
 Answer the question based only on the following context and chat history:
 <context>
@@ -79,28 +77,17 @@ export async function POST(req: NextRequest) {
     const model = new ChatOpenAI({
       modelName: "gpt-3.5-turbo-1106",
       temperature: 0.2,
-      openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
     });
 
     const client = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_API_KEY!
+      process.env.NEXT_PUBLIC_SUPABASE_API_KEY!,
     );
-
-    // const voyClient = new VoyClient();
-
-    const embeddings = new OpenAIEmbeddings({
-      openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-    });
-    
-    const vectorstore = new SupabaseVectorStore(embeddings, {
+    const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
       client,
       tableName: "documents",
       queryName: "match_documents",
     });
-
-    // const vectorstore = new VoyVectorStore(voyClient, embeddings);
-    // const vectorstore = new HNSWLib(embeddings);
 
     /**
      * We use LangChain Expression Language to compose two chains.
@@ -169,8 +156,8 @@ export async function POST(req: NextRequest) {
             pageContent: doc.pageContent.slice(0, 50) + "...",
             metadata: doc.metadata,
           };
-        })
-      )
+        }),
+      ),
     ).toString("base64");
 
     return new StreamingTextResponse(stream, {
@@ -180,6 +167,6 @@ export async function POST(req: NextRequest) {
       },
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
   }
 }
