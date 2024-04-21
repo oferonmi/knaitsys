@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-import { createClient } from "@supabase/supabase-js";
-import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+// import { createClient } from "@supabase/supabase-js";
+// import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { Voy as VoyClient } from "voy-search";
+import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
 import { OpenAIEmbeddings } from "@langchain/openai";
-import { useState } from "react";
 
 export const runtime = "edge";
 
@@ -37,10 +38,12 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const client = createClient(
-            process.env.SUPABASE_URL!,
-            process.env.SUPABASE_PRIVATE_KEY!,
-        );
+        // const client = createClient(
+        //     process.env.SUPABASE_URL!,
+        //     process.env.SUPABASE_PRIVATE_KEY!,
+        // );
+
+        const voyClient = new VoyClient();
 
         const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
             chunkSize: 256,
@@ -50,14 +53,20 @@ export async function POST(req: NextRequest) {
         // for raw text chunking
         const splitDocuments = await splitter.createDocuments([text]);
 
-        const vectorstore = await SupabaseVectorStore.fromDocuments(
-            splitDocuments,
-            new OpenAIEmbeddings(),
-            {
-                client,
-                tableName: "documents",
-                queryName: "match_documents",
-            },
+        // const vectorstore = await SupabaseVectorStore.fromDocuments(
+        //     splitDocuments,
+        //     new OpenAIEmbeddings(),
+        //     {
+        //         client,
+        //         tableName: "documents",
+        //         queryName: "match_documents",
+        //     },
+        // );
+
+        const vectorstore = await VoyVectorStore.fromDocuments(
+            splitDocuments, 
+            new OpenAIEmbeddings(), 
+            voyClient
         );
 
         return NextResponse.json({ ok: true }, { status: 200 });

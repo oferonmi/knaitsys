@@ -50,6 +50,7 @@
     "typescript": "5.3.3",
     "use-debounce": "^10.0.0",
     "util.promisify": "^1.1.2",
+    "vectordb": "^0.4.16",
     "voy-search": "^0.6.3",
     "wavesurfer.js": "^7.7.11"
   },

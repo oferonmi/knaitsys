@@ -20,6 +20,7 @@ export function TextUploadForm(props: {
         text: document,
       }),
     });
+
     if (response.status === 200) {
       setDocument("Uploaded!");
       setReadyToChat(true);
@@ -35,11 +36,12 @@ export function TextUploadForm(props: {
           {
             theme: "dark",
           }
-        );;
+        );
       }
     }
     setIsLoading(false);
   };
+
   return (
     <form onSubmit={ingest} className="flex w-full" id="raw-textarea-form">
       <textarea
