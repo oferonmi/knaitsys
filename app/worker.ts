@@ -22,6 +22,8 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
 
 import { ChatOpenAI, OpenAIEmbeddings} from "@langchain/openai";
 
@@ -29,13 +31,21 @@ import { ChatOpenAI, OpenAIEmbeddings} from "@langchain/openai";
 export const runtime = "edge";
 
 // const voyClient = new VoyClient();
-const supabase_url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-if (!supabase_url) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_URL`);
+// const supabase_url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+// if (!supabase_url) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_URL`);
 
-const supabase_anon_key = process.env.NEXT_PUBLIC_SUPABASE_API_KEY;
-if (!supabase_anon_key) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_API_KEY`);
+// const supabase_anon_key = process.env.NEXT_PUBLIC_SUPABASE_API_KEY;
+// if (!supabase_anon_key) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_API_KEY`);
 
-const client = createClient(supabase_url, supabase_anon_key);
+// const client = createClient(supabase_url, supabase_anon_key);
+
+const pinecone = new Pinecone({
+  apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
+});
+
+const pineconeIndex = pinecone.Index(
+  process.env.NEXT_PUBLIC_PINECONE_INDEX!
+);
 
 // const embeddings = new HuggingFaceTransformersEmbeddings({
 //   modelName: "Xenova/all-MiniLM-L6-v2",
@@ -44,13 +54,20 @@ const embeddings = new OpenAIEmbeddings({openAIApiKey: process.env.NEXT_PUBLIC_O
 
 
 // const vectorstore = new VoyVectorStore(voyClient, embeddings);
-const vectorstore = new SupabaseVectorStore(
-    embeddings,
-    {
-        client,
-        tableName: "documents",
-        queryName: "match_documents",
-    },
+// const vectorstore = new SupabaseVectorStore(
+//     embeddings,
+//     {
+//         client,
+//         tableName: "documents",
+//         queryName: "match_documents",
+//     },
+// );
+const vectorstore = new PineconeStore(
+  embeddings,
+  {
+    pineconeIndex,
+    maxConcurrency: 5,
+  }
 );
 
 
