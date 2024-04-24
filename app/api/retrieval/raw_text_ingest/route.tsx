@@ -3,8 +3,8 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 // import { createClient } from "@supabase/supabase-js";
 // import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { Voy as VoyClient } from "voy-search";
-import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
 
 export const runtime = "edge";
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         //     process.env.SUPABASE_PRIVATE_KEY!,
         // );
 
-        const voyClient = new VoyClient();
+        // const voyClient = new VoyClient();
 
         const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
             chunkSize: 256,
@@ -63,10 +63,27 @@ export async function POST(req: NextRequest) {
         //     },
         // );
 
-        const vectorstore = await VoyVectorStore.fromDocuments(
-            splitDocuments, 
-            new OpenAIEmbeddings(), 
-            voyClient
+        // const vectorstore = await VoyVectorStore.fromDocuments(
+        //     splitDocuments, 
+        //     new OpenAIEmbeddings(), 
+        //     voyClient
+        // );
+
+        const pinecone = new Pinecone({
+          apiKey: process.env.PINECONE_API_KEY!,
+        });
+
+        const pineconeIndex = pinecone.Index(
+            process.env.PINECONE_INDEX!
+        );
+
+        const vectorstore = await PineconeStore.fromDocuments(
+          splitDocuments,
+          new OpenAIEmbeddings(),
+          {
+            pineconeIndex,
+            maxConcurrency: 5,
+          }
         );
 
         return NextResponse.json({ ok: true }, { status: 200 });

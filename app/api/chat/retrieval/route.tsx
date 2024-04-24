@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
+import {
+  Message as VercelChatMessage,
+  StreamingTextResponse,
+  createStreamDataTransformer,
+} from "ai";
 
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -7,6 +11,9 @@ import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { Voy as VoyClient } from "voy-search";
 import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
+import { Chroma } from "@langchain/community/vectorstores/chroma";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
 import { Document } from "@langchain/core/documents";
 import { RunnableSequence } from "@langchain/core/runnables";
 import {
@@ -46,8 +53,7 @@ const condenseQuestionPrompt = PromptTemplate.fromTemplate(
   CONDENSE_QUESTION_TEMPLATE,
 );
 
-const ANSWER_TEMPLATE = `You are an energetic talking puppy named Dana, and must answer all questions like a happy, talking dog would.
-Use lots of puns!
+const ANSWER_TEMPLATE = `You are a very knowlegable research assistant, and must answer all questions from first principles and in simple terms.
 
 Answer the question based only on the following context and chat history:
 <context>
@@ -85,7 +91,7 @@ export async function POST(req: NextRequest) {
     //   process.env.NEXT_PUBLIC_SUPABASE_API_KEY!,
     // );
 
-    const voyClient = new VoyClient();
+    // const voyClient = new VoyClient();
 
     // const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
     //   client,
@@ -93,8 +99,27 @@ export async function POST(req: NextRequest) {
     //   queryName: "match_documents",
     // });
 
-    const vectorstore = new VoyVectorStore(voyClient, new OpenAIEmbeddings());
+    // const vectorstore = new VoyVectorStore(voyClient, new OpenAIEmbeddings());
+    // const vectorstore = new Chroma (new OpenAIEmbeddings(), {
+    //     collectionName: "kaitosys-docs",
+    //     url: "http://localhost:8000", // Optional, will default to this value
+    //     collectionMetadata: {
+    //         "hnsw:space": "cosine",
+    //     }, // Optional, can be used to specify the distance method of the embedding space https://docs.trychroma.com/usage-guide#changing-the-distance-function
+    // });
 
+    const pinecone = new Pinecone({
+      apiKey: process.env.PINECONE_API_KEY!,
+    });
+
+    const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
+
+    const vectorstore = await PineconeStore.fromExistingIndex(
+      new OpenAIEmbeddings(),
+      { pineconeIndex }
+    );
+
+    
     /**
      * We use LangChain Expression Language to compose two chains.
      * To learn more, see the guide here:
@@ -166,12 +191,22 @@ export async function POST(req: NextRequest) {
       ),
     ).toString("base64");
 
-    return new StreamingTextResponse(stream, {
-      headers: {
-        "x-message-index": (previousMessages.length + 1).toString(),
-        "x-sources": serializedSources,
-      },
-    });
+    // return new StreamingTextResponse(stream, {
+    //   headers: {
+    //     "x-message-index": (previousMessages.length + 1).toString(),
+    //     "x-sources": serializedSources,
+    //   },
+    // });
+
+    return new StreamingTextResponse(
+      stream.pipeThrough(createStreamDataTransformer()), 
+      {
+        headers: {
+          "x-message-index": (previousMessages.length + 1).toString(),
+          "x-sources": serializedSources,
+        },
+      }
+  );
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
   }

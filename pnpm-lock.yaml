@@ -16,13 +16,22 @@ importers:
         version: 2.6.7
       '@langchain/community':
         specifier: ^0.0.34
-        version: 0.0.34(@huggingface/inference@2.6.7)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
+        version: 0.0.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
       '@langchain/core':
         specifier: 0.1.40
         version: 0.1.40
       '@langchain/openai':
         specifier: ^0.0.15
         version: 0.0.15(encoding@0.1.13)
+      '@langchain/pinecone':
+        specifier: ^0.0.4
+        version: 0.0.4
+      '@langchain/weaviate':
+        specifier: ^0.0.1
+        version: 0.0.1(encoding@0.1.13)(graphql@16.8.1)
+      '@pinecone-database/pinecone':
+        specifier: ^2.2.0
+        version: 2.2.0
       '@supabase/supabase-js':
         specifier: ^2.42.5
         version: 2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3)
@@ -59,6 +68,9 @@ importers:
       cheerio:
         specifier: 1.0.0-rc.12
         version: 1.0.0-rc.12
+      chromadb:
+        specifier: ^1.8.1
+        version: 1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13))
       encoding:
         specifier: ^0.1.13
         version: 0.1.13
@@ -76,7 +88,7 @@ importers:
         version: 0.7.8(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(tailwindcss@3.4.1)
       langchain:
         specifier: ^0.1.34
-        version: 0.1.34(@huggingface/inference@2.6.7)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(ignore@5.3.1)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(pdf-parse@1.1.1)(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
+        version: 0.1.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(ignore@5.3.1)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(pdf-parse@1.1.1)(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
       next:
         specifier: 14.1.1
         version: 14.1.1(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -248,6 +260,11 @@ packages:
 
   '@floating-ui/utils@0.2.1':
     resolution: {integrity: sha512-9TANp6GPoMtYzQdt54kfAyMmz1+osLlXdg2ENroU7zzrtflTLrrC/lgrIfaSe+Wu0b89GKccT7vxXA0MoAIO+Q==}
+
+  '@graphql-typed-document-node/core@3.2.0':
+    resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
   '@huggingface/inference@2.6.7':
     resolution: {integrity: sha512-vFBqvtU3LhxjufTs0jcRrDSc0nK+lah10bOgvlIn80lAH4JwMzHHPBQ4g4ECEdRD0PIt6EpTiidEZQq2sArb5Q==}
@@ -863,6 +880,14 @@ packages:
     resolution: {integrity: sha512-2s1RA3/eAnz4ahdzsMPBna9hfAqpFNlWdHiPxVGZ5yrhXsbLWWoPcF+22LCk9t0HJKtazi2GCIWc0HVXH9Abig==}
     engines: {node: '>=18'}
 
+  '@langchain/pinecone@0.0.4':
+    resolution: {integrity: sha512-9Rme771vHbRKXHy0IxOFFUyYtJfL+I1LgleF1cSkb2ZxgtOwN7uvh0Cp23WrCzEh8DHVEaRYPSbBC4W3YfqwfA==}
+    engines: {node: '>=18'}
+
+  '@langchain/weaviate@0.0.1':
+    resolution: {integrity: sha512-Lf6zgTf6i/fsPNlkDxPRLA3LEz2Wwgk6LNe54dByt0oZM4W+N4n5n/gDwojsXAKNEF5alXUv2N6yAOcUuXSbxg==}
+    engines: {node: '>=18'}
+
   '@mapbox/node-pre-gyp@1.0.11':
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
@@ -952,6 +977,10 @@ packages:
   '@panva/hkdf@1.1.1':
     resolution: {integrity: sha512-dhPeilub1NuIG0X5Kvhh9lH4iW3ZsHlnzwgwbOlgwQ2wG1IqFzsgHqmKPk3WzsdWAeaxKJxgM0+W433RmN45GA==}
 
+  '@pinecone-database/pinecone@2.2.0':
+    resolution: {integrity: sha512-qfVs9n5YyTmerIV1GE1u89xF1W3oFSF53STW68Oqyxey0dGq4775cCw8G5pnwoy872uqfh+tMRDME9bcWfinUw==}
+    engines: {node: '>=14.0.0'}
+
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
@@ -965,6 +994,9 @@ packages:
 
   '@rushstack/eslint-patch@1.10.2':
     resolution: {integrity: sha512-hw437iINopmQuxWPSUEvqE56NCPsiU8N4AYtfHmJFckclktzK9YQJieD3XkDCDH4OjL+C7zgPUh73R/nrcHrqw==}
+
+  '@sinclair/typebox@0.29.6':
+    resolution: {integrity: sha512-aX5IFYWlMa7tQ8xZr3b2gtVReCvg7f3LEhjir/JAjX2bJCMVJA5tIPv30wTD4KDfcwMd7DDYY3hFDeGmOgtrZQ==}
 
   '@supabase/auth-js@2.63.1':
     resolution: {integrity: sha512-iwdmIc/w5QN7aMfYThEgUt1l2i0KuohZ4XNk1adECg0LETQYEzmbVToKFKZLLZ+GyNtpsExSgVY/AUWOwubGXA==}
@@ -1243,6 +1275,9 @@ packages:
   ajv@6.12.6:
     resolution: {integrity: sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g==}
 
+  ajv@8.12.0:
+    resolution: {integrity: sha512-sRu1kpcO9yLtYxBKvqfTeh9KzZEwO3STyX1HT+4CaDzC6HpTGYhIhPIzj9XuKU7KYDwnaeh5hcOwjy1QuJzBPA==}
+
   ansi-regex@5.0.1:
     resolution: {integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==}
     engines: {node: '>=8'}
@@ -1509,6 +1544,21 @@ packages:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
     engines: {node: '>=10'}
 
+  chromadb@1.8.1:
+    resolution: {integrity: sha512-NpbYydbg4Uqt/9BXKgkZXn0fqpsh2Z1yjhkhKH+rcHMoq0pwI18BFSU2QU7Fk/ZypwGefW2AvqyE/3ZJIgy4QA==}
+    engines: {node: '>=14.17.0'}
+    peerDependencies:
+      '@google/generative-ai': ^0.1.1
+      cohere-ai: ^5.0.0 || ^6.0.0 || ^7.0.0
+      openai: ^3.0.0 || ^4.0.0
+    peerDependenciesMeta:
+      '@google/generative-ai':
+        optional: true
+      cohere-ai:
+        optional: true
+      openai:
+        optional: true
+
   chrome-trace-event@1.0.3:
     resolution: {integrity: sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==}
     engines: {node: '>=6.0'}
@@ -1518,6 +1568,10 @@ packages:
 
   client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
+
+  cliui@8.0.1:
+    resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
+    engines: {node: '>=12'}
 
   clone@0.1.19:
     resolution: {integrity: sha512-IO78I0y6JcSpEPHzK4obKdsL7E7oLdRVDVOLwr2Hkbjsb+Eoz0dxW6tef0WizoKu0gLC4oZSZuEF4U2K6w1WQw==}
@@ -1601,6 +1655,9 @@ packages:
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+
+  cross-fetch@3.1.8:
+    resolution: {integrity: sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==}
 
   cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -1968,6 +2025,10 @@ packages:
   expr-eval@2.0.2:
     resolution: {integrity: sha512-4EMSHGOPSwAfBiibw3ndnP0AvjDWLsMvGOvWEZ2F96IGk0bIVdjQisOHxReSkE13mHcfbuCiXw+G4y0zv6N8Eg==}
 
+  extract-files@9.0.0:
+    resolution: {integrity: sha512-CvdFfHkC95B4bBBk36hcEmvdR2awOdhhVUYH6S/zrVj3477zven/fJMYg7121h4T1xHZC+tetUpubpAhxwI7hQ==}
+    engines: {node: ^10.17.0 || ^12.0.0 || >= 13.7.0}
+
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
@@ -2059,6 +2120,10 @@ packages:
 
   form-data-encoder@1.7.2:
     resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
+
+  form-data@3.0.1:
+    resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
+    engines: {node: '>= 6'}
 
   form-data@4.0.0:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
@@ -2165,6 +2230,15 @@ packages:
 
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
+
+  graphql-request@5.2.0:
+    resolution: {integrity: sha512-pLhKIvnMyBERL0dtFI3medKqWOz/RhHdcgbZ+hMMIb32mEPa5MJSzS4AuXxfI4sRAu6JVVk5tvXuGfCWl9JYWQ==}
+    peerDependencies:
+      graphql: 14 - 16
+
+  graphql@16.8.1:
+    resolution: {integrity: sha512-59LZHPdGZVh695Ud9lRzPBVTtlX9ZCV150Er2W43ro37wVof0ctenSaskPPjN7lVTIN8mSZt8PHUNKZuNQUuxw==}
+    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   gunzip-maybe@1.4.2:
     resolution: {integrity: sha512-4haO1M4mLO91PW57BMsDFf75UmwoRX0GkdD+Faw+Lr+r/OZrOCS0pIBwOL1xCKQqnQzbNFGgK2V2CpBUPeFNTw==}
@@ -2395,6 +2469,9 @@ packages:
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
+  isomorphic-fetch@3.0.0:
+    resolution: {integrity: sha512-qvUtwJ3j6qwsF3jLxkZ72qCgjMysPzDfeV240JHiGZsANBYd+EEuu35v7dfrJ9Up0Ak07D7GGSkGhCHTqg/5wA==}
+
   iterator.prototype@1.1.2:
     resolution: {integrity: sha512-DR33HMMr8EzwuRL8Y9D3u2BMj8+RqSE850jfGu59kS7tbmPLzGkZmVSfyCFSDxuZiEY6Rzt3T2NA/qU+NwVj1w==}
 
@@ -2435,6 +2512,9 @@ packages:
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
+
+  json-schema-traverse@1.0.0:
+    resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
 
   json-schema@0.4.0:
     resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
@@ -2906,8 +2986,8 @@ packages:
       sass:
         optional: true
 
-  node-abi@3.60.0:
-    resolution: {integrity: sha512-zcGgwoXbzw9NczqbGzAWL/ToDYAxv1V8gL1D67ClbdkIfeeDBbY0GelZtC25ayLvVjr2q2cloHeQV1R0QAWqRQ==}
+  node-abi@3.62.0:
+    resolution: {integrity: sha512-CPMcGa+y33xuL1E0TcNIu4YyaZCxnnvkVaEXrsosR3FxN+fV8xvb7Mzpb7IgKler10qeMkE6+Dp8qJhpzdq35g==}
     engines: {node: '>=10'}
 
   node-addon-api@4.3.0:
@@ -3349,6 +3429,10 @@ packages:
   replicate@0.27.1:
     resolution: {integrity: sha512-oCPVE3cRWlim9wvNtsRyfZCfHblVArc5wAt8rbwrUQ7guHcz2cNiha9/rES/kkb5x3RNAy1JyD6BY900FMTydA==}
     engines: {git: '>=2.11.0', node: '>=18.0.0', npm: '>=7.19.0', yarn: '>=1.7.0'}
+
+  require-from-string@2.0.2:
+    resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
+    engines: {node: '>=0.10.0'}
 
   resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
@@ -3824,7 +3908,6 @@ packages:
 
   vectordb@0.4.16:
     resolution: {integrity: sha512-3DZVTgYUtOBR9tfQewSR+bhALujJgo++entcIcK1fqu2a2g4YqDY7o+qgRRxHzJSgXVIBGWqkyl66Tj0ldRIbQ==}
-    cpu: [x64, arm64]
     os: [darwin, linux, win32]
     peerDependencies:
       '@apache-arrow/ts': ^14.0.2
@@ -3847,6 +3930,10 @@ packages:
 
   wavesurfer.js@7.7.11:
     resolution: {integrity: sha512-27otJlDBcUSbMh/YkxEZN0yXTHINQNYSOl5aJplYlIaHw2u3BrABUzOmUZV3dKIy8udOLJXS/67y5pOIzgAg+w==}
+
+  weaviate-ts-client@2.1.1:
+    resolution: {integrity: sha512-d8yc2KnIEIV1beHAU8mhrElT3BoROoXGDsLlqFX8QGx3G+gOiPTRMc7SLy4F17+LvaUaTD0XkHvWX++4iehnsg==}
+    engines: {node: '>=16.0.0'}
 
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
@@ -3876,6 +3963,9 @@ packages:
     peerDependenciesMeta:
       webpack-cli:
         optional: true
+
+  whatwg-fetch@3.6.20:
+    resolution: {integrity: sha512-EqhiFU6daOA8kpjOWTL0olhVOF3i7OrFzSYiGsEMB8GcXS+RrzauAERX65xMeNWVqxA6HXH2m69Z9LaKKdisfg==}
 
   whatwg-url@13.0.0:
     resolution: {integrity: sha512-9WWbymnqj57+XEuqADHrCJ2eSXzn8WXIW/YSGaZtb2WKAInQ6CHfaUUcTyyver0p8BDg5StLQq8h1vtZuwmOig==}
@@ -4096,6 +4186,10 @@ snapshots:
 
   '@floating-ui/utils@0.2.1': {}
 
+  '@graphql-typed-document-node/core@3.2.0(graphql@16.8.1)':
+    dependencies:
+      graphql: 16.8.1
+
   '@huggingface/inference@2.6.7': {}
 
   '@humanwhocodes/config-array@0.11.14':
@@ -4156,7 +4250,7 @@ snapshots:
   '@lancedb/vectordb-win32-x64-msvc@0.4.16':
     optional: true
 
-  '@langchain/community@0.0.34(@huggingface/inference@2.6.7)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
+  '@langchain/community@0.0.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
     dependencies:
       '@langchain/core': 0.1.40
       '@langchain/openai': 0.0.15(encoding@0.1.13)
@@ -4166,19 +4260,22 @@ snapshots:
       zod: 3.22.5
     optionalDependencies:
       '@huggingface/inference': 2.6.7
+      '@pinecone-database/pinecone': 2.2.0
       '@supabase/postgrest-js': 1.15.2
       '@supabase/supabase-js': 2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+      chromadb: 1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13))
       closevector-common: 0.1.3
       closevector-web: 0.1.6
       mongodb: 6.5.0(mongodb-client-encryption@6.0.0)
       replicate: 0.27.1
       vectordb: 0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
       voy-search: 0.6.3
+      weaviate-ts-client: 2.1.1(encoding@0.1.13)(graphql@16.8.1)
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - encoding
 
-  '@langchain/community@0.0.50(@huggingface/inference@2.6.7)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
+  '@langchain/community@0.0.50(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
     dependencies:
       '@langchain/core': 0.1.40
       '@langchain/openai': 0.0.28(encoding@0.1.13)
@@ -4190,14 +4287,17 @@ snapshots:
       zod-to-json-schema: 3.22.5(zod@3.22.5)
     optionalDependencies:
       '@huggingface/inference': 2.6.7
+      '@pinecone-database/pinecone': 2.2.0
       '@supabase/postgrest-js': 1.15.2
       '@supabase/supabase-js': 2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3)
+      chromadb: 1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13))
       closevector-common: 0.1.3
       closevector-web: 0.1.6
       mongodb: 6.5.0(mongodb-client-encryption@6.0.0)
       replicate: 0.27.1
       vectordb: 0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
       voy-search: 0.6.3
+      weaviate-ts-client: 2.1.1(encoding@0.1.13)(graphql@16.8.1)
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - encoding
@@ -4235,6 +4335,22 @@ snapshots:
       zod-to-json-schema: 3.22.5(zod@3.22.5)
     transitivePeerDependencies:
       - encoding
+
+  '@langchain/pinecone@0.0.4':
+    dependencies:
+      '@langchain/core': 0.1.40
+      '@pinecone-database/pinecone': 2.2.0
+      flat: 5.0.2
+      uuid: 9.0.1
+
+  '@langchain/weaviate@0.0.1(encoding@0.1.13)(graphql@16.8.1)':
+    dependencies:
+      '@langchain/core': 0.1.40
+      uuid: 9.0.1
+      weaviate-ts-client: 2.1.1(encoding@0.1.13)(graphql@16.8.1)
+    transitivePeerDependencies:
+      - encoding
+      - graphql
 
   '@mapbox/node-pre-gyp@1.0.11(encoding@0.1.13)':
     dependencies:
@@ -4309,6 +4425,13 @@ snapshots:
 
   '@panva/hkdf@1.1.1': {}
 
+  '@pinecone-database/pinecone@2.2.0':
+    dependencies:
+      '@sinclair/typebox': 0.29.6
+      ajv: 8.12.0
+      cross-fetch: 3.1.8(encoding@0.1.13)
+      encoding: 0.1.13
+
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
@@ -4317,6 +4440,8 @@ snapshots:
   '@remix-run/router@1.15.3': {}
 
   '@rushstack/eslint-patch@1.10.2': {}
+
+  '@sinclair/typebox@0.29.6': {}
 
   '@supabase/auth-js@2.63.1':
     dependencies:
@@ -4684,6 +4809,13 @@ snapshots:
       json-schema-traverse: 0.4.1
       uri-js: 4.4.1
 
+  ajv@8.12.0:
+    dependencies:
+      fast-deep-equal: 3.1.3
+      json-schema-traverse: 1.0.0
+      require-from-string: 2.0.2
+      uri-js: 4.4.1
+
   ansi-regex@5.0.1: {}
 
   ansi-regex@6.0.1: {}
@@ -5027,11 +5159,26 @@ snapshots:
   chownr@2.0.0:
     optional: true
 
+  chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)):
+    dependencies:
+      cliui: 8.0.1
+      isomorphic-fetch: 3.0.0(encoding@0.1.13)
+    optionalDependencies:
+      openai: 4.38.1(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
   chrome-trace-event@1.0.3: {}
 
   classnames@2.5.1: {}
 
   client-only@0.0.1: {}
+
+  cliui@8.0.1:
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      wrap-ansi: 7.0.0
 
   clone@0.1.19: {}
 
@@ -5144,6 +5291,12 @@ snapshots:
   cookie@0.5.0: {}
 
   core-util-is@1.0.3: {}
+
+  cross-fetch@3.1.8(encoding@0.1.13):
+    dependencies:
+      node-fetch: 2.7.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
 
   cross-spawn@7.0.3:
     dependencies:
@@ -5647,6 +5800,8 @@ snapshots:
 
   expr-eval@2.0.2: {}
 
+  extract-files@9.0.0: {}
+
   fast-deep-equal@3.1.3: {}
 
   fast-fifo@1.3.2:
@@ -5741,6 +5896,12 @@ snapshots:
       signal-exit: 4.1.0
 
   form-data-encoder@1.7.2: {}
+
+  form-data@3.0.1:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
 
   form-data@4.0.0:
     dependencies:
@@ -5880,6 +6041,18 @@ snapshots:
   graceful-fs@4.2.11: {}
 
   graphemer@1.4.0: {}
+
+  graphql-request@5.2.0(encoding@0.1.13)(graphql@16.8.1):
+    dependencies:
+      '@graphql-typed-document-node/core': 3.2.0(graphql@16.8.1)
+      cross-fetch: 3.1.8(encoding@0.1.13)
+      extract-files: 9.0.0
+      form-data: 3.0.1
+      graphql: 16.8.1
+    transitivePeerDependencies:
+      - encoding
+
+  graphql@16.8.1: {}
 
   gunzip-maybe@1.4.2:
     dependencies:
@@ -6097,6 +6270,13 @@ snapshots:
 
   isexe@2.0.0: {}
 
+  isomorphic-fetch@3.0.0(encoding@0.1.13):
+    dependencies:
+      node-fetch: 2.7.0(encoding@0.1.13)
+      whatwg-fetch: 3.6.20
+    transitivePeerDependencies:
+      - encoding
+
   iterator.prototype@1.1.2:
     dependencies:
       define-properties: 1.2.1
@@ -6139,6 +6319,8 @@ snapshots:
 
   json-schema-traverse@0.4.1: {}
 
+  json-schema-traverse@1.0.0: {}
+
   json-schema@0.4.0: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
@@ -6168,10 +6350,10 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  langchain@0.1.34(@huggingface/inference@2.6.7)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(ignore@5.3.1)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(pdf-parse@1.1.1)(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)):
+  langchain@0.1.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(ignore@5.3.1)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(pdf-parse@1.1.1)(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)):
     dependencies:
       '@anthropic-ai/sdk': 0.9.1(encoding@0.1.13)
-      '@langchain/community': 0.0.50(@huggingface/inference@2.6.7)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
+      '@langchain/community': 0.0.50(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
       '@langchain/core': 0.1.40
       '@langchain/openai': 0.0.28(encoding@0.1.13)
       binary-extensions: 2.3.0
@@ -6188,12 +6370,15 @@ snapshots:
       zod: 3.22.5
       zod-to-json-schema: 3.22.5(zod@3.22.5)
     optionalDependencies:
+      '@pinecone-database/pinecone': 2.2.0
       '@supabase/supabase-js': 2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3)
       axios: 1.6.8
       cheerio: 1.0.0-rc.12
+      chromadb: 1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13))
       ignore: 5.3.1
       mongodb: 6.5.0(mongodb-client-encryption@6.0.0)
       pdf-parse: 1.1.1
+      weaviate-ts-client: 2.1.1(encoding@0.1.13)(graphql@16.8.1)
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - '@aws-crypto/sha256-js'
@@ -6562,7 +6747,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  node-abi@3.60.0:
+  node-abi@3.62.0:
     dependencies:
       semver: 7.6.0
     optional: true
@@ -6889,7 +7074,7 @@ snapshots:
       minimist: 1.2.8
       mkdirp-classic: 0.5.3
       napi-build-utils: 1.0.2
-      node-abi: 3.60.0
+      node-abi: 3.62.0
       pump: 3.0.0
       rc: 1.2.8
       simple-get: 4.0.1
@@ -7068,6 +7253,8 @@ snapshots:
   replicate@0.27.1:
     optionalDependencies:
       readable-stream: 4.5.2
+
+  require-from-string@2.0.2: {}
 
   resolve-from@4.0.0: {}
 
@@ -7662,6 +7849,14 @@ snapshots:
 
   wavesurfer.js@7.7.11: {}
 
+  weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1):
+    dependencies:
+      graphql-request: 5.2.0(encoding@0.1.13)(graphql@16.8.1)
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - encoding
+      - graphql
+
   web-streams-polyfill@3.3.3: {}
 
   web-streams-polyfill@4.0.0-beta.3: {}
@@ -7703,6 +7898,8 @@ snapshots:
       - '@swc/core'
       - esbuild
       - uglify-js
+
+  whatwg-fetch@3.6.20: {}
 
   whatwg-url@13.0.0:
     dependencies:
