@@ -79,6 +79,7 @@ const ChatbotPage = () => {
                 <option value="openai">GPT-3.5</option>
                 {/* <option value="replicate">Llama-2-Rplcte</option> */}
                 <option value="llamaII_fireworks">Llama-2-70b-Fwks</option>
+                <option value="llamaIII_fireworks">Llama-3-8b-Fwks</option>
                 <option value="qwen_72b_fireworks">Qwen-72b-Fwks</option>
                 <option value="mixtral_MoE8x7B_Instruct_fireworks">
                   Mixtral-MoE8x7B-Fwks
