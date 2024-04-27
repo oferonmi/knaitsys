@@ -9,9 +9,6 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 
 export const runtime = "edge";
 
-// Before running, follow set-up instructions at
-// https://js.langchain.com/docs/modules/indexes/vector_stores/integrations/supabase
-
 /**
  * This handler takes input text, splits it into chunks, and embeds those chunks
  * into a vector store for later retrieval. See the following docs for more information:
@@ -43,8 +40,6 @@ export async function POST(req: NextRequest) {
         //     process.env.SUPABASE_PRIVATE_KEY!,
         // );
 
-        // const voyClient = new VoyClient();
-
         const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
             chunkSize: 256,
             chunkOverlap: 20,
@@ -61,12 +56,6 @@ export async function POST(req: NextRequest) {
         //         tableName: "documents",
         //         queryName: "match_documents",
         //     },
-        // );
-
-        // const vectorstore = await VoyVectorStore.fromDocuments(
-        //     splitDocuments, 
-        //     new OpenAIEmbeddings(), 
-        //     voyClient
         // );
 
         const pinecone = new Pinecone({

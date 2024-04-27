@@ -11,9 +11,11 @@ export function TextUploadForm(props: {
   const [isLoading, setIsLoading] = useState(false);
   const [document, setDocument] = useState(DEFAULT_RETRIEVAL_TEXT);
 
-  const ingest = async (e: FormEvent<HTMLFormElement>) => {
+  // Pass on raw text to appropriate API for RAG ingestion
+  const ingestRawText = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+
     const response = await fetch("/api/retrieval/raw_text_ingest", {
       method: "POST",
       body: JSON.stringify({
@@ -43,7 +45,7 @@ export function TextUploadForm(props: {
   };
 
   return (
-    <form onSubmit={ingest} className="flex w-full" id="raw-textarea-form">
+    <form onSubmit={ingestRawText} className="flex w-full" id="raw-textarea-form">
       <textarea
         className="grow mb-4 mr-8 p-4 rounded-lg border border-kaito-brand-ash-green w-5/6"
         id="raw-text-injest"

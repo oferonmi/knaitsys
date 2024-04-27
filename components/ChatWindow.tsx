@@ -87,7 +87,9 @@ export function ChatWindow(props: {
   const urlForm = showUrlEntryForm && (
     <WebpageUploadForm setReadyToChat={setReadyToChat} />
   );
-  const searchForm = showSearchForm && <SearchIndexUploadForm />;
+  const searchForm = showSearchForm && (
+    <SearchIndexUploadForm setReadyToChat={setReadyToChat} />
+  );
 
   const emptyStateComponent = (
     <div className="flex flex-col  left-0 right-0 bottom-0 ">

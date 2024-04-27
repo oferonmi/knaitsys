@@ -1,69 +1,101 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+// import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
+
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
+
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+
 import { useState } from "react";
 
 export const runtime = "edge";
 
-// Before running, follow set-up instructions at
-// https://js.langchain.com/docs/modules/indexes/vector_stores/integrations/supabase
-
 /**
- * This handler takes input text, splits it into chunks, and embeds those chunks
- * into a vector store for later retrieval. See the following docs for more information:
+ * This handler takes URL which it passes to a web loader to scape text from URL page. It then splits 
+ * the result into chunks, and embeds *those chunks into a vector store for later retrieval. 
+ * See the following docs for more *information:
  *
  * https://js.langchain.com/docs/modules/data_connection/document_transformers/text_splitters/recursive_text_splitter
- * https://js.langchain.com/docs/modules/data_connection/vectorstores/integrations/supabase
  */
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const text = body.text;
+  const urlText = body.text;
 
-  console.log(typeof text);
-
-  if (process.env.NEXT_PUBLIC_DEMO === "true") {
-    return NextResponse.json(
-      {
-        error: [
-          "Ingest is not supported in demo mode.",
-          "Please set up your own version of the repo here: https://github.com/langchain-ai/langchain-nextjs-template",
-        ].join("\n"),
-      },
-      { status: 403 }
-    );
-  }
+  // console.log(typeof urlText);
 
   try {
-    const client = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PRIVATE_KEY!
-    );
+    // load webpage data using Cheerio
+    const loader = new CheerioWebBaseLoader(urlText);
 
-    const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
-      chunkSize: 256,
-      chunkOverlap: 20,
-    });
+    //load webpage data using Puppeteer. Still needs fix with extensive dependency issues
+    // const loader = new PuppeteerWebBaseLoader(urlText);
+    // const loader = new PuppeteerWebBaseLoader(urlText, {
+    //   launchOptions: {
+    //     headless: true,
+    //   },
+    //   gotoOptions: {
+    //     waitUntil: "domcontentloaded",
+    //   },
+    //   /**  Pass custom evaluate , in this case you get page and browser instances */
+    //   async evaluate(page, browser) {
+    //     await page.waitForResponse(inputUrl);
 
-    // for webpage content chunking
-    const splitDocuments = await splitter.splitDocuments(text);
+    //     const result = await page.evaluate(() => document.body.innerHTML);
+    //     await browser.close();
+    //     return result;
+    //   },
+    // });
+    const page_data = await loader.load(); // Text may need some cleaning
+    console.log(JSON.stringify(page_data)); // comment later
 
-    const vectorstore = await SupabaseVectorStore.fromDocuments(
-      splitDocuments,
-      new OpenAIEmbeddings(),
-      {
-        client,
-        tableName: "documents",
-        queryName: "match_documents",
-      }
-    );
+    //TODO: Uncomment code below to splits  scapped webpage text into chunks, and embed them into a vector store for later retrieval.
+    // const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
+    //   chunkSize: 256,
+    //   chunkOverlap: 20,
+    // });
 
-    return NextResponse.json(
-      { ok: true }, 
-      { status: 200 },
-    );
+    // // for webpage content chunking
+    // const splitDocuments = await splitter.splitDocuments(page_data);
+
+    // save in vector store
+    // const pinecone = new Pinecone({
+    //   apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
+    // });
+
+    // const pineconeIndex = pinecone.Index(
+    //   process.env.NEXT_PUBLIC_PINECONE_INDEX!
+    // );
+
+    // const vectorstore = await PineconeStore.fromDocuments(
+    //   splitDocuments,
+    //   new OpenAIEmbeddings(),
+    //   {
+    //     pineconeIndex,
+    //     maxConcurrency: 5,
+    //   }
+    // );
+
+    // const client = createClient(
+    //   process.env.SUPABASE_URL!,
+    //   process.env.SUPABASE_PRIVATE_KEY!
+    // );
+
+    // const vectorstore = await SupabaseVectorStore.fromDocuments(
+    //   splitDocuments,
+    //   new OpenAIEmbeddings(),
+    //   {
+    //     client,
+    //     tableName: "documents",
+    //     queryName: "match_documents",
+    //   }
+    // );
+
+    return NextResponse.json({ ok: true }, { status: 200 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
