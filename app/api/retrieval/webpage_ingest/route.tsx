@@ -2,14 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
 import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
-// import { PuppeteerWebBaseLoader } from "langchain/document_loaders/web/puppeteer";
 
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseVectorStore } from "langchain/vectorstores/supabase";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
 
-import { OpenAIEmbeddings } from "langchain/embeddings/openai";
+import { OpenAIEmbeddings } from "@langchain/openai";
 
 import { useState } from "react";
 
@@ -30,41 +29,28 @@ export async function POST(req: NextRequest) {
 
   try {
     // load webpage data using Cheerio
-    const loader = new CheerioWebBaseLoader(urlText);
+    const webPageLoader = new CheerioWebBaseLoader(urlText);
+    const web_page_data = await webPageLoader.load(); // Text may need some cleaning
 
-    //load webpage data using Puppeteer. Still needs fix with extensive dependency issues
-    // const loader = new PuppeteerWebBaseLoader(urlText);
-    // const loader = new PuppeteerWebBaseLoader(urlText, {
-    //   launchOptions: {
-    //     headless: true,
-    //   },
-    //   gotoOptions: {
-    //     waitUntil: "domcontentloaded",
-    //   },
-    //   /**  Pass custom evaluate , in this case you get page and browser instances */
-    //   async evaluate(page, browser) {
-    //     await page.waitForResponse(inputUrl);
-
-    //     const result = await page.evaluate(() => document.body.innerHTML);
-    //     await browser.close();
-    //     return result;
-    //   },
-    // });
-    const page_data = await loader.load(); // Text may need some cleaning
-    const page_text = page_data[0]["pageContent"];
-    console.log(page_text); // comment later
+    // const web_page_text = web_page_data[0]["pageContent"];
+    // console.log(web_page_text); // comment later
 
     //TODO: Uncomment code below to splits  scapped webpage text into chunks, and embed them into a vector store for later retrieval.
-    const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
-      chunkSize: 256,
-      chunkOverlap: 20,
-    });
+    const splitter = new RecursiveCharacterTextSplitter(
+      {
+        chunkSize: 500,
+        chunkOverlap: 50,
+      }
+    );
 
     // for webpage content chunking
-    // const splitDocuments = await splitter.createDocuments([page_text]);
-    // const splitDocuments = await splitter.splitDocuments([page_data[0]]);
+    const splitDocs = await splitter.splitDocuments(web_page_data);
 
     // save in vector store
+    const embeddings = new OpenAIEmbeddings({
+      openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+    });
+
     const pinecone = new Pinecone({
       apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
     });
@@ -73,14 +59,15 @@ export async function POST(req: NextRequest) {
       process.env.NEXT_PUBLIC_PINECONE_INDEX!
     );
 
-    // const vectorstore = await PineconeStore.fromDocuments(
-    //   splitDocuments,
-    //   new OpenAIEmbeddings(),
-    //   {
-    //     pineconeIndex,
-    //     maxConcurrency: 5,
-    //   }
-    // );
+    const vectorstore = new PineconeStore(
+      embeddings, 
+      {
+        pineconeIndex,
+        maxConcurrency: 5,
+      }
+    );
+
+    await vectorstore.addDocuments(splitDocs);
 
     // const client = createClient(
     //   process.env.SUPABASE_URL!,
@@ -89,7 +76,7 @@ export async function POST(req: NextRequest) {
 
     // const vectorstore = await SupabaseVectorStore.fromDocuments(
     //   splitDocuments,
-    //   new OpenAIEmbeddings(),
+    //   embeddings,
     //   {
     //     client,
     //     tableName: "documents",
