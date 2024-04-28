@@ -51,25 +51,27 @@ export async function POST(req: NextRequest) {
     //   },
     // });
     const page_data = await loader.load(); // Text may need some cleaning
-    console.log(JSON.stringify(page_data)); // comment later
+    const page_text = page_data[0]["pageContent"];
+    console.log(page_text); // comment later
 
     //TODO: Uncomment code below to splits  scapped webpage text into chunks, and embed them into a vector store for later retrieval.
-    // const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
-    //   chunkSize: 256,
-    //   chunkOverlap: 20,
-    // });
+    const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
+      chunkSize: 256,
+      chunkOverlap: 20,
+    });
 
-    // // for webpage content chunking
-    // const splitDocuments = await splitter.splitDocuments(page_data);
+    // for webpage content chunking
+    // const splitDocuments = await splitter.createDocuments([page_text]);
+    // const splitDocuments = await splitter.splitDocuments([page_data[0]]);
 
     // save in vector store
-    // const pinecone = new Pinecone({
-    //   apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
-    // });
+    const pinecone = new Pinecone({
+      apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
+    });
 
-    // const pineconeIndex = pinecone.Index(
-    //   process.env.NEXT_PUBLIC_PINECONE_INDEX!
-    // );
+    const pineconeIndex = pinecone.Index(
+      process.env.NEXT_PUBLIC_PINECONE_INDEX!
+    );
 
     // const vectorstore = await PineconeStore.fromDocuments(
     //   splitDocuments,

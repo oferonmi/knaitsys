@@ -2,7 +2,6 @@
 import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
 import { SendIcon } from "@/components/Icons";
 import { toast } from "react-toastify";
-import { Console } from "console";
 
 export function WebpageUploadForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;

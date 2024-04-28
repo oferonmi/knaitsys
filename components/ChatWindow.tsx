@@ -287,7 +287,7 @@ export function ChatWindow(props: {
   const chatInterfaceComponent = (
     <div className="flex flex-col w-full">
       <div
-        className="flex flex-col-reverse w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-20"
+        className="flex flex-col-reverse w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40"
         ref={messageContainerRef}
       >
         {messages.length > 0
