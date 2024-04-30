@@ -18,21 +18,29 @@ import { SearchIndexUploadForm } from "@/components/SearchIndexUploadForm";
 import { Footer } from "@/components/Footer";
 
 export function ChatWindow(props: {
-  endpoint: string;
+  endPoint: string;
+  setEndPoint: Dispatch<SetStateAction<string>>;
   placeholder?: string;
   titleText?: string;
   emoji?: string;
   readyToChat: boolean;
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
 }) {
+  // const { readyToChat, setReadyToChat } = props;
+  const {
+    endPoint,
+    setEndPoint,
+    placeholder,
+    titleText = "An LLM",
+    emoji,
+    readyToChat,
+    setReadyToChat,
+  } = props;
 
-  const {readyToChat, setReadyToChat } = props;
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
 
-  const { endpoint, placeholder, titleText = "An LLM", emoji } = props;
 
-  // const [readyToChat, setReadyToChat] = useState(false);
   const [showIngestForm, setShowIngestForm] = useState(true);
   const [showDocEmbedForm, setShowDocEmbedForm] = useState(false);
   const [showUrlEntryForm, setShowUrlEntryForm] = useState(false);
@@ -50,7 +58,7 @@ export function ChatWindow(props: {
     isLoading: chatEndpointIsLoading,
     setMessages,
   } = useChat({
-    api: endpoint,
+    api: endPoint,
     onResponse(response) {
       const sourcesHeader = response.headers.get("x-sources");
       const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
