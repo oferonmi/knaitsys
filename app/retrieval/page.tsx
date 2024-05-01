@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export default function RetrievalPage() {
   const [readyToChat, setReadyToChat] = useState(false);
-  const [apiEndPoint, setApiEndPoint] = useState("/api/chat/retrieval");
+  const [apiEndPoint, setApiEndPoint] = useState("/api/chat/retrieval/remote_retrieval");
 
   return (
     <>

@@ -26,7 +26,7 @@ export function ChatWindow(props: {
   readyToChat: boolean;
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
 }) {
-  // const { readyToChat, setReadyToChat } = props;
+  
   const {
     endPoint,
     setEndPoint,
@@ -39,7 +39,6 @@ export function ChatWindow(props: {
 
   const messageContainerRef = useRef<HTMLDivElement | null>(null);
   const router = useRouter();
-
 
   const [showIngestForm, setShowIngestForm] = useState(true);
   const [showDocEmbedForm, setShowDocEmbedForm] = useState(false);
