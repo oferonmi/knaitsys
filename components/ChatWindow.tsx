@@ -85,6 +85,24 @@ export function ChatWindow(props: {
     }
   }, [messages]);
 
+  const sendMessage = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (messageContainerRef.current) {
+      messageContainerRef.current.classList.add("grow");
+    }
+
+    if (!messages.length) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+
+    if (chatEndpointIsLoading) {
+      return;
+    }
+
+    handleSubmit(e);
+  };
+
   const embedForm = showDocEmbedForm && (
     <EmbedPdfsForm setReadyToChat={setReadyToChat} />
   );
@@ -265,13 +283,13 @@ export function ChatWindow(props: {
         {/* main section */}
         <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen">
           <h1 className="text-center text-2xl md:text-4xl mb-4 text-gray-700">
-            Explore your document by Chatting to it.
+            Chat to your documents and the web.
           </h1>
 
-          <p className="text-black text-xl text-center">
-            Upload raw, PDF, webpage or search results&apos; text corpus. A chat
-            interface appears with successfull upload, try asking any question
-            about the content of the uploaded text/document.
+          <p className="text-black text-lg text-center">
+            Upload text corpuses using options on the left. A chat
+            interface appears on successfull upload, so you can ask questions
+            about the uploaded content.
           </p>
 
           <br></br>
@@ -285,32 +303,6 @@ export function ChatWindow(props: {
       {/* {!readyToChat && <Footer />} */}
     </>
   );
-
-  async function sendMessage(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (messageContainerRef.current) {
-      messageContainerRef.current.classList.add("grow");
-    }
-
-    if (!messages.length) {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-    }
-
-    if (chatEndpointIsLoading) {
-      return;
-    }
-
-    handleSubmit(e);
-  }
-
-  // const textUploadComponent = (
-  //   <>
-  //     {messages.length === 0 && emptyStateComponent}
-  //     {messages.length === 0 && embedForm}
-  //     {messages.length === 0 && ingestForm}
-  //   </>
-  // );
 
   const chatInterfaceComponent = (
     <div className="flex flex-col w-full">

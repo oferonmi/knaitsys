@@ -85,6 +85,10 @@ export function EmbedPdfsForm(props: {
 
   return (
     <>
+      <h1 className="text-center  mb-4 text-kaito-brand-ash-green">
+        Upload your PDF file, click upload and chat to it.
+      </h1>
+
       <form onSubmit={embedPDF} className="flex w-full">
         <label
           {...getRootProps({
@@ -128,7 +132,7 @@ export function EmbedPdfsForm(props: {
           </ul> */}
         </label>
 
-        <Tooltip content="Upload" >
+        <Tooltip content="Upload">
           <button
             type="submit"
             className="flex shrink-0 px-5 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full max-h-24 max-w-24 items-center"
