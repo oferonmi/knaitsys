@@ -40,7 +40,7 @@ const TextProcessorPage = () => {
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <Link href="/rag">
+          <Link href="/retrieval">
             <ClipBoardDataFullIcon />
             <p>Retrieval</p>
           </Link>

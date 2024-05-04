@@ -18,11 +18,11 @@ export const Header = async ({menu}) => {
         <div className="flex flex-col border-b-2">
             <header className="bg-gray-100 border-gray-200 w-full items-center space-x-6 sticky top-0"> {/*z-20 fixed*/}
 
-                <div className="md:flex md:items-center md:justify-between md:mx-auto">
+                <div className="md:flex md:items-center md:justify-between">
 
                     <Link href="/ai_tools" passHref className="py-1 w-auto h-auto">
                         <div className="flex flex-row">
-                            <div>
+                            <div className="ml-0 ">
                                 <Image src="/logos/D9E2D5_3E6765/KAITO_logos_transparent.png" alt="App logo" width={115} height={115} />
                             </div>
                             <div className="mt-4">

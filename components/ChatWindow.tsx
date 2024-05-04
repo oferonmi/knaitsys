@@ -124,7 +124,7 @@ export function ChatWindow(props: {
           // className={`flex ${
           //   showUrlEntryForm || showSearchForm ? "justify-center" : ""
           // } gap-2 px-4 md:px-8 grow-0`}
-          className="flex grow-0 gap-2 border-r border-slate-300 h-screen"
+          className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen"
         >
           <ul>
             <li className="p-3">
