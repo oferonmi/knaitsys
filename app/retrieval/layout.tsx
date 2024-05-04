@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Kaitosys - RAG",
+  title: "Kaitosys - Retrieval",
   description: "Query text documents by leveraging LLMs",
 };
 

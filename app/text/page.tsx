@@ -35,14 +35,14 @@ const TextProcessorPage = () => {
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
           <Link href="/summarizer">
             <CardTextIcon />
-            <p>Sumizr</p>
+            <p>Summarise</p>
           </Link>
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
           <Link href="/rag">
             <ClipBoardDataFullIcon />
-            <p>RAG</p>
+            <p>Retrieval</p>
           </Link>
         </div>
       </div>
