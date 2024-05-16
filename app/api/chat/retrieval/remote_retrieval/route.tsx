@@ -7,11 +7,7 @@ import {
 
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
-import { createClient } from "@supabase/supabase-js";
-import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { Voy as VoyClient } from "voy-search";
-import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
-import { Chroma } from "@langchain/community/vectorstores/chroma";
+
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
 import { Document } from "@langchain/core/documents";
@@ -85,28 +81,6 @@ export async function POST(req: NextRequest) {
       modelName: "gpt-3.5-turbo-1106",
       temperature: 0.2,
     });
-
-    // const client = createClient(
-    //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    //   process.env.NEXT_PUBLIC_SUPABASE_API_KEY!,
-    // );
-
-    // const voyClient = new VoyClient();
-
-    // const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
-    //   client,
-    //   tableName: "documents",
-    //   queryName: "match_documents",
-    // });
-
-    // const vectorstore = new VoyVectorStore(voyClient, new OpenAIEmbeddings());
-    // const vectorstore = new Chroma (new OpenAIEmbeddings(), {
-    //     collectionName: "kaitosys-docs",
-    //     url: "http://localhost:8000", // Optional, will default to this value
-    //     collectionMetadata: {
-    //         "hnsw:space": "cosine",
-    //     }, // Optional, can be used to specify the distance method of the embedding space https://docs.trychroma.com/usage-guide#changing-the-distance-function
-    // });
 
     const pinecone = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!,
@@ -190,13 +164,6 @@ export async function POST(req: NextRequest) {
         }),
       ),
     ).toString("base64");
-
-    // return new StreamingTextResponse(stream, {
-    //   headers: {
-    //     "x-message-index": (previousMessages.length + 1).toString(),
-    //     "x-sources": serializedSources,
-    //   },
-    // });
 
     return new StreamingTextResponse(
       stream.pipeThrough(createStreamDataTransformer()), 

@@ -7,7 +7,7 @@ export const HomeContent = () => {
 
             <h1 className="font-mono text-5xl text-white mt-30">
                 {/* Craft your own AI Research Assistant. */}
-                Use AI to understand concepts and create.
+                Use AI to understand and innovate.
             </h1>
 
             <p className="mt-2 text-xl text-black">

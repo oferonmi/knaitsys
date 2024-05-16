@@ -16,7 +16,7 @@ importers:
         version: 2.6.7
       '@langchain/community':
         specifier: ^0.0.34
-        version: 0.0.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
+        version: 0.0.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0)(redis@4.6.13)(vectordb@0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
       '@langchain/core':
         specifier: 0.1.40
         version: 0.1.40
@@ -26,6 +26,9 @@ importers:
       '@langchain/pinecone':
         specifier: ^0.0.4
         version: 0.0.4
+      '@langchain/redis':
+        specifier: ^0.0.3
+        version: 0.0.3
       '@langchain/weaviate':
         specifier: ^0.0.1
         version: 0.0.1(encoding@0.1.13)(graphql@16.8.1)
@@ -71,6 +74,9 @@ importers:
       chromadb:
         specifier: ^1.8.1
         version: 1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13))
+      closevector-web:
+        specifier: ^0.1.6
+        version: 0.1.6
       encoding:
         specifier: ^0.1.13
         version: 0.1.13
@@ -93,8 +99,8 @@ importers:
         specifier: ^24.0.0
         version: 24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3)
       langchain:
-        specifier: ^0.1.34
-        version: 0.1.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(ignore@5.3.1)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(pdf-parse@1.1.1)(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
+        specifier: ^0.1.36
+        version: 0.1.36(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(ignore@5.3.1)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0)(pdf-parse@1.1.1)(redis@4.6.13)(vectordb@0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
       next:
         specifier: 14.1.1
         version: 14.1.1(@opentelemetry/api@1.8.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -134,9 +140,9 @@ importers:
       react-toastify:
         specifier: ^10.0.5
         version: 10.0.5(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      replicate:
-        specifier: ^0.27.1
-        version: 0.27.1
+      redis:
+        specifier: ^4.6.13
+        version: 4.6.13
       stream:
         specifier: ^0.0.2
         version: 0.0.2
@@ -153,11 +159,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
       vectordb:
-        specifier: ^0.4.16
-        version: 0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
-      voy-search:
-        specifier: ^0.6.3
-        version: 0.6.3
+        specifier: ^0.4.20
+        version: 0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
       wavesurfer.js:
         specifier: ^7.7.11
         version: 7.7.11
@@ -211,12 +214,12 @@ packages:
     resolution: {integrity: sha512-2ofRCjnnA9y+wk8b9IAREroeUP02KHp431N2mhKniy2yKIDKpbrHv9eXwm8cBeWQYcJmzv5qKCu65P47eCF7CQ==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/helper-validator-identifier@7.22.20':
-    resolution: {integrity: sha512-Y4OZ+ytlatR8AI+8KZfKuL5urKp7qey08ha31L8b3BwewJAoJamTzyvxPR/5D+KkdJCGPq/+8TukHBlY10FX9A==}
+  '@babel/helper-validator-identifier@7.24.5':
+    resolution: {integrity: sha512-3q93SSKX2TWCG30M2G2kwaKeTYgEUp5Snjuj8qm729SObL6nbtUldAi37qbxkD5gg3xnBio+f9nqpSepGZMvxA==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/parser@7.24.4':
-    resolution: {integrity: sha512-zTvEBcghmeBma9QIGunWevvBAp4/Qu9Bdq+2k0Ot4fVMD6v3dsC9WOcRSKk7tRRyBM/53yKMJko9xOatGQAwSg==}
+  '@babel/parser@7.24.5':
+    resolution: {integrity: sha512-EOv5IK8arwh3LI47dz1b0tKUb/1uhHAnHJOrjgtQMIpu1uXd9mlFrJg9IUgGUgZ41Ch0K8REPTYpO7B76b4vJg==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -224,8 +227,8 @@ packages:
     resolution: {integrity: sha512-dkxf7+hn8mFBwKjs9bvBlArzLVxVbS8usaPUDd5p2a9JCL9tB8OaOVN1isD4+Xyk4ns89/xeOmbQvgdK7IIVdA==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/types@7.24.0':
-    resolution: {integrity: sha512-+j7a5c253RfKh8iABBhywc8NSfP5LURe7Uh4qpsh6jc+aLJguvmIUBdjSdEMQv2bENrCR5MfRdjGo7vzS/ob7w==}
+  '@babel/types@7.24.5':
+    resolution: {integrity: sha512-6mQNsaLeXTw0nxYUYu+NSa4Hx4BlF1x1x8/PMFbiR+GBSr+2DkECc69b8hgy2frEodNcvPffeH8YfWd3LI6jhQ==}
     engines: {node: '>=6.9.0'}
 
   '@eslint-community/eslint-utils@4.4.0':
@@ -312,28 +315,28 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@lancedb/vectordb-darwin-arm64@0.4.16':
-    resolution: {integrity: sha512-RtuizzrZIVDYQ4ZZIMQRHGuV0DvOV93lyvivJJBLP1zCORMHEtEduaVbFE/+H0OCo0oqPsKXEpbc0nUEXKQqRg==}
+  '@lancedb/vectordb-darwin-arm64@0.4.20':
+    resolution: {integrity: sha512-ffP2K4sA5mQTgePyARw1y8dPN996FmpvyAYoWO+TSItaXlhcXvc+KVa5udNMCZMDYeEnEv2Xpj6k4PwW3oBz+A==}
     cpu: [arm64]
     os: [darwin]
 
-  '@lancedb/vectordb-darwin-x64@0.4.16':
-    resolution: {integrity: sha512-bxuh0scgVzAryZScRiTS3Z6hMZA3ekBTataDrlEJ/ddPTcAm14oQb8qrQu3mjWsYPMxlFHpSLMAJSU9SkWZbgg==}
+  '@lancedb/vectordb-darwin-x64@0.4.20':
+    resolution: {integrity: sha512-GSYsXE20RIehDu30FjREhJdEzhnwOTV7ZsrSXagStzLY1gr7pyd7sfqxmmUtdD09di7LnQoiM71AOpPTa01YwQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@lancedb/vectordb-linux-arm64-gnu@0.4.16':
-    resolution: {integrity: sha512-howoWlHsOwDHm3jl1BC1a1NZ/MJR4J98jSLLfzmmQu071fj5IrZmKv1RyCYNWLm3KHxl+5XVkWxJOghb9x0ByQ==}
+  '@lancedb/vectordb-linux-arm64-gnu@0.4.20':
+    resolution: {integrity: sha512-FpNOjOsz3nJVm6EBGyNgbOW2aFhsWZ/igeY45Z8hbZaaK2YBwrg/DASoNlUzgv6IR8cUaGJ2irNVJfsKR2cG6g==}
     cpu: [arm64]
     os: [linux]
 
-  '@lancedb/vectordb-linux-x64-gnu@0.4.16':
-    resolution: {integrity: sha512-oKx97pP8fnh+pm1mSVZ2+1VPqgT073iHT5nt+3wg7HP8A9XMGlCpdDHM/vC2NNCjbb9j64I5Tq/2x7s33bUfaw==}
+  '@lancedb/vectordb-linux-x64-gnu@0.4.20':
+    resolution: {integrity: sha512-pOqWjrRZQSrLTlQPkjidRii7NZDw8Xu9pN6ouVu2JAK8n81FXaPtFCyAI+Y3v9GpnYDN0rvD4eQ36aHAVPsa2g==}
     cpu: [x64]
     os: [linux]
 
-  '@lancedb/vectordb-win32-x64-msvc@0.4.16':
-    resolution: {integrity: sha512-klG2HHeQ/CuLVFF3ZKJ61BIurEjqtTBxFh0CXL5aCG+pbA55IfzDDyhpGk2yCldZcF/XuNIufyRAqhJPlQzuVg==}
+  '@lancedb/vectordb-win32-x64-msvc@0.4.20':
+    resolution: {integrity: sha512-5J5SsYSJ7jRCmU/sgwVHdrGz43B/7R2T9OEoFTKyVAtqTZdu75rkytXyn9SyEayXVhlUOaw76N0ASm0hAoDS/A==}
     cpu: [x64]
     os: [win32]
 
@@ -890,6 +893,14 @@ packages:
     resolution: {integrity: sha512-9Rme771vHbRKXHy0IxOFFUyYtJfL+I1LgleF1cSkb2ZxgtOwN7uvh0Cp23WrCzEh8DHVEaRYPSbBC4W3YfqwfA==}
     engines: {node: '>=18'}
 
+  '@langchain/redis@0.0.3':
+    resolution: {integrity: sha512-IrXuoghUwJwK4PqlIbx480UVeLF9Og0SiOVb0zJtUE0vgAirjaIaUO6HQRPfOHtHfKgI3XIXe3Zz0Dm32azX2Q==}
+    engines: {node: '>=18'}
+
+  '@langchain/textsplitters@0.0.0':
+    resolution: {integrity: sha512-3hPesWomnmVeYMppEGYbyv0v/sRUugUdlFBNn9m1ueJYHAIKbvCErkWxNUH3guyKKYgJVrkvZoQxcd9faucSaw==}
+    engines: {node: '>=18'}
+
   '@langchain/weaviate@0.0.1':
     resolution: {integrity: sha512-Lf6zgTf6i/fsPNlkDxPRLA3LEz2Wwgk6LNe54dByt0oZM4W+N4n5n/gDwojsXAKNEF5alXUv2N6yAOcUuXSbxg==}
     engines: {node: '>=18'}
@@ -898,8 +909,8 @@ packages:
     resolution: {integrity: sha512-Yhlar6v9WQgUp/He7BdgzOz8lqMQ8sU+jkCq7Wx8Myc5YFJLbEe7lgui/V7G1qB1DJykHSGwreceSaD60Y0PUQ==}
     hasBin: true
 
-  '@mongodb-js/saslprep@1.1.5':
-    resolution: {integrity: sha512-XLNOMH66KhJzUJNwT/qlMnS4WsNDWD5ASdyaSH3EtK+F4r/CFGa3jT4GNi4mfOitGvWXtdLgQJkQjxSVrio+jA==}
+  '@mongodb-js/saslprep@1.1.6':
+    resolution: {integrity: sha512-jqTTXQ46H8cAxmXBu8wm1HTSIMBMrIcoVrsjdQkKdMBj3il/fSCgWyya4P2I1xjPBl69mw+nRphrPlcIqBd20Q==}
 
   '@neon-rs/load@0.0.74':
     resolution: {integrity: sha512-/cPZD907UNz55yrc/ud4wDgQKtU1TvkD9jeqZWG6J4IMmZkp6zgjkQcKA8UvpkZlcpPHvc8J17sGzLFbP/LUYg==}
@@ -993,6 +1004,35 @@ packages:
 
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
+  '@redis/bloom@1.2.0':
+    resolution: {integrity: sha512-HG2DFjYKbpNmVXsa0keLHp/3leGJz1mjh09f2RLGGLQZzSHpkmZWuwJbAvo3QcRY8p80m5+ZdXZdYOSBLlp7Cg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/client@1.5.14':
+    resolution: {integrity: sha512-YGn0GqsRBFUQxklhY7v562VMOP0DcmlrHHs3IV1mFE3cbxe31IITUkqhBcIhVSI/2JqtWAJXg5mjV4aU+zD0HA==}
+    engines: {node: '>=14'}
+
+  '@redis/graph@1.1.1':
+    resolution: {integrity: sha512-FEMTcTHZozZciLRl6GiiIB4zGm5z5F3F6a6FZCyrfxdKOhFlGkiAqlexWMBzCi4DcRoyiOsuLfW+cjlGWyExOw==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/json@1.0.6':
+    resolution: {integrity: sha512-rcZO3bfQbm2zPRpqo82XbW8zg4G/w4W3tI7X8Mqleq9goQjAGLL7q/1n1ZX4dXEAmORVZ4s1+uKLaUOg7LrUhw==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/search@1.1.6':
+    resolution: {integrity: sha512-mZXCxbTYKBQ3M2lZnEddwEAks0Kc7nauire8q20oA0oA/LoA+E/b5Y5KZn232ztPb1FkIGqo12vh3Lf+Vw5iTw==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
+
+  '@redis/time-series@1.0.5':
+    resolution: {integrity: sha512-IFjIgTusQym2B5IZJG3XKr5llka7ey84fw/NOYqESP5WUfQs9zz1ww/9+qoz4ka/S6KcGBodzlCeZ5UImKbscg==}
+    peerDependencies:
+      '@redis/client': ^1.0.0
 
   '@remix-run/router@1.15.3':
     resolution: {integrity: sha512-Oy8rmScVrVxWZVOpEF57ovlnhpZ8CCPlnIIumVcV9nFdiSIrus99+Lw78ekXyGvVDlIsFJbSfmSovJUhCWYV3w==}
@@ -1453,9 +1493,6 @@ packages:
   bl@0.8.2:
     resolution: {integrity: sha512-pfqikmByp+lifZCS0p6j6KreV6kNU6Apzpm2nKOk+94cZb/jvle55+JxWiByUQ0Wo/+XnDXEy5MxxKMb6r0VIw==}
 
-  bl@4.1.0:
-    resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
-
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
@@ -1480,15 +1517,12 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
 
-  bson@6.6.0:
-    resolution: {integrity: sha512-BVINv2SgcMjL4oYbBuCQTpE3/VKOSxrOA8Cj/wQP7izSzlBGVomdm+TcUd0Pzy0ytLSSDweCKQ6X3f5veM5LQA==}
+  bson@6.7.0:
+    resolution: {integrity: sha512-w2IquM5mYzYZv6rs3uN2DZTOBe2a0zXLj53TGDqwF4l6Sz/XsISrisXOJihArF9+BZ6Cq/GjVht7Sjfmri7ytQ==}
     engines: {node: '>=16.20.1'}
 
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
-
-  buffer@5.7.1:
-    resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
@@ -1549,9 +1583,6 @@ packages:
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
-
-  chownr@1.1.4:
-    resolution: {integrity: sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==}
 
   chownr@2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}
@@ -1614,6 +1645,10 @@ packages:
   clsx@2.1.0:
     resolution: {integrity: sha512-m3iNNWpd9rl3jvvcBnu70ylMdrXt8Vlq4HYadnU5fwcOtvkSQWPmj7amUcDT2qYI7risszBjI5AUIUox9D16pg==}
     engines: {node: '>=6'}
+
+  cluster-key-slot@1.1.2:
+    resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
+    engines: {node: '>=0.10.0'}
 
   code-red@1.0.4:
     resolution: {integrity: sha512-7qJWqItLA8/VPVlKJlFXU+NBlo/qyfs39aJcuMT/2ere32ZqvF5OSxgdM5xOfJJ7O429gg2HM47y8v9P+9wrNw==}
@@ -1756,14 +1791,6 @@ packages:
   decompress-response@4.2.1:
     resolution: {integrity: sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==}
     engines: {node: '>=8'}
-
-  decompress-response@6.0.0:
-    resolution: {integrity: sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ==}
-    engines: {node: '>=10'}
-
-  deep-extend@0.6.0:
-    resolution: {integrity: sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA==}
-    engines: {node: '>=4.0.0'}
 
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
@@ -2046,10 +2073,6 @@ packages:
     resolution: {integrity: sha512-v0eOBUbiaFojBu2s2NPBfYUoRR9GjcDNvCXVaqEf5vVfpIAh9f8RCo4vXTP8c63QRKCFwoLpMpTdPwwhEKVgzA==}
     engines: {node: '>=14.18'}
 
-  expand-template@2.0.3:
-    resolution: {integrity: sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg==}
-    engines: {node: '>=6'}
-
   expr-eval@2.0.2:
     resolution: {integrity: sha512-4EMSHGOPSwAfBiibw3ndnP0AvjDWLsMvGOvWEZ2F96IGk0bIVdjQisOHxReSkE13mHcfbuCiXw+G4y0zv6N8Eg==}
 
@@ -2168,9 +2191,6 @@ packages:
   fraction.js@4.3.7:
     resolution: {integrity: sha512-ZsDfxO51wGAXREY55a7la9LScWpwv9RxIrYABrlvOFBlH/ShPnrtsXeuUIfXKKOVicNxQ+o8JTbJvjS4M89yew==}
 
-  fs-constants@1.0.0:
-    resolution: {integrity: sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow==}
-
   fs-minipass@2.1.0:
     resolution: {integrity: sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==}
     engines: {node: '>= 8'}
@@ -2200,6 +2220,10 @@ packages:
     resolution: {integrity: sha512-+5J6MS/5XksCuXq++uFRsnUd7Ovu1XenbeuIuNRJxYWjgQbPuFhT14lAvsWfqfAmnwluf1OwMjz39HjfLPci0Q==}
     engines: {node: '>=10'}
 
+  generic-pool@3.9.0:
+    resolution: {integrity: sha512-hymDOu5B53XvN4QT9dBmZxPX4CWhBPPLguTZ9MMFeFa/Kg0xWVfylOVNlJji/E7yTZWFd/q9GO5TxDLq156D7g==}
+    engines: {node: '>= 4'}
+
   get-intrinsic@1.2.4:
     resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
     engines: {node: '>= 0.4'}
@@ -2210,9 +2234,6 @@ packages:
 
   get-tsconfig@4.7.3:
     resolution: {integrity: sha512-ZvkrzoUA0PQZM6fy6+/Hce561s+faD1rsNwhnO5FelNjyy7EMGJ3Rz1AQ8GYDWjhRs/7dBLOEJvhK8MiEJOAFg==}
-
-  github-from-package@0.0.0:
-    resolution: {integrity: sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -2360,9 +2381,6 @@ packages:
 
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
-
-  ini@1.3.8:
-    resolution: {integrity: sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==}
 
   internal-slot@1.0.7:
     resolution: {integrity: sha512-NGnrKwXzSms2qUUih/ILZ5JBqNTSa1+ZmP6flaIp6KmSElgE9qdndzS3cqjrDovwFdmwsGsLdeFgB6suw+1e9g==}
@@ -2602,8 +2620,8 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  langchain@0.1.34:
-    resolution: {integrity: sha512-4TVH2mzhITrLPOeyfGucfqo1+360DJMl4+ItG56ApxVY1krO4hV0EkqcRLAxW06W6sIue8mIU70WbyhBYH68Ug==}
+  langchain@0.1.36:
+    resolution: {integrity: sha512-NTbnCL/jKWIeEI//Nm1oG8nhW3vkYWvEMr1MPotmTThTfeKfO87eV/OAzAyh6Ruy6GFs/qofRgQZGIe6XvXTNQ==}
     engines: {node: '>=18'}
     peerDependencies:
       '@aws-sdk/client-s3': ^3.310.0
@@ -2616,6 +2634,7 @@ packages:
       '@gomomento/sdk-web': ^1.51.1
       '@google-ai/generativelanguage': ^0.2.1
       '@google-cloud/storage': ^6.10.1 || ^7.7.0
+      '@mendable/firecrawl-js': ^0.0.13
       '@notionhq/client': ^2.2.10
       '@pinecone-database/pinecone': '*'
       '@supabase/supabase-js': ^2.10.0
@@ -2677,6 +2696,8 @@ packages:
       '@google-ai/generativelanguage':
         optional: true
       '@google-cloud/storage':
+        optional: true
+      '@mendable/firecrawl-js':
         optional: true
       '@notionhq/client':
         optional: true
@@ -2893,10 +2914,6 @@ packages:
     resolution: {integrity: sha512-wXqjST+SLt7R009ySCglWBCFpjUygmCIfD790/kVbiGmUgfYGuB14PiTd5DwVxSV4NcYHjzMkoj5LjQZwTQLEA==}
     engines: {node: '>=8'}
 
-  mimic-response@3.1.0:
-    resolution: {integrity: sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==}
-    engines: {node: '>=10'}
-
   mini-svg-data-uri@1.4.4:
     resolution: {integrity: sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==}
     hasBin: true
@@ -2931,9 +2948,6 @@ packages:
     resolution: {integrity: sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==}
     engines: {node: '>= 8'}
 
-  mkdirp-classic@0.5.3:
-    resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
-
   mkdirp@1.0.4:
     resolution: {integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==}
     engines: {node: '>=10'}
@@ -2953,10 +2967,6 @@ packages:
 
   ml-tree-similarity@1.0.0:
     resolution: {integrity: sha512-XJUyYqjSuUQkNQHMscr6tcjldsOoAekxADTplt40QKfwW6nd++1wHWV9AArl0Zvw/TIHgNaZZNvr8QGvE8wLRg==}
-
-  mongodb-client-encryption@6.0.0:
-    resolution: {integrity: sha512-GtqkqlSq19acX006/U1odA3l+gwhvABeoTUlvvgtvSs6qcN3qSHPnur3Z5N4oKOv6fZ7EtT8rIsWP2riI0+Eyg==}
-    engines: {node: '>=16.20.1'}
 
   mongodb-connection-string-url@3.0.0:
     resolution: {integrity: sha512-t1Vf+m1I5hC2M5RJx/7AtxgABy1cZmIPQRMXw+gEIPn/cZNF3Oiy+l0UIypUwVB5trcWHq3crg2g3uAR9aAwsQ==}
@@ -3010,9 +3020,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  napi-build-utils@1.0.2:
-    resolution: {integrity: sha512-ONmRUqK7zj7DWX0D9ADe03wbwOBZxNAfF20PlGfCWQcD3+/MakShIHrMqx9YwPTfxDdF1zLeL+RGZiR9kGMLdg==}
-
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -3044,13 +3051,6 @@ packages:
         optional: true
       sass:
         optional: true
-
-  node-abi@3.62.0:
-    resolution: {integrity: sha512-CPMcGa+y33xuL1E0TcNIu4YyaZCxnnvkVaEXrsosR3FxN+fV8xvb7Mzpb7IgKler10qeMkE6+Dp8qJhpzdq35g==}
-    engines: {node: '>=10'}
-
-  node-addon-api@4.3.0:
-    resolution: {integrity: sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ==}
 
   node-addon-api@7.1.0:
     resolution: {integrity: sha512-mNcltoe1R8o7STTegSOHdnJNN7s5EUvhoS7ShnTHDyOSd+8H+UdWODq6qSv67PjC8Zc5JRT8+oLAMCr0SIXw7g==}
@@ -3356,11 +3356,6 @@ packages:
   preact@10.20.2:
     resolution: {integrity: sha512-S1d1ernz3KQ+Y2awUxKakpfOg2CEmJmwOP+6igPx6dgr6pgDvenqYviyokWso2rhHvGtTlWWnJDa7RaPbQerTg==}
 
-  prebuild-install@7.1.2:
-    resolution: {integrity: sha512-UnNke3IQb6sgarcZIDU3gbMeTp/9SSU1DAIkil7PrqG1vZlBtY5msYccSKSHDqa3hNg436IXK+SNImReuA1wEQ==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -3393,9 +3388,6 @@ packages:
   pump@2.0.1:
     resolution: {integrity: sha512-ruPMNRkN3MHP1cWJc9OWr+T/xDP0jhXYCLfJcBuX54hhfIBnaQmAUMfDcG4DM5UMWByBbJY69QSphm3jtDKIkA==}
 
-  pump@3.0.0:
-    resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
-
   pumpify@1.5.1:
     resolution: {integrity: sha512-oClZI37HvuUJJxSKKrC17bZ9Cu0ZYhEAGPsPUy9KlMUmv9dKX2o77RUmq7f3XjIxbwyGwYzbzQ1L2Ks8sIradQ==}
 
@@ -3414,10 +3406,6 @@ packages:
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
-
-  rc@1.2.8:
-    resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
-    hasBin: true
 
   react-dom@18.2.0:
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
@@ -3477,13 +3465,12 @@ packages:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
     engines: {node: '>= 6'}
 
-  readable-stream@4.5.2:
-    resolution: {integrity: sha512-yjavECdqeZ3GLXNgRXgeQEdz9fvDDkNKyHnbHRFtOr7/LcfgBcmct7t/ET+HaCTqfh06OzoAxrkN/IfjJBVe+g==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-
   readdirp@3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
+
+  redis@4.6.13:
+    resolution: {integrity: sha512-MHgkS4B+sPjCXpf+HfdetBwbRz6vCtsceTmw1pHNYJAsYxrfpOP6dz+piJWGos8wqG7qb3vj/Rrc5qOlmInUuA==}
 
   reflect.getprototypeof@1.0.6:
     resolution: {integrity: sha512-fmfw4XgoDke3kdI6h4xcUz1dG8uaiv5q9gcEwLS4Pnth2kxT+GZ7YehS1JTMGBQmtV7Y4GFGbs2re2NqhdozUg==}
@@ -3499,10 +3486,6 @@ packages:
   repeat-string@1.6.1:
     resolution: {integrity: sha512-PV0dzCYDNfRi1jCDbJzpW7jNNDRuCOG/jI5ctQcGKt/clZD+YcPS3yIlWuTJMmESC8aevCFmWJy5wjAFgNqN6w==}
     engines: {node: '>=0.10'}
-
-  replicate@0.27.1:
-    resolution: {integrity: sha512-oCPVE3cRWlim9wvNtsRyfZCfHblVArc5wAt8rbwrUQ7guHcz2cNiha9/rES/kkb5x3RNAy1JyD6BY900FMTydA==}
-    engines: {git: '>=2.11.0', node: '>=18.0.0', npm: '>=7.19.0', yarn: '>=1.7.0'}
 
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
@@ -3640,9 +3623,6 @@ packages:
   simple-get@3.1.1:
     resolution: {integrity: sha512-CQ5LTKGfCpvE1K0n2us+kuMPbk/q0EKl82s4aheV9oXjFEz6W/Y7oQFVJuU6QG77hRT4Ghb5RURteF5vnWjupA==}
 
-  simple-get@4.0.1:
-    resolution: {integrity: sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA==}
-
   slash@3.0.0:
     resolution: {integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==}
     engines: {node: '>=8'}
@@ -3740,10 +3720,6 @@ packages:
     resolution: {integrity: sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==}
     engines: {node: '>=4'}
 
-  strip-json-comments@2.0.1:
-    resolution: {integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==}
-    engines: {node: '>=0.10.0'}
-
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
@@ -3820,13 +3796,6 @@ packages:
 
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
-    engines: {node: '>=6'}
-
-  tar-fs@2.1.1:
-    resolution: {integrity: sha512-V0r2Y9scmbDRLCNex/+hYzvp/zyYjvFbHPNgVTKfQvVrb6guiE/fxP+XblDNR011utopbkex2nM4dHNV6GDsng==}
-
-  tar-stream@2.2.0:
-    resolution: {integrity: sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==}
     engines: {node: '>=6'}
 
   tar-stream@3.1.7:
@@ -3910,9 +3879,6 @@ packages:
 
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-
-  tunnel-agent@0.6.0:
-    resolution: {integrity: sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -4011,15 +3977,12 @@ packages:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
 
-  vectordb@0.4.16:
-    resolution: {integrity: sha512-3DZVTgYUtOBR9tfQewSR+bhALujJgo++entcIcK1fqu2a2g4YqDY7o+qgRRxHzJSgXVIBGWqkyl66Tj0ldRIbQ==}
+  vectordb@0.4.20:
+    resolution: {integrity: sha512-A8X5uvNMl7btbKBshaOx0A6R6Q2eQqOE5Ifwu6r1fZALOS+V0rnoQmUKa1K1v31Vcr3S5GvQsFIl+v6yWataqA==}
     os: [darwin, linux, win32]
     peerDependencies:
       '@apache-arrow/ts': ^14.0.2
       apache-arrow: ^14.0.2
-
-  voy-search@0.6.3:
-    resolution: {integrity: sha512-GRwrXcT3Qmzr/CuwpwX55XWpgqM2hUqLipSwI8bGcfsDTJGa+mFxsOXzWHNMRpcYd+U2RP73f2USLDWQu5yFdQ==}
 
   vue@3.4.21:
     resolution: {integrity: sha512-5hjyV/jLEIKD/jYl4cavMcnzKwjMKohureP8ejn3hhEjwhWIhWeuzL2kJAjzl/WyVsgPY56Sy4Z40C3lVshxXA==}
@@ -4250,20 +4213,20 @@ snapshots:
 
   '@babel/helper-string-parser@7.24.1': {}
 
-  '@babel/helper-validator-identifier@7.22.20': {}
+  '@babel/helper-validator-identifier@7.24.5': {}
 
-  '@babel/parser@7.24.4':
+  '@babel/parser@7.24.5':
     dependencies:
-      '@babel/types': 7.24.0
+      '@babel/types': 7.24.5
 
   '@babel/runtime@7.24.4':
     dependencies:
       regenerator-runtime: 0.14.1
 
-  '@babel/types@7.24.0':
+  '@babel/types@7.24.5':
     dependencies:
       '@babel/helper-string-parser': 7.24.1
-      '@babel/helper-validator-identifier': 7.22.20
+      '@babel/helper-validator-identifier': 7.24.5
       to-fast-properties: 2.0.0
 
   '@eslint-community/eslint-utils@4.4.0(eslint@8.57.0)':
@@ -4363,22 +4326,22 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@lancedb/vectordb-darwin-arm64@0.4.16':
+  '@lancedb/vectordb-darwin-arm64@0.4.20':
     optional: true
 
-  '@lancedb/vectordb-darwin-x64@0.4.16':
+  '@lancedb/vectordb-darwin-x64@0.4.20':
     optional: true
 
-  '@lancedb/vectordb-linux-arm64-gnu@0.4.16':
+  '@lancedb/vectordb-linux-arm64-gnu@0.4.20':
     optional: true
 
-  '@lancedb/vectordb-linux-x64-gnu@0.4.16':
+  '@lancedb/vectordb-linux-x64-gnu@0.4.20':
     optional: true
 
-  '@lancedb/vectordb-win32-x64-msvc@0.4.16':
+  '@lancedb/vectordb-win32-x64-msvc@0.4.20':
     optional: true
 
-  '@langchain/community@0.0.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
+  '@langchain/community@0.0.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0)(redis@4.6.13)(vectordb@0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
     dependencies:
       '@langchain/core': 0.1.40
       '@langchain/openai': 0.0.15(encoding@0.1.13)
@@ -4396,16 +4359,15 @@ snapshots:
       closevector-web: 0.1.6
       html-to-text: 9.0.5
       jsdom: 24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3)
-      mongodb: 6.5.0(mongodb-client-encryption@6.0.0)
-      replicate: 0.27.1
-      vectordb: 0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
-      voy-search: 0.6.3
+      mongodb: 6.5.0
+      redis: 4.6.13
+      vectordb: 0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
       weaviate-ts-client: 2.1.1(encoding@0.1.13)(graphql@16.8.1)
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
       - encoding
 
-  '@langchain/community@0.0.50(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
+  '@langchain/community@0.0.50(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0)(redis@4.6.13)(vectordb@0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))':
     dependencies:
       '@langchain/core': 0.1.40
       '@langchain/openai': 0.0.28(encoding@0.1.13)
@@ -4425,10 +4387,9 @@ snapshots:
       closevector-web: 0.1.6
       html-to-text: 9.0.5
       jsdom: 24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3)
-      mongodb: 6.5.0(mongodb-client-encryption@6.0.0)
-      replicate: 0.27.1
-      vectordb: 0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
-      voy-search: 0.6.3
+      mongodb: 6.5.0
+      redis: 4.6.13
+      vectordb: 0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2)
       weaviate-ts-client: 2.1.1(encoding@0.1.13)(graphql@16.8.1)
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
@@ -4475,6 +4436,16 @@ snapshots:
       flat: 5.0.2
       uuid: 9.0.1
 
+  '@langchain/redis@0.0.3':
+    dependencies:
+      '@langchain/core': 0.1.40
+      redis: 4.6.13
+
+  '@langchain/textsplitters@0.0.0':
+    dependencies:
+      '@langchain/core': 0.1.40
+      js-tiktoken: 1.0.11
+
   '@langchain/weaviate@0.0.1(encoding@0.1.13)(graphql@16.8.1)':
     dependencies:
       '@langchain/core': 0.1.40
@@ -4500,7 +4471,7 @@ snapshots:
       - supports-color
     optional: true
 
-  '@mongodb-js/saslprep@1.1.5':
+  '@mongodb-js/saslprep@1.1.6':
     dependencies:
       sparse-bitfield: 3.0.3
     optional: true
@@ -4568,6 +4539,32 @@ snapshots:
     optional: true
 
   '@popperjs/core@2.11.8': {}
+
+  '@redis/bloom@1.2.0(@redis/client@1.5.14)':
+    dependencies:
+      '@redis/client': 1.5.14
+
+  '@redis/client@1.5.14':
+    dependencies:
+      cluster-key-slot: 1.1.2
+      generic-pool: 3.9.0
+      yallist: 4.0.0
+
+  '@redis/graph@1.1.1(@redis/client@1.5.14)':
+    dependencies:
+      '@redis/client': 1.5.14
+
+  '@redis/json@1.0.6(@redis/client@1.5.14)':
+    dependencies:
+      '@redis/client': 1.5.14
+
+  '@redis/search@1.1.6(@redis/client@1.5.14)':
+    dependencies:
+      '@redis/client': 1.5.14
+
+  '@redis/time-series@1.0.5(@redis/client@1.5.14)':
+    dependencies:
+      '@redis/client': 1.5.14
 
   '@remix-run/router@1.15.3': {}
 
@@ -4745,7 +4742,7 @@ snapshots:
 
   '@vue/compiler-core@3.4.21':
     dependencies:
-      '@babel/parser': 7.24.4
+      '@babel/parser': 7.24.5
       '@vue/shared': 3.4.21
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -4758,7 +4755,7 @@ snapshots:
 
   '@vue/compiler-sfc@3.4.21':
     dependencies:
-      '@babel/parser': 7.24.4
+      '@babel/parser': 7.24.5
       '@vue/compiler-core': 3.4.21
       '@vue/compiler-dom': 3.4.21
       '@vue/compiler-ssr': 3.4.21
@@ -5136,8 +5133,7 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  b4a@1.6.6:
-    optional: true
+  b4a@1.6.6: {}
 
   balanced-match@1.0.2: {}
 
@@ -5155,18 +5151,10 @@ snapshots:
   bindings@1.5.0:
     dependencies:
       file-uri-to-path: 1.0.0
-    optional: true
 
   bl@0.8.2:
     dependencies:
       readable-stream: 1.0.34
-
-  bl@4.1.0:
-    dependencies:
-      buffer: 5.7.1
-      inherits: 2.0.4
-      readable-stream: 3.6.2
-    optional: true
 
   boolbase@1.0.0: {}
 
@@ -5192,7 +5180,6 @@ snapshots:
   browserify-zlib@0.1.4:
     dependencies:
       pako: 0.2.9
-    optional: true
 
   browserslist@4.23.0:
     dependencies:
@@ -5201,22 +5188,15 @@ snapshots:
       node-releases: 2.0.14
       update-browserslist-db: 1.0.13(browserslist@4.23.0)
 
-  bson@6.6.0:
+  bson@6.7.0:
     optional: true
 
   buffer-from@1.1.2: {}
-
-  buffer@5.7.1:
-    dependencies:
-      base64-js: 1.5.1
-      ieee754: 1.2.1
-    optional: true
 
   buffer@6.0.3:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
-    optional: true
 
   bufferutil@4.0.8:
     dependencies:
@@ -5296,9 +5276,6 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  chownr@1.1.4:
-    optional: true
-
   chownr@2.0.0:
     optional: true
 
@@ -5331,19 +5308,15 @@ snapshots:
       closevector-stream-browserify: 0.1.0-alpha.1
       pako: 1.0.11
       process: 0.11.10
-    optional: true
 
-  closevector-common@0.1.3:
-    optional: true
+  closevector-common@0.1.3: {}
 
-  closevector-crypto-jwt@0.1.0-alpha.3:
-    optional: true
+  closevector-crypto-jwt@0.1.0-alpha.3: {}
 
   closevector-hnswlib-wasm@0.1.1:
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0
-    optional: true
 
   closevector-readable-stream@0.1.0-alpha.1:
     dependencies:
@@ -5353,13 +5326,11 @@ snapshots:
       process: 0.11.10
       string_decoder: 1.3.0
       util-deprecate: 1.0.2
-    optional: true
 
   closevector-stream-browserify@0.1.0-alpha.1:
     dependencies:
       closevector-readable-stream: 0.1.0-alpha.1
       events: 3.3.0
-    optional: true
 
   closevector-web@0.1.6:
     dependencies:
@@ -5374,9 +5345,10 @@ snapshots:
       typescript: 5.3.3
     transitivePeerDependencies:
       - debug
-    optional: true
 
   clsx@2.1.0: {}
+
+  cluster-key-slot@1.1.2: {}
 
   code-red@1.0.4:
     dependencies:
@@ -5518,14 +5490,6 @@ snapshots:
       mimic-response: 2.1.0
     optional: true
 
-  decompress-response@6.0.0:
-    dependencies:
-      mimic-response: 3.1.0
-    optional: true
-
-  deep-extend@0.6.0:
-    optional: true
-
   deep-is@0.1.4: {}
 
   deepmerge@4.3.1: {}
@@ -5603,7 +5567,6 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 2.3.8
       stream-shift: 1.0.3
-    optional: true
 
   eastasianwidth@0.2.0: {}
 
@@ -5622,7 +5585,6 @@ snapshots:
   end-of-stream@1.4.4:
     dependencies:
       once: 1.4.0
-    optional: true
 
   enhanced-resolve@5.16.0:
     dependencies:
@@ -5951,17 +5913,13 @@ snapshots:
 
   eventsource-parser@1.1.2: {}
 
-  expand-template@2.0.3:
-    optional: true
-
   expr-eval@2.0.2: {}
 
   extract-files@9.0.0: {}
 
   fast-deep-equal@3.1.3: {}
 
-  fast-fifo@1.3.2:
-    optional: true
+  fast-fifo@1.3.2: {}
 
   fast-glob@3.3.2:
     dependencies:
@@ -5992,8 +5950,7 @@ snapshots:
     dependencies:
       tslib: 2.6.2
 
-  file-uri-to-path@1.0.0:
-    optional: true
+  file-uri-to-path@1.0.0: {}
 
   fill-range@7.0.1:
     dependencies:
@@ -6076,9 +6033,6 @@ snapshots:
 
   fraction.js@4.3.7: {}
 
-  fs-constants@1.0.0:
-    optional: true
-
   fs-minipass@2.1.0:
     dependencies:
       minipass: 3.3.6
@@ -6117,6 +6071,8 @@ snapshots:
       wide-align: 1.1.5
     optional: true
 
+  generic-pool@3.9.0: {}
+
   get-intrinsic@1.2.4:
     dependencies:
       es-errors: 1.3.0
@@ -6134,9 +6090,6 @@ snapshots:
   get-tsconfig@4.7.3:
     dependencies:
       resolve-pkg-maps: 1.0.0
-
-  github-from-package@0.0.0:
-    optional: true
 
   glob-parent@5.1.2:
     dependencies:
@@ -6218,7 +6171,6 @@ snapshots:
       peek-stream: 1.1.3
       pumpify: 1.5.1
       through2: 2.0.5
-    optional: true
 
   has-bigints@1.0.2: {}
 
@@ -6294,8 +6246,7 @@ snapshots:
 
   idb-wrapper@1.7.2: {}
 
-  ieee754@1.2.1:
-    optional: true
+  ieee754@1.2.1: {}
 
   ignore@5.3.1: {}
 
@@ -6316,9 +6267,6 @@ snapshots:
   inherits@2.0.3: {}
 
   inherits@2.0.4: {}
-
-  ini@1.3.8:
-    optional: true
 
   internal-slot@1.0.7:
     dependencies:
@@ -6366,8 +6314,7 @@ snapshots:
     dependencies:
       has-tostringtag: 1.0.2
 
-  is-deflate@1.0.0:
-    optional: true
+  is-deflate@1.0.0: {}
 
   is-extglob@2.1.1: {}
 
@@ -6385,8 +6332,7 @@ snapshots:
     dependencies:
       is-extglob: 2.1.1
 
-  is-gzip@1.0.0:
-    optional: true
+  is-gzip@1.0.0: {}
 
   is-map@2.0.3: {}
 
@@ -6564,12 +6510,13 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  langchain@0.1.34(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(ignore@5.3.1)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(pdf-parse@1.1.1)(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)):
+  langchain@0.1.36(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(axios@1.6.8)(cheerio@1.0.0-rc.12)(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(ignore@5.3.1)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0)(pdf-parse@1.1.1)(redis@4.6.13)(vectordb@0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)):
     dependencies:
       '@anthropic-ai/sdk': 0.9.1(encoding@0.1.13)
-      '@langchain/community': 0.0.50(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0(mongodb-client-encryption@6.0.0))(replicate@0.27.1)(vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(voy-search@0.6.3)(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
+      '@langchain/community': 0.0.50(@huggingface/inference@2.6.7)(@pinecone-database/pinecone@2.2.0)(@supabase/postgrest-js@1.15.2)(@supabase/supabase-js@2.42.5(bufferutil@4.0.8)(utf-8-validate@6.0.3))(chromadb@1.8.1(encoding@0.1.13)(openai@4.38.1(encoding@0.1.13)))(closevector-common@0.1.3)(closevector-web@0.1.6)(encoding@0.1.13)(html-to-text@9.0.5)(jsdom@24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3))(mongodb@6.5.0)(redis@4.6.13)(vectordb@0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2))(weaviate-ts-client@2.1.1(encoding@0.1.13)(graphql@16.8.1))(ws@8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3))
       '@langchain/core': 0.1.40
       '@langchain/openai': 0.0.28(encoding@0.1.13)
+      '@langchain/textsplitters': 0.0.0
       binary-extensions: 2.3.0
       js-tiktoken: 1.0.11
       js-yaml: 4.1.0
@@ -6592,8 +6539,9 @@ snapshots:
       html-to-text: 9.0.5
       ignore: 5.3.1
       jsdom: 24.0.0(bufferutil@4.0.8)(canvas@2.11.2(encoding@0.1.13))(utf-8-validate@6.0.3)
-      mongodb: 6.5.0(mongodb-client-encryption@6.0.0)
+      mongodb: 6.5.0
       pdf-parse: 1.1.1
+      redis: 4.6.13
       weaviate-ts-client: 2.1.1(encoding@0.1.13)(graphql@16.8.1)
       ws: 8.16.0(bufferutil@4.0.8)(utf-8-validate@6.0.3)
     transitivePeerDependencies:
@@ -6816,9 +6764,6 @@ snapshots:
   mimic-response@2.1.0:
     optional: true
 
-  mimic-response@3.1.0:
-    optional: true
-
   mini-svg-data-uri@1.4.4: {}
 
   minimatch@3.1.2:
@@ -6851,9 +6796,6 @@ snapshots:
       yallist: 4.0.0
     optional: true
 
-  mkdirp-classic@0.5.3:
-    optional: true
-
   mkdirp@1.0.4:
     optional: true
 
@@ -6878,26 +6820,17 @@ snapshots:
       binary-search: 1.3.6
       num-sort: 2.1.0
 
-  mongodb-client-encryption@6.0.0:
-    dependencies:
-      bindings: 1.5.0
-      node-addon-api: 4.3.0
-      prebuild-install: 7.1.2
-    optional: true
-
   mongodb-connection-string-url@3.0.0:
     dependencies:
       '@types/whatwg-url': 11.0.4
       whatwg-url: 13.0.0
     optional: true
 
-  mongodb@6.5.0(mongodb-client-encryption@6.0.0):
+  mongodb@6.5.0:
     dependencies:
-      '@mongodb-js/saslprep': 1.1.5
-      bson: 6.6.0
+      '@mongodb-js/saslprep': 1.1.6
+      bson: 6.7.0
       mongodb-connection-string-url: 3.0.0
-    optionalDependencies:
-      mongodb-client-encryption: 6.0.0
     optional: true
 
   ms@2.1.2: {}
@@ -6916,9 +6849,6 @@ snapshots:
   nanoid@3.3.6: {}
 
   nanoid@3.3.7: {}
-
-  napi-build-utils@1.0.2:
-    optional: true
 
   natural-compare@1.4.0: {}
 
@@ -6965,16 +6895,7 @@ snapshots:
       - '@babel/core'
       - babel-plugin-macros
 
-  node-abi@3.62.0:
-    dependencies:
-      semver: 7.6.0
-    optional: true
-
-  node-addon-api@4.3.0:
-    optional: true
-
-  node-addon-api@7.1.0:
-    optional: true
+  node-addon-api@7.1.0: {}
 
   node-domexception@1.0.0: {}
 
@@ -7156,11 +7077,9 @@ snapshots:
     dependencies:
       repeat-string: 1.6.1
 
-  pako@0.2.9:
-    optional: true
+  pako@0.2.9: {}
 
-  pako@1.0.11:
-    optional: true
+  pako@1.0.11: {}
 
   parent-module@1.0.1:
     dependencies:
@@ -7225,7 +7144,6 @@ snapshots:
       buffer-from: 1.1.2
       duplexify: 3.7.1
       through2: 2.0.5
-    optional: true
 
   periscopic@3.1.0:
     dependencies:
@@ -7293,22 +7211,6 @@ snapshots:
 
   preact@10.20.2: {}
 
-  prebuild-install@7.1.2:
-    dependencies:
-      detect-libc: 2.0.3
-      expand-template: 2.0.3
-      github-from-package: 0.0.0
-      minimist: 1.2.8
-      mkdirp-classic: 0.5.3
-      napi-build-utils: 1.0.2
-      node-abi: 3.62.0
-      pump: 3.0.0
-      rc: 1.2.8
-      simple-get: 4.0.1
-      tar-fs: 2.1.1
-      tunnel-agent: 0.6.0
-    optional: true
-
   prelude-ls@1.2.1: {}
 
   pretty-format@3.8.0: {}
@@ -7335,20 +7237,12 @@ snapshots:
     dependencies:
       end-of-stream: 1.4.4
       once: 1.4.0
-    optional: true
-
-  pump@3.0.0:
-    dependencies:
-      end-of-stream: 1.4.4
-      once: 1.4.0
-    optional: true
 
   pumpify@1.5.1:
     dependencies:
       duplexify: 3.7.1
       inherits: 2.0.4
       pump: 2.0.1
-    optional: true
 
   punycode@2.3.1: {}
 
@@ -7356,20 +7250,11 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  queue-tick@1.0.1:
-    optional: true
+  queue-tick@1.0.1: {}
 
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
-
-  rc@1.2.8:
-    dependencies:
-      deep-extend: 0.6.0
-      ini: 1.3.8
-      minimist: 1.2.8
-      strip-json-comments: 2.0.1
-    optional: true
 
   react-dom@18.2.0(react@18.2.0):
     dependencies:
@@ -7447,18 +7332,18 @@ snapshots:
       util-deprecate: 1.0.2
     optional: true
 
-  readable-stream@4.5.2:
-    dependencies:
-      abort-controller: 3.0.0
-      buffer: 6.0.3
-      events: 3.3.0
-      process: 0.11.10
-      string_decoder: 1.3.0
-    optional: true
-
   readdirp@3.6.0:
     dependencies:
       picomatch: 2.3.1
+
+  redis@4.6.13:
+    dependencies:
+      '@redis/bloom': 1.2.0(@redis/client@1.5.14)
+      '@redis/client': 1.5.14
+      '@redis/graph': 1.1.1(@redis/client@1.5.14)
+      '@redis/json': 1.0.6(@redis/client@1.5.14)
+      '@redis/search': 1.1.6(@redis/client@1.5.14)
+      '@redis/time-series': 1.0.5(@redis/client@1.5.14)
 
   reflect.getprototypeof@1.0.6:
     dependencies:
@@ -7480,10 +7365,6 @@ snapshots:
       set-function-name: 2.0.2
 
   repeat-string@1.6.1: {}
-
-  replicate@0.27.1:
-    optionalDependencies:
-      readable-stream: 4.5.2
 
   require-from-string@2.0.2: {}
 
@@ -7623,13 +7504,6 @@ snapshots:
       simple-concat: 1.0.1
     optional: true
 
-  simple-get@4.0.1:
-    dependencies:
-      decompress-response: 6.0.0
-      once: 1.4.0
-      simple-concat: 1.0.1
-    optional: true
-
   slash@3.0.0: {}
 
   solid-js@1.8.15:
@@ -7664,8 +7538,7 @@ snapshots:
 
   stream-read-all@3.0.1: {}
 
-  stream-shift@1.0.3:
-    optional: true
+  stream-shift@1.0.3: {}
 
   stream@0.0.2:
     dependencies:
@@ -7679,7 +7552,6 @@ snapshots:
       queue-tick: 1.0.1
     optionalDependencies:
       bare-events: 2.2.2
-    optional: true
 
   string-range@1.2.2: {}
 
@@ -7738,7 +7610,6 @@ snapshots:
   string_decoder@1.3.0:
     dependencies:
       safe-buffer: 5.2.1
-    optional: true
 
   strip-ansi@6.0.1:
     dependencies:
@@ -7749,9 +7620,6 @@ snapshots:
       ansi-regex: 6.0.1
 
   strip-bom@3.0.0: {}
-
-  strip-json-comments@2.0.1:
-    optional: true
 
   strip-json-comments@3.1.1: {}
 
@@ -7859,29 +7727,11 @@ snapshots:
 
   tapable@2.2.1: {}
 
-  tar-fs@2.1.1:
-    dependencies:
-      chownr: 1.1.4
-      mkdirp-classic: 0.5.3
-      pump: 3.0.0
-      tar-stream: 2.2.0
-    optional: true
-
-  tar-stream@2.2.0:
-    dependencies:
-      bl: 4.1.0
-      end-of-stream: 1.4.4
-      fs-constants: 1.0.0
-      inherits: 2.0.4
-      readable-stream: 3.6.2
-    optional: true
-
   tar-stream@3.1.7:
     dependencies:
       b4a: 1.6.6
       fast-fifo: 1.3.2
       streamx: 2.16.1
-    optional: true
 
   tar@6.2.1:
     dependencies:
@@ -7923,7 +7773,6 @@ snapshots:
     dependencies:
       readable-stream: 2.3.8
       xtend: 4.0.2
-    optional: true
 
   through@2.3.8: {}
 
@@ -7965,11 +7814,6 @@ snapshots:
       strip-bom: 3.0.0
 
   tslib@2.6.2: {}
-
-  tunnel-agent@0.6.0:
-    dependencies:
-      safe-buffer: 5.2.1
-    optional: true
 
   type-check@0.4.0:
     dependencies:
@@ -8078,22 +7922,20 @@ snapshots:
 
   uuid@9.0.1: {}
 
-  vectordb@0.4.16(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2):
+  vectordb@0.4.20(@apache-arrow/ts@14.0.2)(apache-arrow@14.0.2):
     dependencies:
       '@apache-arrow/ts': 14.0.2
       '@neon-rs/load': 0.0.74
       apache-arrow: 14.0.2
       axios: 1.6.8
     optionalDependencies:
-      '@lancedb/vectordb-darwin-arm64': 0.4.16
-      '@lancedb/vectordb-darwin-x64': 0.4.16
-      '@lancedb/vectordb-linux-arm64-gnu': 0.4.16
-      '@lancedb/vectordb-linux-x64-gnu': 0.4.16
-      '@lancedb/vectordb-win32-x64-msvc': 0.4.16
+      '@lancedb/vectordb-darwin-arm64': 0.4.20
+      '@lancedb/vectordb-darwin-x64': 0.4.20
+      '@lancedb/vectordb-linux-arm64-gnu': 0.4.20
+      '@lancedb/vectordb-linux-x64-gnu': 0.4.20
+      '@lancedb/vectordb-win32-x64-msvc': 0.4.20
     transitivePeerDependencies:
       - debug
-
-  voy-search@0.6.3: {}
 
   vue@3.4.21(typescript@5.3.3):
     dependencies:
@@ -8274,8 +8116,7 @@ snapshots:
 
   xtend@3.0.0: {}
 
-  xtend@4.0.2:
-    optional: true
+  xtend@4.0.2: {}
 
   yallist@4.0.0: {}
 

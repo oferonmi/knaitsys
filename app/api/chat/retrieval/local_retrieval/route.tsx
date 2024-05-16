@@ -8,6 +8,13 @@ import {
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 
+// import fs from "node:fs/promises";
+// import path from "node:path";
+// import os from "node:os";
+// import { connect } from "vectordb";
+// import { LanceDB } from "@langchain/community/vectorstores/lancedb";
+// import { createClient } from "redis";
+// import { RedisVectorStore } from "@langchain/redis";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
 import { Document } from "@langchain/core/documents";
@@ -82,28 +89,6 @@ export async function POST(req: NextRequest) {
       temperature: 0.2,
     });
 
-    // const client = createClient(
-    //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    //   process.env.NEXT_PUBLIC_SUPABASE_API_KEY!,
-    // );
-
-    // const voyClient = new VoyClient();
-
-    // const vectorstore = new SupabaseVectorStore(new OpenAIEmbeddings(), {
-    //   client,
-    //   tableName: "documents",
-    //   queryName: "match_documents",
-    // });
-
-    // const vectorstore = new VoyVectorStore(voyClient, new OpenAIEmbeddings());
-    // const vectorstore = new Chroma (new OpenAIEmbeddings(), {
-    //     collectionName: "kaitosys-docs",
-    //     url: "http://localhost:8000", // Optional, will default to this value
-    //     collectionMetadata: {
-    //         "hnsw:space": "cosine",
-    //     }, // Optional, can be used to specify the distance method of the embedding space https://docs.trychroma.com/usage-guide#changing-the-distance-function
-    // });
-
     const pinecone = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY!,
     });
@@ -115,7 +100,25 @@ export async function POST(req: NextRequest) {
       { pineconeIndex }
     );
 
-    
+    // const client = createClient({
+    //   url: process.env.REDIS_URL ?? "redis://localhost:6379",
+    // });
+    // await client.connect();
+
+    // const vectorstore = new RedisVectorStore(new OpenAIEmbeddings(), {
+    //   redisClient: client,
+    //   indexName: "kaitosys_corpus",
+    // });
+
+    // const dir = path.join(os.tmpdir(), "local-lancedb-vectorstore");
+    // const db = await connect(dir);
+    // const table = await db.openTable("vectors");
+
+    // const vectorstore = new LanceDB (
+    //   new OpenAIEmbeddings(),
+    //   { table }
+    // );
+
     /**
      * We use LangChain Expression Language to compose two chains.
      * To learn more, see the guide here:
@@ -183,26 +186,19 @@ export async function POST(req: NextRequest) {
             pageContent: doc.pageContent.slice(0, 50) + "...",
             metadata: doc.metadata,
           };
-        }),
-      ),
+        })
+      )
     ).toString("base64");
 
-    // return new StreamingTextResponse(stream, {
-    //   headers: {
-    //     "x-message-index": (previousMessages.length + 1).toString(),
-    //     "x-sources": serializedSources,
-    //   },
-    // });
-
     return new StreamingTextResponse(
-      stream.pipeThrough(createStreamDataTransformer()), 
+      stream.pipeThrough(createStreamDataTransformer()),
       {
         headers: {
           "x-message-index": (previousMessages.length + 1).toString(),
           "x-sources": serializedSources,
         },
       }
-  );
+    );
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
   }

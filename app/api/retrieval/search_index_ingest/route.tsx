@@ -7,10 +7,14 @@ import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
-import { HNSWLib } from "@langchain/community/vectorstores/hnswlib";
+// import { createClient } from "redis";
+// import { RedisVectorStore } from "@langchain/redis";
+// import fs from "node:fs/promises";
+// import path from "node:path";
+// import os from "node:os";
+// import { connect } from "vectordb";
+// import { LanceDB } from "@langchain/community/vectorstores/lancedb";
 
-import { useEffect, useState } from "react";
-import { Document } from "langchain/document";
 import { DocumentInterface } from "@langchain/core/documents";
 
 
@@ -41,6 +45,7 @@ export const runtime = "edge";
     //Loop through all or some list of Document.pageContent["links"] object in search_result, scrape page and append content to text (search_res_docs) to be chunked and embeddded into a vector store
 
     let search_links_docs: Array<DocumentInterface> = [];
+    let link_count: number = 0;
 
     if (search_result.length > 0) {
       for await (const sr of search_result) {
@@ -56,7 +61,11 @@ export const runtime = "edge";
 
           search_links_docs = search_links_docs.concat(resPgDoc);
           // console.log(search_links_docs.length);
+          link_count++
         }
+
+        // limit selected links to 5
+        if (link_count > 5) {break};
       }
 
       // console.log(search_links_docs.length);
@@ -87,6 +96,31 @@ export const runtime = "edge";
         pineconeIndex,
         maxConcurrency: 5,
       });
+
+      // const client = createClient({
+      //   url: process.env.REDIS_URL ?? "redis://localhost:6379",
+      // });
+      // await client.connect();
+
+      // const vectorstore = new RedisVectorStore(
+      //   new OpenAIEmbeddings(),
+      //   {
+      //     redisClient: client,
+      //     indexName: "kaitosys_corpus",
+      //   }
+      // );
+      // await client.disconnect();
+
+      // const dir = await fs.mkdtemp(path.join(os.tmpdir(), "lancedb-"));
+      // const dir = path.join(os.tmpdir(), "local-lancedb-vectorstore");
+      // console.log(dir);
+      // await fs.mkdir(dir);
+      // const db = await connect(dir);
+      // const table = await db.createTable("vectors", [
+      //   { vector: Array(1536), text: "sample", source: "a" },
+      // ]);
+
+      // const vectorstore = new LanceDB(new OpenAIEmbeddings(), { table });
 
       await vectorstore.addDocuments(splitDocs);
     }

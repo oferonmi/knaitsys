@@ -4,8 +4,9 @@ import { toast } from "react-toastify";
 
 export function SearchIndexUploadForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
+  setEndPoint: Dispatch<SetStateAction<string>>;
 }) {
-  const { setReadyToChat } = props;
+  const { setReadyToChat, setEndPoint } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -24,6 +25,7 @@ export function SearchIndexUploadForm(props: {
     });
 
     if (response.status === 200) {
+      setEndPoint("/api/chat/retrieval/local_retrieval");
       setReadyToChat(true);
       toast(
         `Search engine result page ingest successfull! Now try asking a question about search results.`,
@@ -47,11 +49,15 @@ export function SearchIndexUploadForm(props: {
 
   const searchFormInterface = (
     <>
-      <h1 className="text-center  mb-4 text-kaito-brand-ash-green">
-          Enter your search query, click upload and chat with search results.
+      <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+        Enter your search query, click upload and chat with search results.
       </h1>
 
-      <form className="flex w-full space-x-2" id="search-form" onSubmit={ingestSearchResult}>
+      <form
+        className="flex w-full space-x-2"
+        id="search-form"
+        onSubmit={ingestSearchResult}
+      >
         <input
           type="text"
           autoComplete="off"

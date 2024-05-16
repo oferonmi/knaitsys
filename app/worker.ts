@@ -1,7 +1,5 @@
 import { ChatWindowMessage } from "@/schema/ChatWindowMessage";
 
-import { Voy as VoyClient } from "voy-search";
-
 import { WebPDFLoader } from "langchain/document_loaders/web/pdf";
 import { HuggingFaceTransformersEmbeddings } from "langchain/embeddings/hf_transformers";
 import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
@@ -30,7 +28,6 @@ import { ChatOpenAI, OpenAIEmbeddings} from "@langchain/openai";
 
 export const runtime = "edge";
 
-// const voyClient = new VoyClient();
 // const supabase_url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 // if (!supabase_url) throw new Error(`Expected env var NEXT_PUBLIC_SUPABASE_URL`);
 
@@ -52,8 +49,6 @@ const pineconeIndex = pinecone.Index(
 // });
 const embeddings = new OpenAIEmbeddings({openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY});
 
-
-// const vectorstore = new VoyVectorStore(voyClient, embeddings);
 // const vectorstore = new SupabaseVectorStore(
 //     embeddings,
 //     {

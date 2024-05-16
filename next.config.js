@@ -44,15 +44,18 @@ const nextConfig = {
           "sharp$": false,
           "onnxruntime-node$": false,
       }
+
       config.experiments = {
         ...config.experiments,
         topLevelAwait: true,
         asyncWebAssembly: true,
       };
+
       config.module.rules.push({
         test: /\.md$/i,
         use: "raw-loader",
       });
+
       // Fixes npm packages that depend on `fs` module
       if (!isServer) {
         config.resolve.fallback = {
@@ -64,6 +67,10 @@ const nextConfig = {
           perf_hooks: false,
         };
       }
+
+      config.externals["node:fs"] = "commonjs node:fs";
+      config.externals.push({ vectordb: 'vectordb' });
+
       return config;
   },
 };

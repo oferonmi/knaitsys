@@ -113,7 +113,7 @@ export function ChatWindow(props: {
     <WebpageUploadForm setReadyToChat={setReadyToChat} />
   );
   const searchForm = showSearchForm && (
-    <SearchIndexUploadForm setReadyToChat={setReadyToChat} />
+    <SearchIndexUploadForm setReadyToChat={setReadyToChat} setEndPoint={setEndPoint}/>
   );
 
   const emptyStateComponent = (
@@ -282,7 +282,7 @@ export function ChatWindow(props: {
 
         {/* main section */}
         <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen">
-          <h1 className="text-center text-2xl md:text-4xl mb-4 text-gray-700">
+          <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
             Chat to your documents and the web.
           </h1>
 

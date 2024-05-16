@@ -5,8 +5,8 @@ import { Footer } from '@/components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: "Kaitosys - Knowledge-work AI Tools System",
-  description: "Your AI tools kit",
+  title: "Kaitosys - Knowledge-work AI Tool System",
+  description: "AI tool system for your knowledge work",
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {

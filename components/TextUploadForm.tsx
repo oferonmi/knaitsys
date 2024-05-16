@@ -47,7 +47,7 @@ export function TextUploadForm(props: {
 
   return (
     <>
-      <h1 className="text-center  mb-4 text-kaito-brand-ash-green">
+      <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
         Paste text below, click upload and chat to it.
       </h1>
 

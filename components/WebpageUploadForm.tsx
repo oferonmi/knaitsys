@@ -47,11 +47,16 @@ export function WebpageUploadForm(props: {
 
   return (
     <>
-      <h1 className="text-center mb-4 text-kaito-brand-ash-green">
-            Type in the address of a web page, click upload and chat with the content of the web page.
+      <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+        Type in the address of a web page, click upload and chat with the
+        content of the web page.
       </h1>
 
-      <form className="w-full flex space-x-2" id="url-form" onSubmit={ingestWebPage}>
+      <form
+        className="w-full flex space-x-2"
+        id="url-form"
+        onSubmit={ingestWebPage}
+      >
         <input
           type="text"
           autoComplete="off"
