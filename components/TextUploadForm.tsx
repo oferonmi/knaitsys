@@ -64,7 +64,7 @@ export function TextUploadForm(props: {
           onChange={(e) => setDocument(e.target.value)}
         ></textarea>
 
-        <Tooltip content="Upload" className="inline-flex">
+        <Tooltip content="Ingest" className="inline-flex">
           <button
             type="submit"
             className="flex px-5 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full  max-w-24 max-h-24 items-center shrink-0 "

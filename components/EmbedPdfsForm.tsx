@@ -132,7 +132,7 @@ export function EmbedPdfsForm(props: {
           </ul> */}
         </label>
 
-        <Tooltip content="Upload">
+        <Tooltip content="Ingest">
           <button
             type="submit"
             className="flex shrink-0 px-5 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full max-h-24 max-w-24 items-center"

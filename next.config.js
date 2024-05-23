@@ -68,8 +68,8 @@ const nextConfig = {
         };
       }
 
-      config.externals["node:fs"] = "commonjs node:fs";
-      config.externals.push({ vectordb: 'vectordb' });
+      // config.externals["node:fs"] = "commonjs node:fs";
+      // config.externals.push({ vectordb: 'vectordb' });
 
       return config;
   },
