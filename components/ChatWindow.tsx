@@ -131,7 +131,7 @@ export function ChatWindow(props: {
               {(showDocEmbedForm || showUrlEntryForm || showSearchForm) && (
                 <Tooltip content="Upload Text" className="inline-flex">
                   <button
-                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
+                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
                     type="button"
                     onClick={() => {
                       setShowIngestForm(true);
@@ -163,7 +163,7 @@ export function ChatWindow(props: {
               {(showIngestForm || showUrlEntryForm || showSearchForm) && (
                 <Tooltip content="Upload PDF File" className="inline-flex">
                   <button
-                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
+                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
                     type="button"
                     onClick={() => {
                       setShowDocEmbedForm(true);
@@ -196,7 +196,7 @@ export function ChatWindow(props: {
                   className="inline-flex"
                 >
                   <button
-                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
+                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
                     type="button"
                     onClick={() => {
                       setShowUrlEntryForm(true);
@@ -228,7 +228,7 @@ export function ChatWindow(props: {
                   className="inline-flex"
                 >
                   <button
-                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
+                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
                     type="button"
                     onClick={() => {
                       setShowSearchForm(true);
@@ -256,7 +256,7 @@ export function ChatWindow(props: {
             <li className="p-3">
               <Tooltip content="Chat to Corpus" className="inline-flex">
                 <button
-                  className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-5 py-5"
+                  className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
                   type="button"
                   onClick={() => {
                     setReadyToChat(true);

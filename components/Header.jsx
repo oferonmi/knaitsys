@@ -22,11 +22,14 @@ export const Header = async ({menu}) => {
 
                     <Link href="/ai_tools" passHref className="py-1 w-auto h-auto">
                         <div className="flex flex-row">
-                            <div className="ml-0 ">
+                            {/* <div className="ml-0 ">
                                 <Image src="/logos/D9E2D5_3E6765/KAITO_logos_transparent.png" alt="App logo" width={115} height={115} />
                             </div>
                             <div className="mt-4">
                                 <Image src="/kaitosys_app_logo.png" alt="App logo text" width={215} height={75} />
+                            </div> */}
+                            <div className="ml-2.5 ">
+                                <Image src="/kaitosys.png" alt="App logo" width ={330} height={115}/>
                             </div>
                         </div>
                     </Link>

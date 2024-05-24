@@ -67,7 +67,7 @@ export function TextUploadForm(props: {
         <Tooltip content="Ingest" className="inline-flex">
           <button
             type="submit"
-            className="flex px-5 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full  max-w-24 max-h-24 items-center shrink-0 "
+            className="flex px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full  max-w-24 max-h-24 items-center shrink-0 "
           >
             <div
               role="status"

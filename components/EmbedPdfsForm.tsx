@@ -135,7 +135,7 @@ export function EmbedPdfsForm(props: {
         <Tooltip content="Ingest">
           <button
             type="submit"
-            className="flex shrink-0 px-5 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full max-h-24 max-w-24 items-center"
+            className="flex shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full max-h-24 max-w-24 items-center"
           >
             <div
               role="status"

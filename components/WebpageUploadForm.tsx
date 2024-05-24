@@ -68,7 +68,7 @@ export function WebpageUploadForm(props: {
           onChange={(e) => setInputUrl(e.target.value)}
         />
         <button
-          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
           type="submit"
         >
           <div
