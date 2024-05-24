@@ -1,9 +1,12 @@
-import './globals.css'
-import { Inter } from 'next/font/google'
-import NextAuthProvider from "@/context/NextAuthProvider";
+import './globals.css';
+import { Inter } from 'next/font/google';
+// import { Ubuntu_Mono } from "next/font/google";
+import NextAuthProvider from '@/context/NextAuthProvider';
 
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], weight: '300', })
+// const ubuntuMono = Ubuntu_Mono({ subsets: ["latin"] });
+
 
 export const metadata = {
   title: 'Kaitosys - Knowledge-work AI Tools System',
