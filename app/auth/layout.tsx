@@ -2,10 +2,10 @@ import { Inter } from 'next/font/google'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"], weight: "300" });
 
 export const metadata = {
-  title: 'KAITOSYS - Authentication',
+  title: 'Kaitosys - Log In',
   description: 'Your AI tools kit',
 }
 
