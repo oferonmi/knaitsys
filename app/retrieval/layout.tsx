@@ -9,11 +9,7 @@ export const metadata = {
   description: "Query text documents by leveraging LLMs",
 };
 
-export default function ragChatLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RetrievalPageLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body

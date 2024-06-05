@@ -57,8 +57,8 @@ export function TextUploadForm(props: {
         id="raw-textarea-form"
       >
         <textarea
-          className="grow  mr-8 p-4 resize rounded-md border"
-          id="raw-text-injest"
+          className="grow  mr-8 p-4 resize rounded-md border border-kaito-brand-ash-green focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green bg-gray-50"
+          id="raw-text-injest text-sm"
           value={document}
           rows={14}
           onChange={(e) => setDocument(e.target.value)}
