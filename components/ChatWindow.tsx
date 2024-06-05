@@ -281,19 +281,19 @@ export function ChatWindow(props: {
         </div>
 
         {/* main section */}
-        <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen">
-          <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
+        <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
+          <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 ">
             Chat to your documents and the web.
           </h1>
 
           <p className="text-black text-lg text-center">
-            Upload text corpuses using options on the left. A chat
-            interface appears on successfull upload, so you can ask questions
-            about the uploaded content.
+            Upload text corpuses using options on the left. A chat interface
+            appears on successfull upload, so you can ask questions about the
+            uploaded content.
           </p>
 
           <br></br>
-
+          
           {messages.length === 0 && embedForm}
           {messages.length === 0 && ingestForm}
           {messages.length === 0 && urlForm}
