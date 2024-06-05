@@ -15,8 +15,8 @@ export const Header = async ({menu}) => {
     };
 
     return (
-        <div className="flex flex-col border-b-2">
-            <header className="bg-gray-100 border-gray-200 w-full items-center space-x-6 sticky top-0"> {/*z-20 fixed*/}
+        <div className="flex flex-col border-b border-b-kaito-brand-ash-green">
+            <header className="bg-gray-100  w-full items-center space-x-6 sticky top-0"> {/*z-20 fixed*/}
 
                 <div className="md:flex md:items-center md:justify-between">
 
