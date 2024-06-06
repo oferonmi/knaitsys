@@ -106,39 +106,43 @@ const SummarizerPage = () => {
 
   // input section form specifications
   const summarizerCtrlButtons = (
-    <div className="flex justify-end mt-2 space-x-6">
-      {/* <label className="text-black" htmlFor="llm-selector">Select LLM: </label> */}
-
-      {/* <select
-        onChange={handleApiEndpointChange}
-        className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
-        id="llm-selector"
-        required
-      >
-        <option value="">--Select LLM--</option>
-        <option value="openai">GPT-3.5</option>
-        <option value="fireworksai">Llama-2-Fwks</option>
-        <option value="cohere">Co:here</option>
-        <option value="huggingface">OpenAssistant-HF</option>
-      </select>  */}
-      <div>
-        <button
-          className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
-          type="button"
-          onClick={stop}
+    <div className="flex flex-row">
+      {/*className="flex flex-row"*/}
+      <div className="flex mt-2 mr-auto">
+        <select
+          onChange={handleApiEndpointChange}
+          className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
+          id="llm-selector"
+          required
         >
-          <StopIcon />
-        </button>
+          <option value="">--Select LLM--</option>
+          <option value="openai">GPT-3.5</option>
+          <option value="fireworksai">Llama-2-Fwks</option>
+          <option value="cohere">Co:here</option>
+          <option value="huggingface">OpenAssistant-HF</option>
+        </select>
       </div>
 
-      <div>
-        <button
-          className="inline-flex items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-          type="submit"
-          disabled={isLoading}
-        >
-          <SendIcon />
-        </button>
+      <div className="flex mt-2 ml-auto space-x-3">
+        <div>
+          <button
+            className=" bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
+            type="button"
+            onClick={stop}
+          >
+            <StopIcon />
+          </button>
+        </div>
+
+        <div>
+          <button
+            className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+            type="submit"
+            disabled={isLoading}
+          >
+            <SendIcon />
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -159,7 +163,7 @@ const SummarizerPage = () => {
           ></textarea>
         </div>
 
-        <div className="items-center px-3 py-2 border-t ">
+        <div className=" px-3 py-2 border-t ">
           {summarizerCtrlButtons}
         </div>
       </div>
@@ -209,7 +213,7 @@ const SummarizerPage = () => {
         ></input>
       </label>
 
-      <div className="items-center px-3 py-2 ">
+      <div className="px-3 py-2 ">
         {summarizerCtrlButtons}
       </div>
     </form>
@@ -220,7 +224,6 @@ const SummarizerPage = () => {
       <input
         type="url"
         id="urlInput"
-        // className="bg-white hover:bg-gray-50 text-kaito-brand-ash-green text-sm rounded-t-lg border border-b-kaito-brand-gray focus:ring-gray-200 focus:border-gray-200 block w-full p-2.5"
         className="bg-white hover:bg-gray-50 text-kaito-brand-ash-green text-sm rounded-t-lg w-full border-x-0 border-t-0 border-b "
         placeholder="Type in the URL (http:// address) of webpage you want to summarize."
         // onChange={getWebPageContent}
@@ -246,7 +249,7 @@ const SummarizerPage = () => {
           ></textarea>
         </div>
 
-        <div className="items-center px-3 py-2 border-t ">
+        <div className="px-3 py-2 border-t ">
           {summarizerCtrlButtons}
         </div>
       </div>
