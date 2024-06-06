@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, FormEvent } from "react";
+import { useState, useRef, FormEvent, useCallback } from "react";
 import { useCompletion } from "ai/react";
 import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
@@ -13,16 +13,19 @@ import {
   SendIcon, 
   StopIcon 
 } from "@/components/Icons";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { Tooltip } from "flowbite-react";
+import { useDropzone } from "react-dropzone";
 
 const SummarizerPage = () => {
   const { data:session, status } = useSession();
 
   const [inputType, setInputType] = useState("text");
+  const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<FileList | []>([]);
+  const [apiEndpoint, setApiEndpoint] = useState("app/api/chat/summarizer"); //useState("/api/completion/fireworksai");
 
   const inputSectionRef = useRef(null);
-
-  const [apiEndpoint, setApiEndpoint] = useState("app/api/chat/summarizer"); //useState("/api/completion/fireworksai");
 
   const handleApiEndpointChange = (event: { target: { value: any } }) => {
     setApiEndpoint("/api/completion/" + event.target.value);
@@ -40,6 +43,14 @@ const SummarizerPage = () => {
   } = useCompletion({
     api: apiEndpoint,
   });
+
+  const onDrop = useCallback((acceptedFiles: any) => {
+    // Do something with the files
+    setUploadedFiles(acceptedFiles);
+    setSelectedPDF(acceptedFiles[0]);
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   //extract text from a url input
   const getWebPageContent = async (e: FormEvent<HTMLFormElement>) => {
@@ -139,7 +150,7 @@ const SummarizerPage = () => {
         <div className="px-2 py-2 bg-white rounded-t-lg ">
           <textarea
             id="textInput"
-            rows={4}
+            rows={13}
             className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
             value={input}
             onChange={handleInputChange}
@@ -157,28 +168,49 @@ const SummarizerPage = () => {
 
   // text file input form
   const fileInputForm = (
-    <form className="w-full flex flex-col" onSubmit={getFileContent}>
-      <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
-        <div className="flex items-center justify-center w-full">
-          <label
-            htmlFor="dropzone-file"
-            className="flex flex-col items-center justify-center w-full cursor-pointer bg-white  hover:bg-gray-50 rounded-t-lg"
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <CloudUploadIcon />
-              <p className="mb-2 text-sm text-gray-500 ">
-                <span className="font-semibold">Click to upload</span> or drag
-                and drop
-              </p>
-              <p className="text-xs text-gray-500 ">DOC, DOCX, TXT or PDF</p>
-            </div>
-            <input id="dropzone-file" type="file" className="hidden" />
-          </label>
+    // <form className="w-full flex flex-col" onSubmit={getFileContent}>
+    <form
+      onSubmit={getFileContent}
+      className="flex flex-col w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50"
+    >
+      <label
+        {...getRootProps({
+          htmlFor: "dropzone-file",
+          className:
+            "grow items-center justify-center  cursor-pointer bg-white border-x-0 border-t-0 border-b border-gray-200 rounded-t-lg  hover:bg-gray-50",
+        })}
+      >
+        <div className="flex flex-col items-center justify-center pt-24 pb-28">
+          <CloudUploadIcon />
+          <div className="mb-2 text-sm text-gray-500 ">
+            <span className="font-semibold">
+              {isDragActive ? (
+                <p>Drop the files here ...</p>
+              ) : (
+                <p>Click to upload or drag and drop</p>
+              )}
+            </span>
+          </div>
+          {selectedPDF === null ? (
+            <p className="text-xs text-gray-500 ">PDF files</p>
+          ) : (
+            <p>{selectedPDF.name} file attached</p>
+          )}
         </div>
+        <input
+          {...getInputProps({
+            id: "dropzone-file",
+            // type: "file",
+            // accept: "pdf",
+            // className: "text-black hidden ",
+            // onChange: (e) =>
+            //   e.target.files ? setSelectedPDF(e.target.files[0]) : null,
+          })}
+        ></input>
+      </label>
 
-        <div className="items-center px-3 py-2 border-t ">
-          {summarizerCtrlButtons}
-        </div>
+      <div className="items-center px-3 py-2 ">
+        {summarizerCtrlButtons}
       </div>
     </form>
   );
@@ -205,7 +237,7 @@ const SummarizerPage = () => {
 
           <textarea
             id="pg_content_disp"
-            rows={4}
+            rows={12}
             className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
             value={input}
             onChange={handleInputChange}
@@ -226,41 +258,48 @@ const SummarizerPage = () => {
       <div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
         <ul>
           <li className="p-3">
-            <button
-              type="button"
-              className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
-              onClick={() => {
-                setInputType("text");
-              }}
-            >
-              <TextBodyIcon />
-              <span className="sr-only">Paste text</span>
-            </button>
-          </li>
-          <li className="p-3">
-            <button
-              type="button"
-              className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
-              onClick={() => {
-                setInputType("file");
-              }}
-            >
-              <ClipIcon />
-              <span className="sr-only">Attach file</span>
-            </button>
+            <Tooltip content="Upload Text" className="inline-flex">
+              <button
+                type="button"
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                onClick={() => {
+                  setInputType("text");
+                }}
+              >
+                <TextBodyIcon />
+                <span className="sr-only">Paste text</span>
+              </button>
+            </Tooltip>
           </li>
 
           <li className="p-3">
-            <button
-              type="button"
-              className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
-              onClick={() => {
-                setInputType("url");
-              }}
-            >
-              <LinkIcon />
-              <span className="sr-only">paste URL of webpage to summarize</span>
-            </button>
+            <Tooltip content="Upload PDF" className="inline-flex">
+              <button
+                type="button"
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                onClick={() => {
+                  setInputType("file");
+                }}
+              >
+                <ClipIcon />
+                <span className="sr-only">Attach file</span>
+              </button>
+            </Tooltip>
+          </li>
+
+          <li className="p-3">
+            <Tooltip content="Enter Webpage Address" className="inline-flex">
+              <button
+                type="button"
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                onClick={() => {
+                  setInputType("url");
+                }}
+              >
+                <LinkIcon />
+                <span className="sr-only">paste URL of webpage to summarize</span>
+              </button>
+            </Tooltip>
           </li>
           {/* <li className="p-3"></li> */}
         </ul>
@@ -271,7 +310,7 @@ const SummarizerPage = () => {
   return (
     <>
       {status === "authenticated" && (
-        <div className="flex flex-auto max-w-2xl pb-5 mx-auto mt-4 sm:px-4 grow">
+        <div className="flex ">
           {completion.length > 0 && (
             <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
               {completion}
@@ -280,9 +319,11 @@ const SummarizerPage = () => {
 
           {completion.length == 0 && (
             <>
+              {/* side bar */}
               {sideNavBar}
 
-              <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen">
+              {/* main section */}
+              <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
                 <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
                   Summarize your documents and web pages.
                 </h1>
@@ -302,6 +343,8 @@ const SummarizerPage = () => {
               </div>
             </>
           )}
+
+          <ToastContainer />
         </div>
       )}
       {status === "unauthenticated" && redirect("/auth/signIn")};
