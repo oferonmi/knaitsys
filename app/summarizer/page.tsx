@@ -1,8 +1,9 @@
 "use client";
-import { useState, useRef, FormEvent, useCallback } from "react";
-import { useCompletion } from "ai/react";
+import { useState, useRef, FormEvent, useCallback, useEffect } from "react";
+import { useChat, useCompletion } from "ai/react";
 import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
+import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { 
@@ -16,16 +17,22 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import { Tooltip } from "flowbite-react";
 import { useDropzone } from "react-dropzone";
+import { Document } from "@langchain/core/documents";
 
 const SummarizerPage = () => {
-  const { data:session, status } = useSession();
+  const { data: session, status } = useSession();
 
   const [inputType, setInputType] = useState("text");
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<FileList | []>([]);
-  const [apiEndpoint, setApiEndpoint] = useState("app/api/chat/summarizer"); //useState("/api/completion/fireworksai");
+  // const [activeTextCorpus, setActiveTextCorpus] = useState("");
+  const [apiEndpoint, setApiEndpoint] = useState("/api/completion/fireworksai"); //useState("/api/chat/summarizer");
 
-  const inputSectionRef = useRef(null);
+  const [sourcesForMessages, setSourcesForMessages] = useState<
+    Record<string, any>
+  >({});
+
+  // const inputSectionRef = useRef(null);
 
   const handleApiEndpointChange = (event: { target: { value: any } }) => {
     setApiEndpoint("/api/completion/" + event.target.value);
@@ -42,7 +49,41 @@ const SummarizerPage = () => {
     handleSubmit,
   } = useCompletion({
     api: apiEndpoint,
+    onError: (e) => {
+      toast(e.message, {
+        theme: "dark",
+      });
+    },
   });
+
+  // const {
+  //   messages,
+  //   input,
+  //   setInput,
+  //   handleInputChange,
+  //   handleSubmit,
+  //   isLoading,
+  //   stop,
+  // } = useChat({
+  //   api: apiEndpoint,
+  //   onResponse(response) {
+  //     const sourcesHeader = response.headers.get("x-sources");
+  //     const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
+  //     const messageIndexHeader = response.headers.get("x-message-index");
+
+  //     if (sources.length && messageIndexHeader !== null) {
+  //       setSourcesForMessages({
+  //         ...sourcesForMessages,
+  //         [messageIndexHeader]: sources,
+  //       });
+  //     }
+  //   },
+  //   onError: (e) => {
+  //     toast(e.message, {
+  //       theme: "dark",
+  //     });
+  //   },
+  // });
 
   const onDrop = useCallback((acceptedFiles: any) => {
     // Do something with the files
@@ -52,8 +93,68 @@ const SummarizerPage = () => {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  //extract text from a url input
-  const getWebPageContent = async (e: FormEvent<HTMLFormElement>) => {
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // useEffect(() => {
+  //   if (messages?.length > 0) {
+  //     bottomRef.current.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // }, [messages]);
+
+  useEffect(() => {
+    if (completion?.length > 0) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [completion]);
+
+  // function for serialized string copy of an array of Document object
+  const combineDocumentsFn = (docs: Document[]) => {
+    const serializedDocs = docs.map((doc) => doc.pageContent);
+    return serializedDocs.join("\n\n");
+  };
+
+  //process raw text
+  const [activeTextCorpus, setActiveTextCorpus] = useState(input);
+  const processRawText = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Split text to small bits
+    // Set input to a collect of split text bits
+    const response = await fetch("/api/parse_docs/parse_plain_text", {
+      method: "POST",
+      body: JSON.stringify({
+        text: activeTextCorpus,
+      }),
+    });
+
+    const json = await response.json();
+
+    if (response.status === 200) {
+      // create raw text serialize text
+
+      //prompt LLM
+      handleSubmit(e);
+      // toast(
+      //   `Text parsed successfully!`,
+      //   {
+      //     theme: "dark",
+      //   }
+      // );
+    } else {
+      
+      if (json.error) {
+        // toast(
+        //   `Unable to parse text: ${json.error}`,
+        //   {
+        //     theme: "dark",
+        //   }
+        // );
+      }
+    }
+  };
+
+  //extract and process text from a url input
+  const processWebPageContent = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const urlInput = document.getElementById("urlInput");
 
     // const pg_content_disp = document.getElementById("pg_content_disp");
@@ -61,11 +162,10 @@ const SummarizerPage = () => {
     const url = urlInput?.textContent;
     console.log(url);
 
-    e.preventDefault();
     // setIsLoading(true);
 
     // API call to parse web page content of user provided URL
-    const response = await fetch("/api/webpage_parser", {
+    const response = await fetch("/api/parse_docs/parse_webpage", {
       method: "POST",
       body: JSON.stringify({
         text: url,
@@ -76,39 +176,33 @@ const SummarizerPage = () => {
 
     if (response.status === 200 && json_resp.data) {
       // setReadyToChat(true);
-      setInput(json_resp.data);
-      toast(
-        `Web page content retreived.`,
-        {
-          theme: "dark",
-        }
-      );
+      setInput(combineDocumentsFn(json_resp.data));
+      toast(`Web page content retreived.`, {
+        theme: "dark",
+      });
       handleSubmit(e);
     } else {
       // const json = await response.json();
       if (json_resp.error) {
-        toast(
-          `Unable to retreive web page content : ${json_resp.error}`,
-          {
-            theme: "dark",
-          }
-        );
+        toast(`Unable to retreive web page content : ${json_resp.error}`, {
+          theme: "dark",
+        });
       }
     }
-  }
+  };
 
-  // extractfile content of uploaded
-  const getFileContent = (e: FormEvent<HTMLFormElement>) => {
+  // extract and process text content of uploaded PDF
+  const processFileContent = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     //TO DO: API call to a langchain based document/file loader. returns file content as serialized strings
     handleSubmit(e);
-  }
+  };
 
   // input section form specifications
   const summarizerCtrlButtons = (
     <div className="flex flex-row">
       {/*className="flex flex-row"*/}
-      <div className="flex mt-2 mr-auto">
+      {/* <div className="flex mt-2 mr-auto">
         <select
           onChange={handleApiEndpointChange}
           className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
@@ -121,7 +215,7 @@ const SummarizerPage = () => {
           <option value="cohere">Co:here</option>
           <option value="huggingface">OpenAssistant-HF</option>
         </select>
-      </div>
+      </div> */}
 
       <div className="flex mt-2 ml-auto space-x-3">
         <div>
@@ -149,23 +243,21 @@ const SummarizerPage = () => {
 
   // raw text input form
   const textInputForm = (
-    <form className="w-full flex flex-col" onSubmit={handleSubmit}>
+    <form className="w-full flex flex-col" onSubmit={processRawText}>
       <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
         <div className="px-2 py-2 bg-white rounded-t-lg ">
           <textarea
             id="textInput"
             rows={13}
-            className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
-            value={input}
+            className="w-full px-0 text-sm text-black bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
+            value={input} //activeTextCorpus
             onChange={handleInputChange}
             placeholder="Paste in the text you want to summarize..."
             required
           ></textarea>
         </div>
 
-        <div className=" px-3 py-2 border-t ">
-          {summarizerCtrlButtons}
-        </div>
+        <div className=" px-3 py-2 border-t ">{summarizerCtrlButtons}</div>
       </div>
     </form>
   );
@@ -174,7 +266,7 @@ const SummarizerPage = () => {
   const fileInputForm = (
     // <form className="w-full flex flex-col" onSubmit={getFileContent}>
     <form
-      onSubmit={getFileContent}
+      onSubmit={processFileContent}
       className="flex flex-col w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50"
     >
       <label
@@ -213,9 +305,7 @@ const SummarizerPage = () => {
         ></input>
       </label>
 
-      <div className="px-3 py-2 ">
-        {summarizerCtrlButtons}
-      </div>
+      <div className="px-3 py-2 ">{summarizerCtrlButtons}</div>
     </form>
   );
 
@@ -233,7 +323,7 @@ const SummarizerPage = () => {
   );
 
   const urlInputForm = (
-    <form className="w-full flex flex-col" onSubmit={getWebPageContent}>
+    <form className="w-full flex flex-col" onSubmit={processWebPageContent}>
       <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
         <div className=" bg-white rounded-t-lg">
           {urlInputBox}
@@ -241,7 +331,7 @@ const SummarizerPage = () => {
           <textarea
             id="pg_content_disp"
             rows={12}
-            className="w-full px-0 text-sm text-kaito-brand-ash-green bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
+            className="w-full mb-4 text-sm text-black bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
             value={input}
             onChange={handleInputChange}
             placeholder="  Preview of webpage content appears here ..."
@@ -249,14 +339,12 @@ const SummarizerPage = () => {
           ></textarea>
         </div>
 
-        <div className="px-3 py-2 border-t ">
-          {summarizerCtrlButtons}
-        </div>
+        <div className="px-3 py-2 border-t ">{summarizerCtrlButtons}</div>
       </div>
     </form>
   );
 
-  const sideNavBar = (
+  const SideNavBar = (
     <>
       <div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
         <ul>
@@ -300,7 +388,9 @@ const SummarizerPage = () => {
                 }}
               >
                 <LinkIcon />
-                <span className="sr-only">paste URL of webpage to summarize</span>
+                <span className="sr-only">
+                  paste URL of webpage to summarize
+                </span>
               </button>
             </Tooltip>
           </li>
@@ -310,20 +400,84 @@ const SummarizerPage = () => {
     </>
   );
 
+  // Summary Flash Card component interface
+  let cardColorHexArr = [
+    "#cba3e0",
+    "#d2ccf2",
+    "#c8a8d5",
+    "#e4a8b9",
+    "#db96b9",
+    "#afd1e2",
+  ];
+
+  let cardColorHex = cardColorHexArr[3];
+  // let cardColorHex = cardColorHexArr[Math.floor(Math.random() * cardColorHexArr.length)];
+  // console.log(cardColorHexArr[cardColorHex]);
+
+  const FlashCard = (
+    <div className="flex flex-col">
+      {/* Summarization Flashcard component */}
+      <h2 className="text-black text-2xl flex justify-center mt-2">
+        Summary Flash Card
+      </h2>
+
+      <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
+        {completion.length > 0 ? (
+          <div
+            className={`${
+              "bg-[" + cardColorHex + "]"
+            }  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-2 border-gray-300`}
+            // className="bg-[#afd1e2] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-2 border-gray-300"
+          >
+            <span className="whitespace-pre-wrap flex flex-col">
+              {completion}
+            </span>
+          </div>
+        ) : (
+          ""
+        )}
+        <div ref={bottomRef} />
+      </div>
+    </div>
+  );
+
   return (
     <>
       {status === "authenticated" && (
         <div className="flex ">
-          {completion.length > 0 && (
-            <output className="flex flex-col text-sm sm:text-base text-gray-700 flex-1 gap-y-4 mt-1 gap-x-4 rounded-md bg-gray-50 py-5 px-5 pb-80 grow">
-              {completion}
-            </output>
-          )}
+          {/* Summarization Flashcard component */}
+          {completion && FlashCard}
 
+          {/* {messages.length > 0 && (
+            <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
+              {messages.length > 0
+                ? // (<div className="bg-[#96b7a5] text-black rounded px-4 py-2 max-w-[80%] mb-8 flex ">
+                  //   <output className="whitespace-pre-wrap flex flex-col ">
+                  //     <span>{completion}</span>
+                  //   </output>
+                  // </div>)
+
+                  [...messages].map((m, i) => {
+                    const sourceKey = (messages.length - 1 - i).toString();
+                    return (
+                      <ChatMessageBubble
+                        key={m.id}
+                        message={m}
+                        sources={sourcesForMessages[sourceKey]}
+                      ></ChatMessageBubble>
+                    );
+                  })
+                : ""}
+
+              <div ref={bottomRef} />
+            </div>
+          )} */}
+
+          {/* landing page section */}
           {completion.length == 0 && (
             <>
               {/* side bar */}
-              {sideNavBar}
+              {SideNavBar}
 
               {/* main section */}
               <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
@@ -346,12 +500,11 @@ const SummarizerPage = () => {
               </div>
             </>
           )}
-
-          <ToastContainer />
         </div>
       )}
       {status === "unauthenticated" && redirect("/auth/signIn")};
       <Footer />
+      <ToastContainer />
     </>
   );
 }

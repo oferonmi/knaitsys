@@ -3,7 +3,7 @@ import type { Message } from "ai/react";
 export function ChatMessageBubble(props: {
   message: Message;
   aiEmoji?: string;
-  sources: any[];
+  sources?: any[];
 }) {
   const colorClassName =
     props.message.role === "user" ? "bg-slate-300" : "bg-[#96b7a5] text-black";

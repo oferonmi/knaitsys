@@ -36,8 +36,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       // { ok: true },
       // { data: combineDocumentsFn(web_page_docs) }, // TO DO: figure what data type this should be cast into
-      { data: combineDocumentsFn(split_docs) },
-    //   { data: split_docs },
+      // { data: combineDocumentsFn(split_docs) },
+      { data: split_docs }, // May be temporary
       { status: 200 }
     );
   } catch (e: any) {

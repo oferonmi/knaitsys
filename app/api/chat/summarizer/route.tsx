@@ -76,7 +76,7 @@ const SUMMARY_REFINE_PROMPT = PromptTemplate.fromTemplate(
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const text = body.text;
+    // const text = body.text;
     // console.log(typeof text);
 
     const messages = body.messages ?? [];
@@ -102,31 +102,31 @@ export async function POST(req: NextRequest) {
       chat_history: formatVercelMessages(previousMessages),
     });
 
-    // let resolveWithDocuments: (value: Document[]) => void;
-    // const documentPromise = new Promise<Document[]>((resolve) => {
-    //   resolveWithDocuments = resolve;
-    // });
+    let resolveWithDocuments: (value: Document[]) => void;
+    const documentPromise = new Promise<Document[]>((resolve) => {
+      resolveWithDocuments = resolve;
+    });
 
-    // const documents = await documentPromise;
-    // const serializedSources = Buffer.from(
-    //   JSON.stringify(
-    //     documents.map((doc) => {
-    //       return {
-    //         pageContent: doc.pageContent.slice(0, 50) + "...",
-    //         metadata: doc.metadata,
-    //       };
-    //     }),
-    //   ),
-    // ).toString("base64");
+    const documents = await documentPromise;
+    const serializedSources = Buffer.from(
+      JSON.stringify(
+        documents.map((doc) => {
+          return {
+            pageContent: doc.pageContent.slice(0, 50) + "...",
+            metadata: doc.metadata,
+          };
+        }),
+      ),
+    ).toString("base64");
 
     return new StreamingTextResponse(
       stream.pipeThrough(createStreamDataTransformer()), 
-      // {
-      //   headers: {
-      //     "x-message-index": (previousMessages.length + 1).toString(),
-      //     "x-sources": serializedSources,
-      //   },
-      // }
+      {
+        headers: {
+          "x-message-index": (previousMessages.length + 1).toString(),
+          "x-sources": serializedSources,
+        },
+      }
     );
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });

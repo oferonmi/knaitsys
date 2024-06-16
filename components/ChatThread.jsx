@@ -15,13 +15,6 @@ const ChatThread = ({messages, sysEmoji, sources}) => {
         <div 
             className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black"
         >
-            {/* {messages.map((m) => (
-            <div key={m.id}>
-                <b>{m.role === "user" ? <Emoji symbol="🤔: " label="thinking face"/> : <Emoji symbol="🤖: " label="bespectacled face"/>}</b>
-                {m.content}
-            </div>
-            ))} */}
-
             {messages.length > 0
                 ? [...messages].map((m, i) => {
                     const sourceKey = (messages.length - 1 - i).toString();
