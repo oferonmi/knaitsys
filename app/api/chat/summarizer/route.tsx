@@ -13,10 +13,10 @@ import { ChatOpenAI} from "@langchain/openai";
 
 export const runtime = "edge";
 
-// const combineDocumentsFn = (docs: Document[]) => {
-//   const serializedDocs = docs.map((doc) => doc.pageContent);
-//   return serializedDocs.join("\n\n");
-// };
+const combineDocumentsFn = (docs: Document[]) => {
+  const serializedDocs = docs.map((doc) => doc.pageContent);
+  return serializedDocs.join("\n\n");
+};
 
 const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
   const formattedDialogueTurns = chatHistory.map((message) => {
@@ -31,7 +31,9 @@ const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
   return formattedDialogueTurns.join("\n");
 };
 
-const summaryTemplate = `
+// TO DO: Functionality to be made similar to retrival chat 
+
+const SUMMARY_TEMPLATE = `
 You are an expert in summarizing text documents.
 Your goal is to create a summary of a body of text.
 Below you find the text of a document:
@@ -47,9 +49,9 @@ Total output will be a summary of the text document and a list of example questi
 SUMMARY AND QUESTIONS:
 `;
 
-const SUMMARY_PROMPT = PromptTemplate.fromTemplate(summaryTemplate);
+const SUMMARY_PROMPT = PromptTemplate.fromTemplate(SUMMARY_TEMPLATE);
 
-const summaryRefineTemplate = `
+const SUMMARY_REFINE_TEMPLATE = `
 You are an expert in summarizing text documents.
 Your goal is to create a summary of a body of text.
 We have provided an existing summary up to a certain point: {existing_answer}
@@ -70,14 +72,12 @@ SUMMARY AND QUESTIONS:
 `;
 
 const SUMMARY_REFINE_PROMPT = PromptTemplate.fromTemplate(
-  summaryRefineTemplate
+  SUMMARY_REFINE_TEMPLATE
 );
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    // const text = body.text;
-    // console.log(typeof text);
 
     const messages = body.messages ?? [];
     const previousMessages = messages.slice(0, -1);

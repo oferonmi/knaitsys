@@ -25,36 +25,37 @@ const SummarizerPage = () => {
   const [inputType, setInputType] = useState("text");
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<FileList | []>([]);
-  // const [activeTextCorpus, setActiveTextCorpus] = useState("");
-  const [apiEndpoint, setApiEndpoint] = useState("/api/completion/fireworksai"); //useState("/api/chat/summarizer");
+  const [summarizedText, setSummarizedText] = useState("");
+  const [inputTextCorpus, setInputTextCorpus] = useState("");
+  // const [apiEndpoint, setApiEndpoint] = useState("/api/chat/summarizer"); //useState("/api/completion/fireworksai");
 
-  const [sourcesForMessages, setSourcesForMessages] = useState<
-    Record<string, any>
-  >({});
+  // const [sourcesForMessages, setSourcesForMessages] = useState<
+  //   Record<string, any>
+  // >({});
 
   // const inputSectionRef = useRef(null);
 
-  const handleApiEndpointChange = (event: { target: { value: any } }) => {
-    setApiEndpoint("/api/completion/" + event.target.value);
-  };
+  // const handleApiEndpointChange = (event: { target: { value: any } }) => {
+  //   setApiEndpoint("/api/completion/" + event.target.value);
+  // };
 
   // text OpenAI completion function call
-  const {
-    completion,
-    input,
-    setInput,
-    stop,
-    isLoading,
-    handleInputChange,
-    handleSubmit,
-  } = useCompletion({
-    api: apiEndpoint,
-    onError: (e) => {
-      toast(e.message, {
-        theme: "dark",
-      });
-    },
-  });
+  // const {
+  //   completion,
+  //   input,
+  //   setInput,
+  //   stop,
+  //   isLoading,
+  //   handleInputChange,
+  //   handleSubmit,
+  // } = useCompletion({
+  //   api: apiEndpoint,
+  //   onError: (e) => {
+  //     toast(e.message, {
+  //       theme: "dark",
+  //     });
+  //   },
+  // });
 
   // const {
   //   messages,
@@ -95,44 +96,46 @@ const SummarizerPage = () => {
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (summarizedText?.length > 0) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [summarizedText]);
+
   // useEffect(() => {
-  //   if (messages?.length > 0) {
+  //   if (completion?.length > 0) {
   //     bottomRef.current.scrollIntoView({ behavior: "smooth" });
   //   }
-  // }, [messages]);
-
-  useEffect(() => {
-    if (completion?.length > 0) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [completion]);
+  // }, [completion]);
 
   // function for serialized string copy of an array of Document object
-  const combineDocumentsFn = (docs: Document[]) => {
-    const serializedDocs = docs.map((doc) => doc.pageContent);
-    return serializedDocs.join("\n\n");
-  };
+  // const combineDocumentsFn = (docs: Document[]) => {
+  //   const serializedDocs = docs.map((doc) => doc.pageContent);
+  //   return serializedDocs.join("\n\n");
+  // };
 
   //process raw text
-  const [activeTextCorpus, setActiveTextCorpus] = useState(input);
   const processRawText = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Split text to small bits
-    // Set input to a collect of split text bits
-    const response = await fetch("/api/parse_docs/parse_plain_text", {
+    // pass input to API that handles text summarization
+    const response = await fetch("/api/summarizer/plain_text_summary", {
       method: "POST",
       body: JSON.stringify({
-        text: activeTextCorpus,
+        text: inputTextCorpus,
       }),
     });
 
-    const json = await response.json();
+    const response_json = await response.json();
 
     if (response.status === 200) {
-      // create raw text serialize text
+      // set summarized text state
+      console.log(response_json.text);
+      // console.log(`Success!`);
+      setSummarizedText(response_json.text)
 
       //prompt LLM
-      handleSubmit(e);
+      // handleSubmit(e);
+
       // toast(
       //   `Text parsed successfully!`,
       //   {
@@ -140,8 +143,8 @@ const SummarizerPage = () => {
       //   }
       // );
     } else {
-      
-      if (json.error) {
+      if (response_json.error) {
+        console.log(response_json.error)
         // toast(
         //   `Unable to parse text: ${json.error}`,
         //   {
@@ -176,11 +179,11 @@ const SummarizerPage = () => {
 
     if (response.status === 200 && json_resp.data) {
       // setReadyToChat(true);
-      setInput(combineDocumentsFn(json_resp.data));
+      // setInput(combineDocumentsFn(json_resp.data));
       toast(`Web page content retreived.`, {
         theme: "dark",
       });
-      handleSubmit(e);
+      // handleSubmit(e);
     } else {
       // const json = await response.json();
       if (json_resp.error) {
@@ -195,7 +198,7 @@ const SummarizerPage = () => {
   const processFileContent = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     //TO DO: API call to a langchain based document/file loader. returns file content as serialized strings
-    handleSubmit(e);
+    // handleSubmit(e);
   };
 
   // input section form specifications
@@ -222,7 +225,7 @@ const SummarizerPage = () => {
           <button
             className=" bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
             type="button"
-            onClick={stop}
+            // onClick={stop}
           >
             <StopIcon />
           </button>
@@ -232,7 +235,7 @@ const SummarizerPage = () => {
           <button
             className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
             type="submit"
-            disabled={isLoading}
+            // disabled={isLoading}
           >
             <SendIcon />
           </button>
@@ -250,8 +253,8 @@ const SummarizerPage = () => {
             id="textInput"
             rows={13}
             className="w-full px-0 text-sm text-black bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
-            value={input} //activeTextCorpus
-            onChange={handleInputChange}
+            value={inputTextCorpus}
+            onChange={(e) => setInputTextCorpus(e.target.value)}
             placeholder="Paste in the text you want to summarize..."
             required
           ></textarea>
@@ -332,8 +335,8 @@ const SummarizerPage = () => {
             id="pg_content_disp"
             rows={12}
             className="w-full mb-4 text-sm text-black bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
-            value={input}
-            onChange={handleInputChange}
+            value={inputTextCorpus}
+            onChange={(e) => setInputTextCorpus(e.target.value)}
             placeholder="  Preview of webpage content appears here ..."
             disabled={true}
           ></textarea>
@@ -402,17 +405,18 @@ const SummarizerPage = () => {
 
   // Summary Flash Card component interface
   let cardColorHexArr = [
-    "#cba3e0",
-    "#d2ccf2",
-    "#c8a8d5",
-    "#e4a8b9",
-    "#db96b9",
-    "#afd1e2",
+    "bg-[#cba3e0]",
+    "bg-[#d2ccf2]",
+    "bg-[#c8a8d5]",
+    "bg-[#e4a8b9]",
+    "bg-[#db96b9]",
+    "bg-[#afd1e2]",
+    "bg-[#feff9c]",
   ];
 
-  let cardColorHex = cardColorHexArr[3];
-  // let cardColorHex = cardColorHexArr[Math.floor(Math.random() * cardColorHexArr.length)];
-  // console.log(cardColorHexArr[cardColorHex]);
+  // let cardColorHex = cardColorHexArr[0];
+  let cardColorHex = cardColorHexArr[Math.floor(Math.random() * cardColorHexArr.length)];
+  // console.log(cardColorHex);
 
   const FlashCard = (
     <div className="flex flex-col">
@@ -422,15 +426,13 @@ const SummarizerPage = () => {
       </h2>
 
       <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
-        {completion.length > 0 ? (
+        {summarizedText.length > 0 ? (
           <div
-            className={`${
-              "bg-[" + cardColorHex + "]"
-            }  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-2 border-gray-300`}
-            // className="bg-[#afd1e2] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-2 border-gray-300"
+            className={`${ cardColorHex }  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
+            // className="bg-[#c8a8d5] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-300"
           >
             <span className="whitespace-pre-wrap flex flex-col">
-              {completion}
+              {summarizedText}
             </span>
           </div>
         ) : (
@@ -446,7 +448,7 @@ const SummarizerPage = () => {
       {status === "authenticated" && (
         <div className="flex ">
           {/* Summarization Flashcard component */}
-          {completion && FlashCard}
+          {summarizedText && FlashCard}
 
           {/* {messages.length > 0 && (
             <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
@@ -474,7 +476,7 @@ const SummarizerPage = () => {
           )} */}
 
           {/* landing page section */}
-          {completion.length == 0 && (
+          {summarizedText.length == 0 && (
             <>
               {/* side bar */}
               {SideNavBar}

@@ -9,20 +9,21 @@ export const metadata = {
   description: "Summarizes documents using LLMs",
 };
 
-export default function SummarizerLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function SummarizerLayout({children,}: {children: React.ReactNode}) {
   return (
     <html lang="en">
       <body
         className={
-          inter.className +
-          " bg-gradient-to-r from-teal-100 to-teal-100 flex flex-col h-screen overflow-hidden"
+          inter.className + " bg-gradient-to-r from-teal-100 to-teal-100"
         }
       >
-        <Header menu={[]}/>
+        <Header
+          menu={[
+            { id: 1, value: "Text", url: "/text" },
+            { id: 2, value: "Audio", url: "/audio" },
+            { id: 3, value: "Code", url: "/code" },
+          ]}
+        />
         {children}
         {/* <Footer /> */}
       </body>
