@@ -29,7 +29,8 @@ export const Header = async ({menu}) => {
                                 <Image src="/kaitosys_app_logo.png" alt="App logo text" width={215} height={75} />
                             </div> */}
                             <div className="ml-3.5 ">
-                                <Image src="/kaitosys.png" alt="App logo" width ={330} height={115}/>
+                                <Image src="/kaitosys.png" priority={true} alt="App logo" width ={330} height={115}/>
+                                {/* width ={330} height={115} */}
                             </div>
                         </div>
                     </Link>

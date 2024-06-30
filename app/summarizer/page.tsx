@@ -129,7 +129,7 @@ const SummarizerPage = () => {
 
     if (response.status === 200) {
       // set summarized text state
-      console.log(response_json.text);
+      // console.log(response_json.text);
       // console.log(`Success!`);
       setSummarizedText(response_json.text)
 
@@ -168,7 +168,7 @@ const SummarizerPage = () => {
     // setIsLoading(true);
 
     // API call to parse web page content of user provided URL
-    const response = await fetch("/api/parse_docs/parse_webpage", {
+    const response = await fetch("/api/summarizer/webpage_summary", {
       method: "POST",
       body: JSON.stringify({
         text: url,
