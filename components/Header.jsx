@@ -9,11 +9,6 @@ import { UnAuthHeader } from "./UnAuthHeader";
 export const Header = async ({menu}) => {
     const session = await getServerSession(authOptions);
 
-    const handleClick = (url) => {
-        // window.location.reload()
-        // router.refresh();
-    };
-
     return (
         <div className="flex flex-col border-b border-b-kaito-brand-ash-green">
             <header className="bg-gray-100  w-full items-center space-x-6 sticky top-0"> {/*z-20 fixed*/}
@@ -30,12 +25,11 @@ export const Header = async ({menu}) => {
                             </div> */}
                             <div className="ml-3.5 ">
                                 <Image src="/kaitosys.png" priority={true} alt="App logo" width ={330} height={115}/>
-                                {/* width ={330} height={115} */}
                             </div>
                         </div>
                     </Link>
 
-                    (<div className="flex flex-row">
+                    <div className="flex flex-row">
                         {menu?.length > 0
                             ?  [...menu].map((m) => {
                                 return (

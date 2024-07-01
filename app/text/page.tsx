@@ -52,8 +52,8 @@ const TextProcessorPage = () => {
   return (
     <>
       
-      {status === "authenticated" && textProcessorPageContent};
-      {status === "unauthenticated" && redirect("/auth/signIn")};
+      {status === "authenticated" && textProcessorPageContent}
+      {status === "unauthenticated" && redirect("/auth/signIn")}
     </>
   );
 };

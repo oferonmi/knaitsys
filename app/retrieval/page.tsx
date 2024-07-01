@@ -30,7 +30,7 @@ export default function RetrievalPage() {
           setReadyToChat={setReadyToChat}
         ></ChatWindow>
       )}
-      {status === "unauthenticated" && redirect("/auth/signIn")};
+      {status === "unauthenticated" && redirect("/auth/signIn")}
       {!readyToChat && <Footer />}
     </>
   );

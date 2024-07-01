@@ -103,7 +103,7 @@ const ChatbotPage = () => {
           </div>
         </div>
       )}
-      {status === "unauthenticated" && redirect("/auth/signIn")};
+      {status === "unauthenticated" && redirect("/auth/signIn")}
     </>
   );
 }

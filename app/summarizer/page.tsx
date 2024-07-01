@@ -27,6 +27,7 @@ const SummarizerPage = () => {
   const [uploadedFiles, setUploadedFiles] = useState<FileList | []>([]);
   const [summarizedText, setSummarizedText] = useState("");
   const [inputTextCorpus, setInputTextCorpus] = useState("");
+  const [inputUrl, setInputUrl] = useState("");
   // const [apiEndpoint, setApiEndpoint] = useState("/api/chat/summarizer"); //useState("/api/completion/fireworksai");
 
   // const [sourcesForMessages, setSourcesForMessages] = useState<
@@ -130,27 +131,23 @@ const SummarizerPage = () => {
     if (response.status === 200) {
       // set summarized text state
       // console.log(response_json.text);
-      // console.log(`Success!`);
       setSummarizedText(response_json.text)
 
-      //prompt LLM
-      // handleSubmit(e);
-
       // toast(
-      //   `Text parsed successfully!`,
+      //   `Text summarized successfully!`,
       //   {
       //     theme: "dark",
       //   }
       // );
     } else {
       if (response_json.error) {
-        console.log(response_json.error)
-        // toast(
-        //   `Unable to parse text: ${json.error}`,
-        //   {
-        //     theme: "dark",
-        //   }
-        // );
+        // console.log(response_json.error)
+        toast(
+          `Unable to summarise text: ${response_json.error}`,
+          {
+            theme: "dark",
+          }
+        );
       }
     }
   };
@@ -158,38 +155,39 @@ const SummarizerPage = () => {
   //extract and process text from a url input
   const processWebPageContent = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const urlInput = document.getElementById("urlInput");
-
-    // const pg_content_disp = document.getElementById("pg_content_disp");
-
-    const url = urlInput?.textContent;
-    console.log(url);
-
+    // console.log(inputUrl);
     // setIsLoading(true);
 
-    // API call to parse web page content of user provided URL
+    // API call to summarize web page content of provided URL
     const response = await fetch("/api/summarizer/webpage_summary", {
       method: "POST",
       body: JSON.stringify({
-        text: url,
+        text: inputUrl,
       }),
     });
 
     const json_resp = await response.json();
 
-    if (response.status === 200 && json_resp.data) {
-      // setReadyToChat(true);
-      // setInput(combineDocumentsFn(json_resp.data));
-      toast(`Web page content retreived.`, {
-        theme: "dark",
-      });
-      // handleSubmit(e);
+    if (response.status === 200) {
+      // console.log("Success!");
+
+      // set input text content state
+      // console.log(json_resp.input_text);
+      setInputTextCorpus(json_resp.input_text);
+
+      // set summarized text state
+      // console.log(json_resp.output_text);
+      setSummarizedText(json_resp.output_text);
+
+      // toast(`Web page summarized successfully!`, {
+      //   theme: "dark",
+      // });
     } else {
-      // const json = await response.json();
       if (json_resp.error) {
-        toast(`Unable to retreive web page content : ${json_resp.error}`, {
-          theme: "dark",
-        });
+        console.log(json_resp.error);
+        // toast(`Unable to summarize web page content : ${json_resp.error}`, {
+        //   theme: "dark",
+        // });
       }
     }
   };
@@ -319,7 +317,8 @@ const SummarizerPage = () => {
         id="urlInput"
         className="bg-white hover:bg-gray-50 text-kaito-brand-ash-green text-sm rounded-t-lg w-full border-x-0 border-t-0 border-b "
         placeholder="Type in the URL (http:// address) of webpage you want to summarize."
-        // onChange={getWebPageContent}
+        value={inputUrl}
+        onChange={(e) => setInputUrl(e.target.value)}
         required
       />
     </>
@@ -336,7 +335,7 @@ const SummarizerPage = () => {
             rows={12}
             className="w-full mb-4 text-sm text-black bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
             value={inputTextCorpus}
-            onChange={(e) => setInputTextCorpus(e.target.value)}
+            // onChange={(e) => setInputTextCorpus(e.target.value)}
             placeholder="  Preview of webpage content appears here ..."
             disabled={true}
           ></textarea>
@@ -428,7 +427,7 @@ const SummarizerPage = () => {
       <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
         {summarizedText.length > 0 ? (
           <div
-            className={`${ cardColorHex }  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
+            className={`${cardColorHex}  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
             // className="bg-[#c8a8d5] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-300"
           >
             <span className="whitespace-pre-wrap flex flex-col">
@@ -446,34 +445,9 @@ const SummarizerPage = () => {
   return (
     <>
       {status === "authenticated" && (
-        <div className="flex ">
+        <div className="flex h-screen">
           {/* Summarization Flashcard component */}
           {summarizedText && FlashCard}
-
-          {/* {messages.length > 0 && (
-            <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
-              {messages.length > 0
-                ? // (<div className="bg-[#96b7a5] text-black rounded px-4 py-2 max-w-[80%] mb-8 flex ">
-                  //   <output className="whitespace-pre-wrap flex flex-col ">
-                  //     <span>{completion}</span>
-                  //   </output>
-                  // </div>)
-
-                  [...messages].map((m, i) => {
-                    const sourceKey = (messages.length - 1 - i).toString();
-                    return (
-                      <ChatMessageBubble
-                        key={m.id}
-                        message={m}
-                        sources={sourcesForMessages[sourceKey]}
-                      ></ChatMessageBubble>
-                    );
-                  })
-                : ""}
-
-              <div ref={bottomRef} />
-            </div>
-          )} */}
 
           {/* landing page section */}
           {summarizedText.length == 0 && (
@@ -504,7 +478,7 @@ const SummarizerPage = () => {
           )}
         </div>
       )}
-      {status === "unauthenticated" && redirect("/auth/signIn")};
+      {status === "unauthenticated" && redirect("/auth/signIn")}
       <Footer />
       <ToastContainer />
     </>

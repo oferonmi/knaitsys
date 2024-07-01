@@ -75,8 +75,8 @@ const AiToolsPage = () => {
 
   return(
     <>
-      {status === "authenticated" && aiToolsSdkPgContent};
-      {status === "unauthenticated" && redirect("/auth/signIn")};
+      {status === "authenticated" && aiToolsSdkPgContent}
+      {status === "unauthenticated" && redirect("/auth/signIn")}
     </>
   );
 };
