@@ -10,9 +10,7 @@ import {
   ClipIcon, 
   CloudUploadIcon, 
   TextBodyIcon, 
-  LinkIcon, 
-  SendIcon, 
-  StopIcon 
+  LinkIcon
 } from "@/components/Icons";
 import { ToastContainer, toast } from "react-toastify";
 import { Tooltip } from "flowbite-react";
@@ -22,12 +20,15 @@ import { Document } from "@langchain/core/documents";
 const SummarizerPage = () => {
   const { data: session, status } = useSession();
 
+  const [loading, setLoading] = useState(false);
+
   const [inputType, setInputType] = useState("text");
   const [selectedPDF, setSelectedPDF] = useState<File | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<FileList | []>([]);
   const [summarizedText, setSummarizedText] = useState("");
   const [inputTextCorpus, setInputTextCorpus] = useState("");
   const [inputUrl, setInputUrl] = useState("");
+
   // const [apiEndpoint, setApiEndpoint] = useState("/api/chat/summarizer"); //useState("/api/completion/fireworksai");
 
   // const [sourcesForMessages, setSourcesForMessages] = useState<
@@ -39,24 +40,6 @@ const SummarizerPage = () => {
   // const handleApiEndpointChange = (event: { target: { value: any } }) => {
   //   setApiEndpoint("/api/completion/" + event.target.value);
   // };
-
-  // text OpenAI completion function call
-  // const {
-  //   completion,
-  //   input,
-  //   setInput,
-  //   stop,
-  //   isLoading,
-  //   handleInputChange,
-  //   handleSubmit,
-  // } = useCompletion({
-  //   api: apiEndpoint,
-  //   onError: (e) => {
-  //     toast(e.message, {
-  //       theme: "dark",
-  //     });
-  //   },
-  // });
 
   // const {
   //   messages,
@@ -103,21 +86,10 @@ const SummarizerPage = () => {
     }
   }, [summarizedText]);
 
-  // useEffect(() => {
-  //   if (completion?.length > 0) {
-  //     bottomRef.current.scrollIntoView({ behavior: "smooth" });
-  //   }
-  // }, [completion]);
-
-  // function for serialized string copy of an array of Document object
-  // const combineDocumentsFn = (docs: Document[]) => {
-  //   const serializedDocs = docs.map((doc) => doc.pageContent);
-  //   return serializedDocs.join("\n\n");
-  // };
-
   //process raw text
   const processRawText = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     // pass input to API that handles text summarization
     const response = await fetch("/api/summarizer/plain_text_summary", {
       method: "POST",
@@ -139,6 +111,7 @@ const SummarizerPage = () => {
       //     theme: "dark",
       //   }
       // );
+      setLoading(false);
     } else {
       if (response_json.error) {
         // console.log(response_json.error)
@@ -156,7 +129,7 @@ const SummarizerPage = () => {
   const processWebPageContent = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log(inputUrl);
-    // setIsLoading(true);
+    setLoading(true);
 
     // API call to summarize web page content of provided URL
     const response = await fetch("/api/summarizer/webpage_summary", {
@@ -182,6 +155,8 @@ const SummarizerPage = () => {
       // toast(`Web page summarized successfully!`, {
       //   theme: "dark",
       // });
+
+      setLoading(false);
     } else {
       if (json_resp.error) {
         console.log(json_resp.error);
@@ -219,7 +194,7 @@ const SummarizerPage = () => {
       </div> */}
 
       <div className="flex mt-2 ml-auto space-x-3">
-        <div>
+        {/* <div>
           <button
             className=" bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
             type="button"
@@ -227,15 +202,50 @@ const SummarizerPage = () => {
           >
             <StopIcon />
           </button>
-        </div>
+        </div> */}
 
         <div>
           <button
             className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
             type="submit"
-            // disabled={isLoading}
           >
-            <SendIcon />
+            <div
+              role="status"
+              className={`${loading ? "" : "hidden"} flex justify-center`}
+            >
+              {/* Send icon  */}
+              <svg
+                aria-hidden="true"
+                className="w-6 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+              <span className="sr-only">Loading...</span>
+            </div>
+
+            {/* Loading wheel icon*/}
+            <span className={`${loading ? "hidden" : ""}`}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-send-fill "
+                viewBox="0 0 16 16"
+              >
+                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+              </svg>
+            </span>
           </button>
         </div>
       </div>
@@ -402,6 +412,20 @@ const SummarizerPage = () => {
     </>
   );
 
+  // Display section for orignal input text
+  const origTextDisplay = (
+    <div className="w-full h-screen border-r border-kaito-brand-ash-green bg-gray-50">
+      <textarea
+        id="textInput"
+        // rows={40}
+        className="w-full h-screen mb-0 px-3 text-sm text-black bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
+        value={inputTextCorpus}
+        // onChange={(e) => setInputTextCorpus(e.target.value)}
+        placeholder="Paste in the text you want to summarize..."
+      ></textarea>
+    </div>
+  );
+
   // Summary Flash Card component interface
   let cardColorHexArr = [
     "bg-[#cba3e0]",
@@ -447,7 +471,17 @@ const SummarizerPage = () => {
       {status === "authenticated" && (
         <div className="flex h-screen">
           {/* Summarization Flashcard component */}
-          {summarizedText && FlashCard}
+          {/* {summarizedText && FlashCard} */}
+          {summarizedText && (
+            <div className="flex flex-row">
+              <div className="flex-1">
+                {origTextDisplay}
+              </div>
+              <div className="flex-1">
+                {FlashCard}
+              </div>
+            </div>
+          )}
 
           {/* landing page section */}
           {summarizedText.length == 0 && (
