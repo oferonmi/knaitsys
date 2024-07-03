@@ -252,6 +252,32 @@ const SummarizerPage = () => {
     </div>
   );
 
+  // sumaary page home button
+  const homeButton = (
+    <div className="flex mt-2 ml-auto space-x-3">
+      <button
+        className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+        type="button"
+        onClick={() => {
+          setInputTextCorpus("");
+          setSummarizedText("");
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          className="bi bi-house-fill"
+          viewBox="0 0 16 16"
+        >
+          <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
+          <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
+        </svg>
+      </button>
+    </div>
+  );
+
   // raw text input form
   const textInputForm = (
     <form className="w-full flex flex-col" onSubmit={processRawText}>
@@ -268,7 +294,9 @@ const SummarizerPage = () => {
           ></textarea>
         </div>
 
-        <div className=" px-3 py-2 border-t ">{summarizerCtrlButtons}</div>
+        <div className=" px-3 py-2 border-t ">
+          {summarizerCtrlButtons}
+        </div>
       </div>
     </form>
   );
@@ -414,16 +442,27 @@ const SummarizerPage = () => {
 
   // Display section for orignal input text
   const origTextDisplay = (
-    <div className="w-full h-screen border-r border-kaito-brand-ash-green bg-gray-50">
-      <textarea
-        id="textInput"
-        // rows={40}
-        className="w-full h-screen mb-0 px-3 text-sm text-black bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
-        value={inputTextCorpus}
-        // onChange={(e) => setInputTextCorpus(e.target.value)}
-        placeholder="Paste in the text you want to summarize..."
-      ></textarea>
-    </div>
+    <form className="w-full flex flex-col" onSubmit={processRawText}>
+      <div className="w-full h-dvh border-r border-kaito-brand-ash-green bg-gray-50">
+        <textarea
+          id="textInput"
+          // rows={40}
+          className="w-full mb-0 px-4 py-4 text-sm text-black bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-[75%]"
+          value={inputTextCorpus}
+          onChange={(e) => setInputTextCorpus(e.target.value)}
+          placeholder="Paste in the text you want to summarize..."
+        ></textarea>
+        
+        <div className=" flex flex-row px-3 py-2 border-t h-[25%]">
+          <div className="flex-1">
+            {homeButton}
+          </div>
+          <div className="flex-1">
+            {summarizerCtrlButtons}
+          </div>
+        </div>
+      </div>
+    </form>
   );
 
   // Summary Flash Card component interface
@@ -461,7 +500,7 @@ const SummarizerPage = () => {
         ) : (
           ""
         )}
-        <div ref={bottomRef} />
+        {/* <div ref={bottomRef} /> */}
       </div>
     </div>
   );
@@ -474,12 +513,8 @@ const SummarizerPage = () => {
           {/* {summarizedText && FlashCard} */}
           {summarizedText && (
             <div className="flex flex-row">
-              <div className="flex-1">
-                {origTextDisplay}
-              </div>
-              <div className="flex-1">
-                {FlashCard}
-              </div>
+              <div className="flex-1">{origTextDisplay}</div>
+              <div className="flex-1">{FlashCard}</div>
             </div>
           )}
 
@@ -512,9 +547,9 @@ const SummarizerPage = () => {
           )}
         </div>
       )}
+      <ToastContainer />
       {status === "unauthenticated" && redirect("/auth/signIn")}
       <Footer />
-      <ToastContainer />
     </>
   );
 }
