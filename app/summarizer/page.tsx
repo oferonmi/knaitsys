@@ -259,7 +259,7 @@ const SummarizerPage = () => {
         className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
         type="button"
         onClick={() => {
-          setInputTextCorpus("");
+          // setInputTextCorpus("");
           setSummarizedText("");
         }}
       >
@@ -452,7 +452,7 @@ const SummarizerPage = () => {
           onChange={(e) => setInputTextCorpus(e.target.value)}
           placeholder="Paste in the text you want to summarize..."
         ></textarea>
-        
+
         <div className=" flex flex-row px-3 py-2 border-t h-[25%]">
           <div className="flex-1">
             {homeButton}
