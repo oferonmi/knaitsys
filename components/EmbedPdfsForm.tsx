@@ -32,7 +32,11 @@ export function EmbedPdfsForm(props: {
     if (!worker.current) {
       // Create the worker if it does not yet exist.
       worker.current = new Worker(
-        new URL("../app/worker.ts", import.meta.url),
+        // new URL("../app/worker.ts", import.meta.url),
+        new URL(
+          "@/app/api/retrieval/pdf_ingest/worker.ts",
+          import.meta.url
+        ),
         {
           type: "module",
         }
@@ -42,8 +46,8 @@ export function EmbedPdfsForm(props: {
   }, []);
 
   async function embedPDF(e: FormEvent<HTMLFormElement>) {
-    console.log(e);
-    console.log(selectedPDF);
+    // console.log(e);
+    // console.log(selectedPDF);
     e.preventDefault();
     // const reader = new FileReader();
     if (selectedPDF === null) {

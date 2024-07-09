@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, FormEvent, useCallback, useEffect } from "react";
+import { useState, useRef, type FormEvent, useCallback, useEffect } from "react";
 import { useChat, useCompletion } from "ai/react";
 import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
@@ -86,10 +86,30 @@ const SummarizerPage = () => {
     }
   }, [summarizedText]);
 
+  const worker = useRef<Worker | null>(null);
+
+  // We use the `useEffect` hook to set up the worker as soon as the `App` component is mounted.
+  useEffect(() => {
+    if (!worker.current) {
+      // Create the worker if it does not yet exist.
+      worker.current = new Worker(
+        new URL(
+          "@/app/api/summarizer/pdf_summary/worker.ts",
+          import.meta.url
+        ),
+        {
+          type: "module",
+        }
+      );
+      setLoading(false);
+    }
+  }, []);
+
   //process raw text
-  const processRawText = async (e: FormEvent<HTMLFormElement>) => {
+  const summarizeRawText = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+
     // pass input to API that handles text summarization
     const response = await fetch("/api/summarizer/plain_text_summary", {
       method: "POST",
@@ -122,11 +142,12 @@ const SummarizerPage = () => {
           }
         );
       }
+      setLoading(false);
     }
   };
 
   //extract and process text from a url input
-  const processWebPageContent = async (e: FormEvent<HTMLFormElement>) => {
+  const summarizeWebPage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log(inputUrl);
     setLoading(true);
@@ -164,14 +185,104 @@ const SummarizerPage = () => {
         //   theme: "dark",
         // });
       }
+      setLoading(false);
     }
   };
+  
+  const summarizePDF = async (e: FormEvent<HTMLFormElement>) => {
+    // e.preventDefault();
 
-  // extract and process text content of uploaded PDF
-  const processFileContent = (e: FormEvent<HTMLFormElement>) => {
+    // // API call to PDF file summarizer
+    // setLoading(true);
+
+    // // file blob
+    // const fileBlob = new Blob([JSON.stringify(selectedPDF)], {
+    //   type: "text/plain; charset=utf8",
+    // });
+
+    // // API call to summarize web page content of provided URL
+    // const response = await fetch("/api/summarizer/pdf_summary", {
+    //   method: "POST",
+    //   body: fileBlob, //formData,
+    //   // body: JSON.stringify({
+    //   //   pdf: selectedPDF, //formData, pdfFile,
+    //   // }),
+    // });
+
+    // const json_resp = await response.json();
+
+    // if (response.status === 200) {
+    //   // console.log("Success!");
+
+    //   // set input text content state
+    //   // console.log(json_resp.input_text);
+    //   // setInputTextCorpus(json_resp.input_text);
+
+    //   // set summarized text state
+    //   // console.log(json_resp.output_text);
+    //   // setSummarizedText(json_resp.output_text);
+
+    //   // toast(`PDF summarized successfully!`, {
+    //   //   theme: "dark",
+    //   // });
+
+    //   setLoading(false);
+    // } else {
+    //   if (json_resp.error) {
+    //     console.log(json_resp.error);
+    //     // toast(`Unable to summarize PDF content : ${json_resp.error}`, {
+    //     //   theme: "dark",
+    //     // });
+    //   }
+    //   setLoading(false);
+    // }
+
     e.preventDefault();
-    //TO DO: API call to a langchain based document/file loader. returns file content as serialized strings
-    // handleSubmit(e);
+   
+    if (selectedPDF === null) {
+      toast(`You must select a file to summarize.`, {
+        theme: "dark",
+      });
+      return;
+    }
+
+    setLoading(true);
+    worker.current?.postMessage({ pdf: selectedPDF });
+    const onMessageReceived = (e: any) => {
+      switch (e.data.type) {
+        case "log":
+          console.log(e.data);
+          break;
+        case "error":
+          worker.current?.removeEventListener("message", onMessageReceived);
+          setLoading(false);
+          console.log(e.data.error);
+          toast(`There was an issue summarizing your PDF: ${e.data.error}`, {
+            theme: "dark",
+          });
+          break;
+        case "input_text":
+          // set input text content state
+          setInputTextCorpus(e.data.input_text);
+          // console.log(e.data.input_text);
+          break;
+        case "output_text":
+          // set summarized text state
+          setSummarizedText(e.data.output_text);
+          // console.log(e.data.output_text);
+          break;
+        case "complete":
+          worker.current?.removeEventListener("message", onMessageReceived);
+
+          setLoading(false);
+
+          // toast(`Summarization of PDF successful!`, {
+          //   theme: "dark",
+          // });
+          break;
+      }
+    };
+    worker.current?.addEventListener("message", onMessageReceived);
   };
 
   // input section form specifications
@@ -280,7 +391,7 @@ const SummarizerPage = () => {
 
   // raw text input form
   const textInputForm = (
-    <form className="w-full flex flex-col" onSubmit={processRawText}>
+    <form className="w-full flex flex-col" onSubmit={summarizeRawText}>
       <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
         <div className="px-2 py-2 bg-white rounded-t-lg ">
           <textarea
@@ -303,9 +414,9 @@ const SummarizerPage = () => {
 
   // text file input form
   const fileInputForm = (
-    // <form className="w-full flex flex-col" onSubmit={getFileContent}>
     <form
-      onSubmit={processFileContent}
+      id="pdfUploadForm"
+      onSubmit={summarizePDF}
       className="flex flex-col w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50"
     >
       <label
@@ -363,7 +474,7 @@ const SummarizerPage = () => {
   );
 
   const urlInputForm = (
-    <form className="w-full flex flex-col" onSubmit={processWebPageContent}>
+    <form className="w-full flex flex-col" onSubmit={summarizeWebPage}>
       <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
         <div className=" bg-white rounded-t-lg">
           {urlInputBox}
@@ -442,7 +553,7 @@ const SummarizerPage = () => {
 
   // Display section for orignal input text
   const origTextDisplay = (
-    <form className="w-full flex flex-col" onSubmit={processRawText}>
+    <form className="w-full flex flex-col" onSubmit={summarizeRawText}>
       <div className="w-full h-dvh border-r border-kaito-brand-ash-green bg-gray-50">
         <textarea
           id="textInput"
@@ -510,7 +621,6 @@ const SummarizerPage = () => {
       {status === "authenticated" && (
         <div className="flex h-screen">
           {/* Summarization Flashcard component */}
-          {/* {summarizedText && FlashCard} */}
           {summarizedText && (
             <div className="flex flex-row">
               <div className="flex-1">{origTextDisplay}</div>
@@ -545,9 +655,9 @@ const SummarizerPage = () => {
               </div>
             </>
           )}
+          <ToastContainer />
         </div>
       )}
-      <ToastContainer />
       {status === "unauthenticated" && redirect("/auth/signIn")}
       <Footer />
     </>
