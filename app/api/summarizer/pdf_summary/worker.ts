@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
 import { WebPDFLoader } from "langchain/document_loaders/web/pdf";
 import { PromptTemplate } from "@langchain/core/prompts";
 import {

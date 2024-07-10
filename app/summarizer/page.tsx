@@ -13,6 +13,7 @@ import {
   LinkIcon
 } from "@/components/Icons";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "flowbite-react";
 import { useDropzone } from "react-dropzone";
 import { Document } from "@langchain/core/documents";
@@ -577,7 +578,7 @@ const SummarizerPage = () => {
   );
 
   // Summary Flash Card component interface
-  let cardColorHexArr = [
+  const cardColorHexArr = [
     "bg-[#cba3e0]",
     "bg-[#d2ccf2]",
     "bg-[#c8a8d5]",
@@ -585,6 +586,7 @@ const SummarizerPage = () => {
     "bg-[#db96b9]",
     "bg-[#afd1e2]",
     "bg-[#feff9c]",
+    "bg-[#96b7a5]",
   ];
 
   // let cardColorHex = cardColorHexArr[0];

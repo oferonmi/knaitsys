@@ -3,12 +3,12 @@ import {SendIcon } from '@/components/Icons';
 
 const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) => {
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    onSubmitHandler(event.target.prompt.value);
-    onChangeHandler("");
-    event.target.reset();
-  };
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   onSubmitHandler(event.target.prompt.value);
+  //   onChangeHandler("");
+  //   event.target.reset();
+  // };
 
   return (
     <>

@@ -5,8 +5,24 @@ export function ChatMessageBubble(props: {
   aiEmoji?: string;
   sources?: any[];
 }) {
+  const bubbleColorHexArr = [
+    "bg-[#cba3e0]",
+    "bg-[#d2ccf2]",
+    "bg-[#c8a8d5]",
+    "bg-[#e4a8b9]",
+    "bg-[#db96b9]",
+    "bg-[#afd1e2]",
+    "bg-[#feff9c]",
+    "bg-[#96b7a5]",
+  ];
+
+  // let bubbleColorHex =
+  //   bubbleColorHexArr[Math.floor(Math.random() * bubbleColorHexArr.length)];
+
+  let bubbleColorHex = bubbleColorHexArr[7];
+
   const colorClassName =
-    props.message.role === "user" ? "bg-slate-300" : "bg-[#96b7a5] text-black";
+    props.message.role === "user" ? "bg-slate-300" : bubbleColorHex + " text-black";//"bg-[#96b7a5] text-black";
   const alignmentClassName =
     props.message.role === "user" ? "ml-auto" : "mr-auto";
   const prefix = props.message.role === "user" ? "🤔" : props.aiEmoji;

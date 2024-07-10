@@ -17,7 +17,7 @@ import { WebpageUploadForm } from "@/components/WebpageUploadForm";
 import { SearchIndexUploadForm } from "@/components/SearchIndexUploadForm";
 import { Footer } from "@/components/Footer";
 
-export function ChatWindow(props: {
+export function RetrievalChatWindow(props: {
   endPoint: string;
   setEndPoint: Dispatch<SetStateAction<string>>;
   placeholder?: string;
@@ -316,7 +316,7 @@ export function ChatWindow(props: {
       </div>
       <div ref={bottomRef} />
 
-      <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 border-t-2 border-b-2">
+      <div className="z-10 fixed left-0 right-0 bottom-0 bg-gray-100 bg-opacity-60 border-t-2 border-b-1">
         <div className="container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9">
           <form
             onSubmit={sendMessage}

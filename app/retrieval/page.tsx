@@ -1,6 +1,6 @@
 "use client";
 
-import { ChatWindow } from "@/components/ChatWindow";
+import { RetrievalChatWindow } from "@/components/RetrievalChatWindow";
 import { Footer } from "@/components/Footer";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -18,7 +18,7 @@ export default function RetrievalPage() {
   return (
     <>
       {status === "authenticated" && (
-        <ChatWindow
+        <RetrievalChatWindow
           endPoint={apiEndPoint}
           setEndPoint={setApiEndPoint}
           placeholder={
@@ -28,7 +28,7 @@ export default function RetrievalPage() {
           titleText="Chat to your Document"
           readyToChat={readyToChat}
           setReadyToChat={setReadyToChat}
-        ></ChatWindow>
+        />
       )}
       {status === "unauthenticated" && redirect("/auth/signIn")}
       {!readyToChat && <Footer />}
