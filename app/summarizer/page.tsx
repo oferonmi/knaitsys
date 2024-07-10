@@ -366,7 +366,7 @@ const SummarizerPage = () => {
 
   // sumaary page home button
   const homeButton = (
-    <div className="flex mt-2 ml-auto space-x-3">
+    <div className="flex mt-2 space-x-3">
       <button
         className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
         type="button"
@@ -559,19 +559,15 @@ const SummarizerPage = () => {
         <textarea
           id="textInput"
           // rows={40}
-          className="w-full mb-0 px-4 py-4 text-sm text-black bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-[75%]"
+          className="w-full mb-0 px-4 py-4 text-sm text-black bg-white bg-opacity-60 border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-[75%]" //h-[75%]
           value={inputTextCorpus}
           onChange={(e) => setInputTextCorpus(e.target.value)}
           placeholder="Paste in the text you want to summarize..."
         ></textarea>
 
-        <div className=" flex flex-row px-3 py-2 border-t h-[25%]">
-          <div className="flex-1">
-            {homeButton}
-          </div>
-          <div className="flex-1">
-            {summarizerCtrlButtons}
-          </div>
+        <div className=" flex flex-row px-3 py-2 border-t h-[25%] mb-0">
+          <div className="flex-1">{homeButton}</div>
+          <div className="flex-1">{summarizerCtrlButtons}</div>
         </div>
       </div>
     </form>
@@ -594,13 +590,16 @@ const SummarizerPage = () => {
   // console.log(cardColorHex);
 
   const FlashCard = (
-    <div className="flex flex-col">
+    <div className="flex flex-col h-screen">
       {/* Summarization Flashcard component */}
       <h2 className="text-black text-2xl flex justify-center mt-2">
         Summary Flash Card
       </h2>
 
       <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
+        {/* <h2 className="text-black text-2xl flex justify-center mt-2">
+          Summary Flash Card
+        </h2> */}
         {summarizedText.length > 0 ? (
           <div
             className={`${cardColorHex}  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
@@ -621,18 +620,10 @@ const SummarizerPage = () => {
   return (
     <>
       {status === "authenticated" && (
-        <div className="flex h-screen">
-          {/* Summarization Flashcard component */}
-          {summarizedText && (
-            <div className="flex flex-row">
-              <div className="flex-1">{origTextDisplay}</div>
-              <div className="flex-1">{FlashCard}</div>
-            </div>
-          )}
-
+        <div className="flex flex-col">
           {/* landing page section */}
           {summarizedText.length == 0 && (
-            <>
+            <div className="flex h-screen">
               {/* side bar */}
               {SideNavBar}
 
@@ -655,13 +646,28 @@ const SummarizerPage = () => {
                   {inputType === "url" && urlInputForm}
                 </div>
               </div>
-            </>
+              <ToastContainer />
+            </div>
           )}
-          <ToastContainer />
+
+          {/* Summarization Flashcard component */}
+          {summarizedText && (
+            <div className="flex flex-col h-screen">
+              <div className="flex flex-row h-fit">
+                <div className="flex-1">{origTextDisplay}</div>
+                <div className="flex-1">{FlashCard}</div>
+              </div>
+              <div className="flex-auto">
+                <Footer />
+              </div>
+            </div>
+          )}
+
+          {/* <ToastContainer /> */}
+          {summarizedText.length == 0 && <Footer />}
         </div>
       )}
       {status === "unauthenticated" && redirect("/auth/signIn")}
-      <Footer />
     </>
   );
 }
