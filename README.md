@@ -9,9 +9,9 @@ pnpm install
 # or
 yarn install
 ```
-Next, create a .env.local file containing appropriate enivironment variables/secrets.
+Next, create a ```bash .env.local``` file containing appropriate enivironment variables/secrets.
 
-Finally,run the development server:
+Finally, run the development server:
 
 ```bash
 npm run dev
