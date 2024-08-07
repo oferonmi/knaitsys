@@ -1,18 +1,40 @@
-import { Footer } from '@/components/Footer';
 import {SendIcon } from '@/components/Icons';
+import { useRef, useState } from 'react';
 
 const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) => {
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   onSubmitHandler(event.target.prompt.value);
-  //   onChangeHandler("");
-  //   event.target.reset();
-  // };
+  const [files, setFiles] = useState(undefined);  //useState< FileList | undefined >(undefined);
+  const fileInputRef = useRef(null);  //useRef< HTMLInputElement >(null);
+
+  const handleSubmit = (event) => {
+    // event.preventDefault();
+    // onSubmitHandler(event.target.prompt.value);
+    onSubmitHandler(event, {experimental_attachments: files,} );
+
+    setFiles(undefined);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   return (
     <>
       <form className="w-full flex space-x-2" onSubmit={onSubmitHandler}> 
+        {/* file input */}
+        {/* <input
+          type="file"
+          className=""
+          onChange={event => {
+            if (event.target.files) {
+              setFiles(event.target.files);
+            }
+          }}
+          multiple
+          ref={fileInputRef}
+        /> */}
+
+        {/* Text input */}
         <input
           type="text"
           autoComplete="off"

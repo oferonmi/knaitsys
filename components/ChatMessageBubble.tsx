@@ -1,4 +1,5 @@
 import type { Message } from "ai/react";
+import Image from "next/image";
 
 export function ChatMessageBubble(props: {
   message: Message;
@@ -38,6 +39,22 @@ export function ChatMessageBubble(props: {
       <div className="mr-2">{prefix}</div>
       <div className="whitespace-pre-wrap flex flex-col">
         <span>{props.message.content}</span>
+
+        <div>
+            {props.message?.experimental_attachments
+              ?.filter(attachment =>
+                attachment?.contentType?.startsWith('image/'),
+              )
+              .map((attachment, index) => (
+                <Image
+                  key={`${props.message.id}-${index}`}
+                  src={attachment.url}
+                  width={500}
+                  alt={attachment?.name}
+                />
+              ))}
+          </div>
+
         {props.sources && props.sources.length ? (
           <>
             <code className="mt-4 mr-auto bg-slate-300 px-2 py-1 rounded">
