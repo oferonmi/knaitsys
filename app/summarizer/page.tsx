@@ -10,7 +10,8 @@ import {
   ClipIcon, 
   CloudUploadIcon, 
   TextBodyIcon, 
-  LinkIcon
+  LinkIcon, 
+  SendIcon
 } from "@/components/Icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,6 +30,7 @@ const SummarizerPage = () => {
   const [summarizedText, setSummarizedText] = useState("");
   const [inputTextCorpus, setInputTextCorpus] = useState("");
   const [inputUrl, setInputUrl] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // const [apiEndpoint, setApiEndpoint] = useState("/api/chat/summarizer"); //useState("/api/completion/fireworksai");
 
@@ -190,6 +192,7 @@ const SummarizerPage = () => {
     }
   };
   
+  // exract and process PDF file content
   const summarizePDF = async (e: FormEvent<HTMLFormElement>) => {
     // e.preventDefault();
 
@@ -286,6 +289,49 @@ const SummarizerPage = () => {
     worker.current?.addEventListener("message", onMessageReceived);
   };
 
+  //process search result pages
+  const summarizeSearchResult = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    //API request for URL RAG
+    const response = await fetch("/api/summarizer/search_index_summary", {
+      method: "POST",
+      body: JSON.stringify({
+        text: searchQuery,
+      }),
+    });
+
+    const json_resp = await response.json();
+
+    if (response.status === 200) {
+      // console.log("Success!");
+
+      // set input text content state
+      // console.log(json_resp.input_text);
+      setInputTextCorpus(json_resp.input_text);
+
+      // set summarized text state
+      // console.log(json_resp.output_text);
+      setSummarizedText(json_resp.output_text);
+
+      // toast(`search index pages summarized successfully!`, {
+      //   theme: "dark",
+      // });
+
+      //setLoading(false);
+    } else {
+      if (json_resp.error) {
+        console.log(json_resp.error);
+        // toast(`Unable to summarize search index pages content : ${json_resp.error}`, {
+        //   theme: "dark",
+        // });
+      }
+      //setLoading(false);
+    }
+    setLoading(false);
+  };
+
   // input section form specifications
   const summarizerCtrlButtons = (
     <div className="flex flex-row">
@@ -364,7 +410,7 @@ const SummarizerPage = () => {
     </div>
   );
 
-  // sumaary page home button
+  // summary page home button
   const homeButton = (
     <div className="flex mt-2 space-x-3">
       <button
@@ -474,6 +520,7 @@ const SummarizerPage = () => {
     </>
   );
 
+  // URL input form
   const urlInputForm = (
     <form className="w-full flex flex-col" onSubmit={summarizeWebPage}>
       <div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
@@ -494,6 +541,62 @@ const SummarizerPage = () => {
         <div className="px-3 py-2 border-t ">{summarizerCtrlButtons}</div>
       </div>
     </form>
+  );
+
+  // search indices page form
+  const searchInputForm = (
+    <>
+      <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+        Enter your search query, send and recieve summary of the search result pages.
+      </h1>
+
+      <form
+        className="flex w-full space-x-2"
+        id="search-form"
+        onSubmit={summarizeSearchResult}
+      >
+        <input
+          type="text"
+          autoComplete="off"
+          autoFocus={false}
+          name="url_input_bar"
+          className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+          placeholder="  Search"
+          required={true}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button
+          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
+          type="submit"
+        >
+          <div
+            role="status"
+            className={`${loading ? "" : "hidden"} flex justify-center`}
+          >
+            <svg
+              aria-hidden="true"
+              className="w-6 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+            <span className="sr-only">Loading...</span>
+          </div>
+          <span className={loading ? "hidden" : ""}>
+            <SendIcon />
+          </span>
+        </button>
+      </form>
+    </>
   );
 
   const SideNavBar = (
@@ -541,12 +644,37 @@ const SummarizerPage = () => {
               >
                 <LinkIcon />
                 <span className="sr-only">
-                  paste URL of webpage to summarize
+                  Paste webpage URL
                 </span>
               </button>
             </Tooltip>
           </li>
-          {/* <li className="p-3"></li> */}
+          
+          <li className="p-3">
+            <Tooltip content="Enter Search Query" className="inline-flex">
+              <button
+                type="button"
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                onClick={() => {
+                  setInputType("search");
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-search"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                </svg>
+                <span className="sr-only">
+                  Type in your search query
+                </span>
+              </button>
+            </Tooltip>
+          </li>
         </ul>
       </div>
     </>
@@ -630,12 +758,12 @@ const SummarizerPage = () => {
               {/* main section */}
               <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
                 <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
-                  Summarize your documents and web pages.
+                  Summarize your documents, web pages and search indices pages.
                 </h1>
 
                 <p className="text-black text-lg text-center">
-                  Specify text source on the left. Get a summary. You can ask
-                  follow up questions.
+                  Specify text source on the left. Send and get a summary. 
+                  {/* You can ask follow up questions. */}
                 </p>
 
                 <br></br>
@@ -644,6 +772,7 @@ const SummarizerPage = () => {
                   {inputType === "text" && textInputForm}
                   {inputType === "file" && fileInputForm}
                   {inputType === "url" && urlInputForm}
+                  {inputType === "search" && searchInputForm}
                 </div>
               </div>
               <ToastContainer />
