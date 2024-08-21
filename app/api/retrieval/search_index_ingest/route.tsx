@@ -64,8 +64,8 @@ export const runtime = "edge";
           link_count++
         }
 
-        // limit selected links to 5
-        if (link_count > 5) {break};
+        // limit selected links to 2
+        if (link_count > 2) {break};
       }
 
       // console.log(search_links_docs.length);

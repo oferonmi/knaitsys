@@ -111,7 +111,6 @@ export async function POST(req: NextRequest) {
     // console.log(serializedWebpageText);
 
     return NextResponse.json(
-      // { toutput_ext: textSummary.output_text },
     //   { ok: true },
       { input_text: serializedWebpageText, output_text: textSummary.text, },
       { status: 200 }
