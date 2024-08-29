@@ -12,21 +12,21 @@ const fireworks = new OpenAI({
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-  // Extract the `messages` from the body of the request
-  const { messages } = await req.json();
+    // Extract the `messages` from the body of the request
+    const { messages } = await req.json();
 
-  // Ask Fireworks for a streaming chat completion using Llama 3 8b model
-  // @see https://fireworks.ai/models/fireworks/llama-v3-8b-instruct
-  const response = await fireworks.chat.completions.create({
-    model: "accounts/fireworks/models/llama-v3-8b-instruct",
-    stream: true,
-    max_tokens: 1000,
-    messages,
-  });
+    // Ask Fireworks for a streaming chat completion using Llama 3 8b model
+    // @see https://fireworks.ai/models/fireworks/llama-v3-8b-instruct
+    const response = await fireworks.chat.completions.create({
+        model: "accounts/fireworks/models/llama-v3-8b-instruct",
+        stream: true,
+        max_tokens: 1000,
+        messages,
+    });
 
-  // Convert the response into a friendly text-stream.
-  const stream = OpenAIStream(response);
-
-  // Respond with the stream
-  return new StreamingTextResponse(stream);
+    // Convert the response into a friendly text-stream.
+    const stream = OpenAIStream(response);
+    
+    // Respond with the stream
+    return new StreamingTextResponse(stream);
 }

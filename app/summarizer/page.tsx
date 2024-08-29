@@ -695,9 +695,10 @@ const SummarizerPage = () => {
 
         <div className=" flex flex-row px-3 py-2 border-t h-[25%] mb-0">
           <div className="flex-1">{homeButton}</div>
+          <div className="flex-1 text-kaito-brand-ash-green">Edit orignal text above ☝️ and resend, if disatisfied with generated summary.</div>
           <div className="flex-1">{summarizerCtrlButtons}</div>
         </div>
-      </div>
+      </div>  
     </form>
   );
 

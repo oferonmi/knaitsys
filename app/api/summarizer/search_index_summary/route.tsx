@@ -98,8 +98,8 @@ export async function POST(req: NextRequest) {
                     link_count++
                 }
 
-                // limit selected links to 2
-                if (link_count > 2) {break};
+                // limit selected links to 1
+                if (link_count > 1) {break};
             }
 
             // console.log(search_links_docs.length);
