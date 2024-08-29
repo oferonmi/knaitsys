@@ -16,6 +16,7 @@ export async function POST(req: Request) {
     // Extract the `messages` from the body of the request
     const { messages } = await req.json();
 
+    //NOTE: Make sure the 'phi3' model has been downloaded to local or proxy machine from Ollama's model collection
     const llm = ollama('phi3');
 
     const result = await streamText({

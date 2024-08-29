@@ -100,7 +100,7 @@ const ChatbotPage = () => {
                   Mixtral-MoE8x7B-Fwks
                 </option>
                 <option value="multimodal/chat/llava">Llava-Ollama</option>
-                {/* <option value="multimodal/chat/phi3">Phi3-Ollama</option> */}
+                <option value="multimodal/chat/phi3">Phi3-Ollama</option>
                 {/* <option value="chat/gemma_7b_instruct_fireworks">
                   Gemma-7b-Fwks
                 </option> */}

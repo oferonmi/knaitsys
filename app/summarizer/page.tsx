@@ -97,7 +97,7 @@ const SummarizerPage = () => {
       // Create the worker if it does not yet exist.
       worker.current = new Worker(
         new URL(
-          "@/app/api/summarizer/pdf_summary/worker.ts",
+          '@/app/api/summarizer/pdf_summary/worker.ts',
           import.meta.url
         ),
         {
