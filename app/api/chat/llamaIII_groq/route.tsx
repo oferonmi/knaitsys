@@ -1,5 +1,3 @@
-// import OpenAI from "openai";
-// import { OpenAIStream, StreamingTextResponse} from "ai";
 import { convertToCoreMessages, streamText } from "ai";
 import { createOpenAI as createGroq } from "@ai-sdk/openai";
 
