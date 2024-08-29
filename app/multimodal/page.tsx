@@ -1,7 +1,7 @@
 'use client';
 
 import { useChat } from 'ai/react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export default function Chat() {
     //LLM engine API route
@@ -11,27 +11,39 @@ export default function Chat() {
     const [files, setFiles] = useState<FileList | undefined>(undefined);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const bottomRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (messages?.length > 0 ) {
+            bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [messages]);
+
     return (
         <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
-            {messages.map(m => (
-                <div key={m.id} className="whitespace-pre-wrap text-black">
-                    {m.role === 'user' ? 'User: ' : 'AI: '}
-                    {m.content}
-                    <div>
-                        {m?.experimental_attachments?.filter(
-                            attachment => attachment?.contentType?.startsWith('image/'),
-                        )
-                        .map((attachment, index) => (
-                            <img
-                                key={`${m.id}-${index}`}
-                                src={attachment.url}
-                                width={500}
-                                alt={attachment.name}
-                            />
-                        ))}
+            <div className="pb-40  text-black">
+                {messages.map(m => (
+                    <div key={m.id} className="whitespace-pre-wrap ">
+                        {m.role === 'user' ? 'User: ' : 'AI: '}
+                        {m.content}
+                        <div>
+                            {m?.experimental_attachments?.filter(
+                                attachment => attachment?.contentType?.startsWith('image/'),
+                            )
+                            .map((attachment, index) => (
+                                <img
+                                    key={`${m.id}-${index}`}
+                                    src={attachment.url}
+                                    width={500}
+                                    alt={attachment.name}
+                                />
+                            ))}
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
+
+            <div ref={bottomRef} />
         
             <form
                 className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl space-y-2 text-black"
