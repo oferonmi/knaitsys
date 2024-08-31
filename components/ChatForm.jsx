@@ -41,7 +41,7 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) =>
           autoFocus={false}
           name="prompt"
           className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
-          placeholder="  Send a message"
+          placeholder="  Say something ..."
           required={true}
           value={userInput}
           onChange={onChangeHandler}

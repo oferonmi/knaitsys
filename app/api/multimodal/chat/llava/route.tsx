@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     // Extract the `messages` from the body of the request
     const { messages } = await req.json();
 
-    //NOTE: Make sure the 'llava' model has been downloaded to local or proxy machine from Ollama's model collection
+    //NOTE: Make sure the 'llava' model has been downloaded to local or proxy machine from Ollama's model library
     const llm = ollama('llava');
 
     const result = await streamText({

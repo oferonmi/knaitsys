@@ -49,7 +49,8 @@ export function ChatMessageBubble(props: {
                 <Image
                   key={`${props.message.id}-${index}`}
                   src={attachment.url}
-                  width={500}
+                  width={300}
+                  height={300}
                   alt={attachment?.name}
                 />
               ))}
