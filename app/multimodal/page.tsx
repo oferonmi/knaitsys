@@ -51,7 +51,7 @@ export default function Chat() {
 
     return (
         <>
-            <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black">
+            <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
             {/* <div className="flex flex-col w-full max-w-xl py-24 mx-auto stretch"> */}
                 <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40  text-black">
                     {/* {messages.map(m => (
@@ -91,10 +91,9 @@ export default function Chat() {
                 </div>
 
                 <div ref={bottomRef} />
-            {/* </div>
-            <div className='flex flex-col items-center'> */}
+            
                 <form
-                    className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
+                    className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
                     onSubmit={event => {
                         handleSubmit(event, {
                             experimental_attachments: files,
@@ -110,32 +109,32 @@ export default function Chat() {
                     }}
                 >
                     <div>
-                    {!showFileAttactmentUI ?
-                        <Tooltip content="Upload File" className="inline-flex">
-                            <button
-                                type="button"
-                                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
-                                onClick={() => {
-                                    setShowFileAttactmentUI(true);
+                        {!showFileAttactmentUI ?
+                            <Tooltip content="Upload File" className="inline-flex">
+                                <button
+                                    type="button"
+                                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                                    onClick={() => {
+                                        setShowFileAttactmentUI(true);
+                                    }}
+                                >
+                                    <ClipIcon />
+                                    <span className="sr-only">Attach file</span>
+                                </button>
+                            </Tooltip>
+                        :
+                            <input
+                                type="file"
+                                className="border fill-kaito-brand-ash-green"
+                                onChange={event => {
+                                    if (event.target.files) {
+                                        setFiles(event.target.files);
+                                    }
                                 }}
-                            >
-                                <ClipIcon />
-                                <span className="sr-only">Attach file</span>
-                            </button>
-                        </Tooltip>
-                    :
-                        <input
-                            type="file"
-                            className="border fill-kaito-brand-ash-green"
-                            onChange={event => {
-                                if (event.target.files) {
-                                    setFiles(event.target.files);
-                                }
-                            }}
-                            multiple
-                            ref={fileInputRef}
-                        />
-                    }
+                                multiple
+                                ref={fileInputRef}
+                            />
+                        }
                     </div>
 
                     <input
@@ -174,7 +173,7 @@ export default function Chat() {
                     </button>
                 </form>   
             </div>
-            {messages.length > 0 ? <div className="bottom-0"><Footer /></div> : ""}
+            {messages.length > 0 ? <div className="  bottom-0"><Footer /></div> : ""}
         </>
     );
 }
