@@ -41,19 +41,34 @@ export function ChatMessageBubble(props: {
         <span>{props.message.content}</span>
 
         <div>
-            {props.message?.experimental_attachments
-              ?.filter(attachment =>
-                attachment?.contentType?.startsWith('image/'),
+            {/* Input image preview */}
+            {props.message?.experimental_attachments?.filter(
+                attachment => attachment?.contentType?.startsWith('image/'),
               )
               .map((attachment, index) => (
                 <Image
                   key={`${props.message.id}-${index}`}
                   src={attachment.url}
-                  width={300}
-                  height={300}
+                  width={450}
+                  height={450}
                   alt={attachment?.name}
                 />
-              ))}
+              ))
+            }
+
+            {/* Input audio preview */}
+            {props.message?.experimental_attachments?.filter(
+                attachment => attachment?.contentType?.startsWith('audio/'),
+              )
+              .map((attachment, index) => (
+                <audio
+                  //key={`${props.message.id}-${index}`}
+                  src={attachment.url}
+                  controls
+                  //alt={attachment?.name}
+                />
+              ))
+            }
           </div>
 
         {props.sources && props.sources.length ? (
