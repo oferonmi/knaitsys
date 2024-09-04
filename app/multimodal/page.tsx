@@ -8,6 +8,7 @@ import {
   WaveSurferAudioRecoder,
   WaveSurferAudioPlayer,
 } from "@/components/Audio";
+import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 import { ToastContainer, toast } from "react-toastify";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { SendIcon, ClipIcon } from '@/components/Icons';
@@ -62,10 +63,10 @@ export default function Chat() {
         }
     }, [messages]);
 
-    const transcribeAudioIn = async() => {
+    const transcribeAudioIn = async(audioBlob: Blob) => {
         try {
             // get recorded audio blob from blob URL
-            let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
+            //let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
 
             const reader = new FileReader();
             reader.readAsDataURL(audioBlob);
@@ -119,14 +120,22 @@ export default function Chat() {
         }
     }
 
+    const recorderCtrls = useAudioRecorder(
+        {
+            noiseSuppression: true,
+            echoCancellation: true,
+        },
+        (err) => console.table(err) // onNotAllowedOrFound
+    );
+
     const audioRecorderUI = (
         <>
-            <WaveSurferAudioRecoder
-                waveColor="#D9E2D5"
-                progressColor="#3E6765"
-                setRecordedAudioUrl={setRecordedAudioUrl}
-                height={45}
-                width={100}
+            <AudioRecorder
+                onRecordingComplete={(blob) => transcribeAudioIn(blob)}
+                recorderControls={recorderCtrls}
+                // downloadOnSavePress={true}
+                // downloadFileExtension="mp3"
+                showVisualizer={true}
             />
         </>
     );
