@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"], weight: "300" });
 
 export const metadata = {
-  title: "Kaitosys - Retrieval",
+  title: "Knaitsys - Retrieval",
   description: "Query text documents by leveraging LLMs",
 };
 

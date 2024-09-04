@@ -32,47 +32,6 @@ const SummarizerPage = () => {
   const [inputUrl, setInputUrl] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // const [apiEndpoint, setApiEndpoint] = useState("/api/chat/summarizer"); //useState("/api/completion/fireworksai");
-
-  // const [sourcesForMessages, setSourcesForMessages] = useState<
-  //   Record<string, any>
-  // >({});
-
-  // const inputSectionRef = useRef(null);
-
-  // const handleApiEndpointChange = (event: { target: { value: any } }) => {
-  //   setApiEndpoint("/api/completion/" + event.target.value);
-  // };
-
-  // const {
-  //   messages,
-  //   input,
-  //   setInput,
-  //   handleInputChange,
-  //   handleSubmit,
-  //   isLoading,
-  //   stop,
-  // } = useChat({
-  //   api: apiEndpoint,
-  //   onResponse(response) {
-  //     const sourcesHeader = response.headers.get("x-sources");
-  //     const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
-  //     const messageIndexHeader = response.headers.get("x-message-index");
-
-  //     if (sources.length && messageIndexHeader !== null) {
-  //       setSourcesForMessages({
-  //         ...sourcesForMessages,
-  //         [messageIndexHeader]: sources,
-  //       });
-  //     }
-  //   },
-  //   onError: (e) => {
-  //     toast(e.message, {
-  //       theme: "dark",
-  //     });
-  //   },
-  // });
-
   const onDrop = useCallback((acceptedFiles: any) => {
     // Do something with the files
     setUploadedFiles(acceptedFiles);

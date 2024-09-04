@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], weight: '300', })
 // const ubuntuMono = Ubuntu_Mono({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'Kaitosys - Knowledge-work AI Tools System',
+  title: 'Knaitsys - Knowledge-work AI Tools System',
   description: 'Your AI tools kit',
 }
 

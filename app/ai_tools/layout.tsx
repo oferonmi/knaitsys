@@ -5,7 +5,7 @@ import { Footer } from "@/components/Footer";
 const inter = Inter({ subsets: ["latin"], weight: "300", });
 
 export const metadata = {
-  title: "Kaitosys - Tools suite",
+  title: "Knaitsys - Tools suite",
   description: "Menu of AI functionalities",
 };
 

@@ -206,18 +206,18 @@ const WaveSurferAudioRecoder = (props) => {
 
     return (
         <>
-            <div className="flex flex-row">
+            <div className="container flex mx-auto my-auto space-x-2 h-fit">
                 <div>
                     <select 
                         id="mic-select" 
                         ref={micSelectRef}
-                        className="inline-flex items-center py-5 px-1 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 mb-2"
+                        className="inline-flex items-center  py-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green "
                     >
                         <option value="" hidden>--Select Mic--</option>
                     </select>
                 </div>
 
-                <div id="liveAudioVisualizer" ref={liveAudioVisualiserRef} className="border border-kaito-brand-ash-green rounded-md px-15 mr-2 w-full" />
+                <div id="liveAudioVisualizer" ref={liveAudioVisualiserRef} className="border border-kaito-brand-ash-green rounded-md w-full" />
 
                 <div>
                     <button 

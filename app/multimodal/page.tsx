@@ -1,11 +1,16 @@
 'use client';
 
 import { useChat } from 'ai/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, type FormEvent } from 'react';
 import Image from "next/image";
+import {
+  transcribeAudio,
+  WaveSurferAudioRecoder,
+  WaveSurferAudioPlayer,
+} from "@/components/Audio";
 import { ToastContainer, toast } from "react-toastify";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
-import {SendIcon, ClipIcon } from '@/components/Icons';
+import { SendIcon, ClipIcon } from '@/components/Icons';
 import { Footer } from "@/components/Footer";
 import { Tooltip } from "flowbite-react";
 
@@ -15,7 +20,8 @@ export default function Chat() {
     const [sourcesForMessages, setSourcesForMessages] = useState<
         Record<string, any>
     >({});
-    const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+    const [recordedAudioUrl, setRecordedAudioUrl] = useState("");
+    const { messages, input, setInput, handleInputChange, handleSubmit, isLoading } = useChat({
         api: llmApiRoute,
         onResponse(response) {
             const sourcesHeader = response.headers.get("x-sources");
@@ -42,6 +48,9 @@ export default function Chat() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const textInputRef = useRef<HTMLInputElement>(null);
 
+    const [showAudioRecorder, setShowAudioRecorder] = useState<boolean>(false);
+    const [transcribedText, setTranscribedText] = useState("");
+
     const [showFileAttactmentUI, setShowFileAttactmentUI] = useState<boolean>(false);
     const [showSendButton, setShowSendButton] = useState<boolean>(false);
 
@@ -52,6 +61,75 @@ export default function Chat() {
             bottomRef.current?.scrollIntoView({ behavior: "smooth" });
         }
     }, [messages]);
+
+    const transcribeAudioIn = async() => {
+        try {
+            // get recorded audio blob from blob URL
+            let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
+
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
+
+            reader.onloadend = async () => {
+                // Remove the data URL prefix
+                // const audioBinary = reader.result;
+                // const view = new Float64Array(audioBinary.);
+                // const base64Audio = view.slice(1, view.length - 1);
+                //const base64Audio = reader.result?.split(",")[1];
+                const base64Audio = reader.result?.slice(1, -1);
+
+                // transcribe audio prompt
+                const stt_response = await fetch("/api/speech_to_text/whisper", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ 
+                        audio: base64Audio 
+                    }),
+                });
+
+                // get transcript data
+                const stt_resp_data = await stt_response.json();
+
+                if (stt_response.status !== 200) {
+                    throw (
+                        stt_resp_data.error ||
+                        new Error(
+                        `speech to text failed with status ${stt_response.status}`
+                        )
+                    );
+                }
+
+                const stt_resp_txt = stt_resp_data.transcript.text;
+                // console.log(`STT response: ${stt_resp_txt}`);
+
+                setTranscribedText(stt_resp_txt);
+
+                // update input data to only current input
+                //setInput(stt_resp_txt);
+
+                // pass transcribed text to LLM API end point and update completion data state
+                //append(stt_resp_txt); //TO DO modify string into a Message type before appending
+            };
+            
+        } catch (error: any) {
+            console.error(error);
+            alert(error.message);
+        }
+    }
+
+    const audioRecorderUI = (
+        <>
+            <WaveSurferAudioRecoder
+                waveColor="#D9E2D5"
+                progressColor="#3E6765"
+                setRecordedAudioUrl={setRecordedAudioUrl}
+                height={45}
+                width={100}
+            />
+        </>
+    );
 
     const loadingAnimation = (
         <>
@@ -114,75 +192,80 @@ export default function Chat() {
                         setShowFileAttactmentUI(false);
                     }}
                 >
-                    <div>
-                        {!showFileAttactmentUI ?
-                            <Tooltip content="Upload File" className="inline-flex">
-                                <button
-                                    type="button"
-                                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
-                                    onClick={() => {
-                                        setShowFileAttactmentUI(true);
-                                    }}
-                                >
-                                    <ClipIcon />
-                                    <span className="sr-only">Attach file</span>
-                                </button>
-                            </Tooltip>
-                        :
+                    {showAudioRecorder ? <div className='w-full '>{audioRecorderUI}</div> :
+                        <>
+                            <div>
+                                {!showFileAttactmentUI ?
+                                    <Tooltip content="Upload File" className="inline-flex">
+                                        <button
+                                            type="button"
+                                            className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                                            onClick={() => {
+                                                setShowFileAttactmentUI(true);
+                                            }}
+                                        >
+                                            <ClipIcon />
+                                            <span className="sr-only">Attach file</span>
+                                        </button>
+                                    </Tooltip>
+                                :
+                                    <input
+                                        type="file"
+                                        className="border fill-kaito-brand-ash-green"
+                                        onChange={event => {
+                                            if (event.target.files) {
+                                                setFiles(event.target.files);
+                                            }
+                                        }}
+                                        multiple
+                                        ref={fileInputRef}
+                                    />
+                                }
+                            </div>
+
                             <input
-                                type="file"
-                                className="border fill-kaito-brand-ash-green"
-                                onChange={event => {
-                                    if (event.target.files) {
-                                        setFiles(event.target.files);
+                                className="w-full h-14 p-2 rounded-full border border-kaito-brand-ash-green focus:border-kaito-brand-ash-green text-kaito-brand-ash-green placeholder:text-gray-400 "
+                                value={input}
+                                placeholder=" Say something..."
+                                //ref={textInputRef}
+                                onChange={(e) => {
+                                    handleInputChange(e);
+
+                                    if (e.target.value.length > 0) {
+                                        setShowSendButton(true);
+                                    } else {
+                                        setShowSendButton(false);
                                     }
                                 }}
-                                multiple
-                                ref={fileInputRef}
                             />
-                        }
-                    </div>
 
-                    <input
-                        className="w-full h-14 p-2 rounded-full border border-kaito-brand-ash-green focus:border-kaito-brand-ash-green text-kaito-brand-ash-green placeholder:text-gray-400 "
-                        value={input}
-                        placeholder=" Say something..."
-                        ref={textInputRef}
-                        onChange={(e) => {
-                            handleInputChange(e);
-
-                            if (e.target.value.length > 0) {
-                                setShowSendButton(true);
-                            } else {
-                                setShowSendButton(false);
+                            {showSendButton ?
+                                <button
+                                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                                    type="submit"
+                                >
+                                    { loadingAnimation }
+                                    <span className={isLoading ? "hidden" : ""}>
+                                        <SendIcon />
+                                    </span>
+                                </button>
+                            :
+                                <button
+                                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                                    type="button"
+                                    onClick={() => setShowAudioRecorder(true)}
+                                >
+                                    {/* { loadingAnimation } */}
+                                    {/* <span className={isLoading ? "hidden" : ""}> */}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
+                                        <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
+                                        <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
+                                    </svg>
+                                    {/* </span> */}
+                                </button>
                             }
-                        }}
-                    />
-
-                    {showSendButton ?
-                        <button
-                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
-                            type="submit"
-                        >
-                            { loadingAnimation }
-                            <span className={isLoading ? "hidden" : ""}>
-                                <SendIcon />
-                            </span>
-                        </button>
-                    :
-                        <button
-                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
-                            type="submit"
-                        >
-                            { loadingAnimation }
-                            <span className={isLoading ? "hidden" : ""}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
-                                    <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
-                                    <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
-                                </svg>
-                            </span>
-                        </button>
-                    }               
+                        </>
+                    }                  
                 </form>   
             </div>
             {messages.length > 0 ? <div className="  bottom-0"><Footer /></div> : ""}
