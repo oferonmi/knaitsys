@@ -1,0 +1,348 @@
+"use client";
+
+import { useRef, useState, useEffect, useCallback, Suspense} from "react";
+import React from "react";
+import WaveSurfer from "wavesurfer.js";
+import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
+import {
+    StopIcon, 
+    PlayFillIcon, 
+    PauseFillIcon, 
+    MicFillIcon2, 
+    MicMuteFillIcon2,
+} from "../components/Icons";
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
+import useAudioRecorder from "@/hooks/useAudioRecorder";
+import {type MediaAudioTrackSettings} from "@/hooks/useAudioRecorder";
+
+import { AudioVisualizer, LiveAudioVisualizer } from "react-audio-visualize";
+
+
+// // transcription functions
+// const transcribeAudio =  async (base64AudioDataUrl) => {
+//     // Remove the data URL prefix from FileReader generated URL
+//     const base64Audio = base64AudioDataUrl.split(",")[1];
+
+//     // transcribe audio
+//     const response = await fetch("/api/speech_to_text/whisper", {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ audio: base64Audio }),
+//     });
+
+//     // get transcript data
+//     const responseData = await response.json();
+
+//     if (response.status !== 200) {
+//         throw (
+//             responseData.error ||
+//             new Error(`Request failed with status ${response.status}`)
+//         );
+//     }
+
+//     let respText = responseData.transcript.text
+//     // console.log(respText)
+
+//     return (respText).toString();
+// }
+
+// // Audio visualization/control widgets
+// // WaveSurfer hook
+// const useWavesurfer = (containerRef, options) => {
+//   const [wavesurfer, setWavesurfer] = useState(null);
+
+//   // Initialize wavesurfer when the container mounts
+//   // or any of the props change
+//   useEffect(() => {
+//     if (!containerRef.current) return;
+
+//     const ws = WaveSurfer.create({
+//       ...options,
+//       container: containerRef.current,
+//     });
+
+//     setWavesurfer(ws);
+
+//     return () => {
+//       ws.destroy()
+//     }
+//   }, [options, containerRef]);
+
+//   return wavesurfer;
+// }
+
+// // Wavesurfer audio player
+// const WaveSurferAudioPlayer = (waveSurferOptions) => {
+//     const audioContainerRef = useRef();
+//     // const [audioCtrlsPosition, setAudioCtrlsPosition] = useState(ctrlsPosition=="left"? "left":"right"); //ctrlsPosition ?  "left" : "right"
+//     const [isPlaying, setIsPlaying] = useState(false);
+//     const [currentTime, setCurrentTime] = useState(0);
+//     const wavesurfer = useWavesurfer(audioContainerRef, waveSurferOptions);
+
+//     //set controls position
+//     // const audioCtrlsPosition = ctrlsPosition;
+//     // useEffect(() => {
+//     //     ctrlsPosition == "right"? setAudioCtrlsPosition("right") : setAudioCtrlsPosition("left")
+//     // }, [ctrlsPosition])
+
+//     // On play button click
+//     const onPlayClick = useCallback(() => {
+//         wavesurfer.isPlaying() ? wavesurfer.pause() : wavesurfer.play()
+//     }, [wavesurfer])
+
+//     // Initialize wavesurfer when the container mounts
+//     // or any of the props change
+//     useEffect(() => {
+//         if (!wavesurfer) return
+
+//         setCurrentTime(0)
+//         setIsPlaying(false)
+
+//         const subscriptions = [
+//             wavesurfer.on('play', () => setIsPlaying(true)),
+//             wavesurfer.on('pause', () => setIsPlaying(false)),
+//             wavesurfer.on('timeupdate', (currentTime) => setCurrentTime(currentTime)),
+//         ]
+
+//         return () => {
+//             subscriptions.forEach((unsub) => unsub())
+//         }
+//     }, [wavesurfer]);
+
+//     const audioCtrlButton = (
+//         <button 
+//             onClick={onPlayClick} 
+//             className="inline-flex items-center  py-5 px-5 mt-6 font-medium text-center text-gray-200 bg-gray-400 rounded-full hover:bg-kaito-brand-ash-green"
+//         >
+//             {isPlaying ? <PauseFillIcon /> : <PlayFillIcon />}
+//         </button>
+//     );
+
+//     return (
+//         <> 
+//             <div className="flex flex-row">
+//                 <div>
+//                     {audioCtrlButton}
+//                 </div>
+
+//                 <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full ml-2" />
+//             </div>
+
+//             {/* {audioCtrlsPosition == "left" && (
+//                 <div className="flex flex-row">
+//                     <div>
+//                         {audioCtrlButton}
+//                     </div>
+
+//                     <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full ml-2" />
+//                 </div>
+//             )}
+            
+//             {audioCtrlsPosition == "right" && (
+//                 <div className="flex flex-row">
+//                     <div ref={audioContainerRef} className="border border-gray-400 bg-gray-100 rounded-md w-full mr-2" />
+//                     <div>
+//                         {audioCtrlButton}
+//                     </div>
+//                 </div>
+//             )} */}
+//         </>
+//     );
+// }
+
+// // Wavesurfer audio recorder
+// const WaveSurferAudioRecoder = (props) => {
+//     const micSelectRef = useRef();
+//     const liveAudioVisualiserRef = useRef();
+//     const recorderCtrlrRef = useRef();
+//     const recdAudioWaveVisualiserRef = useRef();
+
+//     const [recBtnIcon, setRecbtnIcon] = useState(<MicMuteFillIcon2 />)
+
+//     const wavesurfer = useWavesurfer(liveAudioVisualiserRef, props);
+
+//     // Initialize the Record plugin
+//     const [recorder, setRecorder] = useState(null);
+//     useEffect(() => {
+//         if (!wavesurfer) return
+
+//         const recPlugin = wavesurfer.registerPlugin(RecordPlugin.create());
+//         setRecorder(recPlugin);
+//     }, [wavesurfer]);
+
+//     // Populate mic selection list
+//     useEffect(() => {
+//         if (!micSelectRef) return
+//         // Mic selection
+//         RecordPlugin.getAvailableAudioDevices().then((devices) => {
+//             devices.forEach((device) => {
+//                 const option = document.createElement('option')
+//                 option.value = device.deviceId
+//                 option.text = device.label || device.deviceId
+//                 micSelectRef.current.appendChild(option)
+//             })
+//         })
+//     }, [micSelectRef])
+
+//     // handle record button click event
+//     const onRecordClick = useCallback(() => {   
+//         if (recorder.isRecording()) {
+//             recorder.stopRecording()
+//             setRecbtnIcon(<MicMuteFillIcon2 />)
+//             return
+//         }
+
+//         // get selected device
+//         const deviceId = micSelectRef.current //value
+//         recorder.startRecording({ deviceId }).then(() => {
+//             setRecbtnIcon(<MicFillIcon2 />)
+//             recorderCtrlrRef.disabled = false
+//         })
+//     }, [recorder, micSelectRef, recorderCtrlrRef]);
+
+//     // Render recorded audio
+//     useEffect(() => {
+//         if (!recorder || !recdAudioWaveVisualiserRef) return
+
+//         recorder.on('record-end', (blob) => {
+//             const recordedAudioUrl = URL.createObjectURL(blob)
+//             props.setRecordedAudioUrl(recordedAudioUrl)
+
+//         });
+//     }, [recorder, props]);
+
+//     return (
+//         <>
+//             <div className="container flex mx-auto my-auto space-x-2 h-fit">
+//                 <div>
+//                     <select 
+//                         id="mic-select" 
+//                         ref={micSelectRef}
+//                         className="inline-flex items-center  py-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green "
+//                     >
+//                         <option value="" hidden>--Select Mic--</option>
+//                     </select>
+//                 </div>
+
+//                 <div id="liveAudioVisualizer" ref={liveAudioVisualiserRef} className="border border-kaito-brand-ash-green rounded-md w-full" />
+
+//                 <div>
+//                     <button 
+//                         id="record"
+//                         ref={recorderCtrlrRef}
+//                         className="inline-flex items-center py-5 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+//                         onClick={onRecordClick}
+//                     >
+//                         {recBtnIcon}
+//                     </button>
+//                 </div>
+//                 {/* <button id="pause" style="display: none;">Pause</button> */}
+//             </div>
+            
+//         </>
+//     );
+
+// }
+
+type recordingCompleteCallback = (blob: Blob) => Promise<void>;
+
+const AudioRecorder =  (props:{
+    audioTrackSettings: MediaAudioTrackSettings,
+    showVisualizer: boolean,
+    onRecordingComplete: recordingCompleteCallback,
+}) => {
+    const { audioTrackSettings, showVisualizer = true, onRecordingComplete } = props;
+    const {
+        startRecording,
+        stopRecording,
+        togglePauseResume,
+        recordingBlob,
+        isRecording,
+        isPaused,
+        recordingTime,
+        mediaRecorder,
+    } =  useAudioRecorder(
+            audioTrackSettings,
+    );
+       
+    const [shouldSave, setShouldSave] = useState(false);
+
+    const stopAudioRecorder = () =>  {
+        setShouldSave(true);
+        stopRecording();
+    };
+
+    useEffect(() => {
+        if (shouldSave  && recordingBlob != null && onRecordingComplete != null) {
+            onRecordingComplete(recordingBlob);
+            // if (downloadOnSavePress) {
+            //     void downloadBlob(recordingBlob);
+            // }
+        }
+    }, [onRecordingComplete, recordingBlob, shouldSave]);
+
+    return (
+        <div className={`${"space-x-2"}`}>
+            <button
+                className="bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-4 py-4"
+                //onClick={() => stopAudioRecorder()}
+                type="button"
+            >
+                <i className="bi bi-trash3-fill"></i>
+            </button>
+            
+            {showVisualizer && (
+                <span
+                    className={`{""}`}
+                >
+                    {mediaRecorder && (
+                        <Suspense fallback={<></>}>
+                            <LiveAudioVisualizer
+                                mediaRecorder={mediaRecorder}
+                                barWidth={2}
+                                gap={2}
+                                width={140}
+                                height={20}
+                                fftSize={512}
+                                maxDecibels={-10}
+                                minDecibels={-80}
+                                smoothingTimeConstant={0.4}
+                            />
+                        </Suspense>
+                    )}
+                </span>
+            )}
+
+            <span className={``}>
+                {Math.floor(recordingTime / 60)}:
+                {String(recordingTime % 60).padStart(2, "0")}
+            </span>
+
+            <button
+                className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
+                onClick={togglePauseResume}
+                type="button"
+            >
+                {isPaused ? <i className="bi bi-mic-fill"></i> : <i className="bi bi-pause-fill"></i>}
+            </button>
+            
+            <button
+                className="bg-red-600 hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
+                onClick={() => stopAudioRecorder()}
+                type="button"
+            >
+                <i className="bi bi-stop-fill"></i>
+            </button>
+        </div>
+    );
+}
+
+export {
+    //transcribeAudio,
+    //WaveSurferAudioPlayer, 
+    //WaveSurferAudioRecoder,
+    AudioRecorder,
+};
+

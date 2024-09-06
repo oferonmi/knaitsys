@@ -4,18 +4,17 @@ import { useChat } from 'ai/react';
 import { useRef, useState, useEffect, type FormEvent } from 'react';
 import Image from "next/image";
 import {
-  transcribeAudio,
-  WaveSurferAudioRecoder,
-  WaveSurferAudioPlayer,
+//   transcribeAudio,
+  AudioRecorder,
 } from "@/components/Audio";
-import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
+import useAudioRecorder from "@/hooks/useAudioRecorder";
 import { ToastContainer, toast } from "react-toastify";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { SendIcon, ClipIcon } from '@/components/Icons';
 import { Footer } from "@/components/Footer";
 import { Tooltip } from "flowbite-react";
 
-export default function Chat() {
+export default function MultiModalChat() {
     //LLM engine API route
     const [llmApiRoute, setLlmApiRoute] = useState("/api/multimodal/chat/llava");
     const [sourcesForMessages, setSourcesForMessages] = useState<
@@ -54,6 +53,13 @@ export default function Chat() {
 
     const [showFileAttactmentUI, setShowFileAttactmentUI] = useState<boolean>(false);
     const [showSendButton, setShowSendButton] = useState<boolean>(false);
+
+    const [isRecording, setIsRecording] = useState(false);
+	const [isPaused, setIsPaused] = useState(false);
+	const [recordingTime, setRecordingTime] = useState(0);
+	const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>();
+	const [timerInterval, setTimerInterval] = useState<NodeJS.Timer>();
+	const [recordedBlob, setRecordedBlob] = useState<Blob>();
 
     const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -111,7 +117,7 @@ export default function Chat() {
                 //setInput(stt_resp_txt);
 
                 // pass transcribed text to LLM API end point and update completion data state
-                //append(stt_resp_txt); //TO DO modify string into a Message type before appending
+                //apperecordernd(stt_resp_txt); //TO DO modify string into a Message type before appending
             };
             
         } catch (error: any) {
@@ -120,24 +126,19 @@ export default function Chat() {
         }
     }
 
-    const recorderCtrls = useAudioRecorder(
-        {
-            noiseSuppression: true,
-            echoCancellation: true,
-        },
-        (err) => console.table(err) // onNotAllowedOrFound
-    );
+    const recorderSettings = {
+        noiseSuppression: true,
+        echoCancellation: true,
+    }
 
     const audioRecorderUI = (
-        <>
+        <div>
             <AudioRecorder
-                onRecordingComplete={(blob) => transcribeAudioIn(blob)}
-                recorderControls={recorderCtrls}
-                // downloadOnSavePress={true}
-                // downloadFileExtension="mp3"
+                audioTrackSettings={recorderSettings}
                 showVisualizer={true}
+                onRecordingComplete={async (blob: Blob) => await transcribeAudioIn(blob)}   
             />
-        </>
+        </div>
     );
 
     const loadingAnimation = (
@@ -201,7 +202,7 @@ export default function Chat() {
                         setShowFileAttactmentUI(false);
                     }}
                 >
-                    {showAudioRecorder ? <div className='w-full '>{audioRecorderUI}</div> :
+                    {showAudioRecorder ? <div className='container flex mx-auto my-auto space-x-2 w-full-'>{audioRecorderUI}</div> :
                         <>
                             <div>
                                 {!showFileAttactmentUI ?
