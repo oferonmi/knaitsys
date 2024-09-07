@@ -14,14 +14,23 @@ type recordingCompleteCallback = (blob: Blob) => Promise<void>;
 const AudioRecorder =  (props:{
     audioTrackSettings: MediaAudioTrackSettings,
     recorderCtrls: recorderControls,
+    mediaRecorderOptions?: MediaRecorderOptions,
     showVisualizer: boolean,
     onRecordingComplete: recordingCompleteCallback,
     setCloseRecorder: Dispatch<SetStateAction<boolean>>,
 }) => {
-    const { audioTrackSettings, showVisualizer = true, onRecordingComplete, setCloseRecorder, recorderCtrls } = props;
+    const { 
+        audioTrackSettings, 
+        recorderCtrls, 
+        mediaRecorderOptions, 
+        showVisualizer = true, 
+        onRecordingComplete, 
+        setCloseRecorder
+    } = props;
 
     const defaultCtrls = useAudioRecorder(
         audioTrackSettings,
+        mediaRecorderOptions
     );
 
     const {
@@ -34,21 +43,14 @@ const AudioRecorder =  (props:{
         recordingTime,
         mediaRecorder,
     } = recorderCtrls ?? defaultCtrls;
-        
-       
-    // const [shouldSave, setShouldSave] = useState(false);
 
     const stopAudioRecorder = () =>  {
-        // setShouldSave(true);
         stopRecording();
     };
 
     useEffect(() => {
         if (recordingBlob != null && onRecordingComplete != null) {
             onRecordingComplete(recordingBlob);
-            // if (downloadOnSavePress) {
-            //     void downloadBlob(recordingBlob);
-            // }
         }
     }, [onRecordingComplete, recordingBlob]);
 
@@ -56,7 +58,11 @@ const AudioRecorder =  (props:{
         <div className="flex space-x-2 ">
             <button
                 className="flex bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-5 py-4"
-                onClick={() => setCloseRecorder(false)}
+                onClick={() => { 
+                    isRecording && stopRecording();
+                    //resetRecorder();
+                    setCloseRecorder(false);
+                }}
                 type="button"
             >
                 <i className="bi bi-trash3-fill"></i>

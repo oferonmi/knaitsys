@@ -60,60 +60,60 @@ export default function MultiModalChat() {
     }, [messages]);
 
     const transcribeAudioIn = async(audioBlob: Blob) => {
-        try {
-            // get recorded audio blob from blob URL
-            //let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
+        // try {
+        //     // get recorded audio blob from blob URL
+        //     //let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
 
-            const reader = new FileReader();
-            reader.readAsDataURL(audioBlob);
+        //     const reader = new FileReader();
+        //     reader.readAsDataURL(audioBlob);
 
-            reader.onloadend = async () => {
-                // Remove the data URL prefix
-                // const audioBinary = reader.result;
-                // const view = new Float64Array(audioBinary.);
-                // const base64Audio = view.slice(1, view.length - 1);
-                //const base64Audio = reader.result?.split(",")[1];
-                const base64Audio = reader.result?.slice(1, -1);
+        //     reader.onloadend = async () => {
+        //         // Remove the data URL prefix
+        //         // const audioBinary = reader.result;
+        //         // const view = new Float64Array(audioBinary.);
+        //         // const base64Audio = view.slice(1, view.length - 1);
+        //         //const base64Audio = reader.result?.split(",")[1];
+        //         const base64Audio = reader.result?.slice(1, -1);
 
-                // transcribe audio prompt
-                const stt_response = await fetch("/api/speech_to_text/whisper", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ 
-                        audio: base64Audio 
-                    }),
-                });
+        //         // transcribe audio prompt
+        //         const stt_response = await fetch("/api/speech_to_text/whisper", {
+        //             method: "POST",
+        //             headers: {
+        //                 "Content-Type": "application/json",
+        //             },
+        //             body: JSON.stringify({ 
+        //                 audio: base64Audio 
+        //             }),
+        //         });
 
-                // get transcript data
-                const stt_resp_data = await stt_response.json();
+        //         // get transcript data
+        //         const stt_resp_data = await stt_response.json();
 
-                if (stt_response.status !== 200) {
-                    throw (
-                        stt_resp_data.error ||
-                        new Error(
-                        `speech to text failed with status ${stt_response.status}`
-                        )
-                    );
-                }
+        //         if (stt_response.status !== 200) {
+        //             throw (
+        //                 stt_resp_data.error ||
+        //                 new Error(
+        //                 `speech to text failed with status ${stt_response.status}`
+        //                 )
+        //             );
+        //         }
 
-                const stt_resp_txt = stt_resp_data.transcript.text;
-                // console.log(`STT response: ${stt_resp_txt}`);
+        //         const stt_resp_txt = stt_resp_data.transcript.text;
+        //         // console.log(`STT response: ${stt_resp_txt}`);
 
-                setTranscribedText(stt_resp_txt);
+        //         setTranscribedText(stt_resp_txt);
 
-                // update input data to only current input
-                //setInput(stt_resp_txt);
+        //         // update input data to only current input
+        //         //setInput(stt_resp_txt);
 
-                // pass transcribed text to LLM API end point and update completion data state
-                //apperecordernd(stt_resp_txt); //TO DO modify string into a Message type before appending
-            };
+        //         // pass transcribed text to LLM API end point and update completion data state
+        //         //apperecordernd(stt_resp_txt); //TO DO modify string into a Message type before appending
+        //     };
             
-        } catch (error: any) {
-            console.error(error);
-            alert(error.message);
-        }
+        // } catch (error: any) {
+        //     console.error(error);
+        //     alert(error.message);
+        // }
     }
 
     const recorderSettings = {
@@ -262,7 +262,6 @@ export default function MultiModalChat() {
                                     className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
                                     type="button"
                                     onClick={() => {
-                                        // recorderControls.isRecording ? recorderControls.stopRecording : recorderControls.startRecording;
                                         setShowAudioRecorder(true);
                                         recorderControls.startRecording();
                                     }}

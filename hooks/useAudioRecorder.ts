@@ -38,10 +38,10 @@ export type MediaAudioTrackSettings = Pick<
  */
 const useAudioRecorder: (
 	audioTrackSettings?: MediaAudioTrackSettings,
-	//mediaRecorderOptions'
+	mediaRecorderOptions?: MediaRecorderOptions
 ) => recorderControls = (
 	audioTrackSettings,
-	//mediaRecorderOptions
+	mediaRecorderOptions
 ) => {
 	const [isRecording, setIsRecording] = useState(false);
 	const [isPaused, setIsPaused] = useState(false);
@@ -74,7 +74,7 @@ const useAudioRecorder: (
 			setIsRecording(true);
 			const recorder: MediaRecorder = new MediaRecorder(
 				stream,
-				//mediaRecorderOptions
+				mediaRecorderOptions
 			);
 			setMediaRecorder(recorder);
 			recorder.start();
@@ -89,7 +89,7 @@ const useAudioRecorder: (
 		.catch((err: DOMException) => {
 			console.log(err.name, err.message, err.cause);
 		});
-	}, [timerInterval, audioTrackSettings, _startTimer]);
+	}, [timerInterval, audioTrackSettings, mediaRecorderOptions, _startTimer]);
 
 	/* 
 	Calling this method results in a recording in progress being stopped and the resulting audio being present in `recordingBlob`. Sets `isRecording` to false
@@ -122,6 +122,15 @@ const useAudioRecorder: (
 			mediaRecorder?.pause();
 		}
 	}, [isPaused, mediaRecorder, _startTimer, _stopTimer]);
+
+	// const resetRecorder: () => void = useCallback(() => {
+	// 	// if (isRecording) {
+	// 	// 	stopRecording();
+	// 	// }
+	// 	if (mediaRecorder != null) {
+	// 		setMediaRecorder(undefined);
+	// 	}
+	// },[mediaRecorder])
 
 	return {
 		startRecording,
