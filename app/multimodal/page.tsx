@@ -13,7 +13,7 @@ import { Tooltip } from "flowbite-react";
 
 export default function MultiModalChat() {
     //LLM engine API route
-    const [llmApiRoute, setLlmApiRoute] = useState("/api/multimodal/chat/llava");
+    const [llmApiRoute, setLlmApiRoute] = useState("/api/multimodal/chat/openai");
     const [sourcesForMessages, setSourcesForMessages] = useState<
         Record<string, any>
     >({});
@@ -207,7 +207,7 @@ export default function MultiModalChat() {
                                     <Tooltip content="Upload File" className="inline-flex">
                                         <button
                                             type="button"
-                                            className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                                            className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
                                             onClick={() => {
                                                 setShowFileAttactmentUI(true);
                                             }}
@@ -259,7 +259,7 @@ export default function MultiModalChat() {
                                 </button>
                             :
                                 <button
-                                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
                                     type="button"
                                     onClick={() => {
                                         // recorderControls.isRecording ? recorderControls.stopRecording : recorderControls.startRecording;
