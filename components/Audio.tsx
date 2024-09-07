@@ -1,21 +1,21 @@
-"use client";
+// "use client";
 
-import { useRef, useState, useEffect, useCallback, Suspense} from "react";
-import React from "react";
-import WaveSurfer from "wavesurfer.js";
-import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
-import {
-    StopIcon, 
-    PlayFillIcon, 
-    PauseFillIcon, 
-    MicFillIcon2, 
-    MicMuteFillIcon2,
-} from "../components/Icons";
-import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
-import useAudioRecorder from "@/hooks/useAudioRecorder";
-import {type MediaAudioTrackSettings} from "@/hooks/useAudioRecorder";
-
-import { AudioVisualizer, LiveAudioVisualizer } from "react-audio-visualize";
+// import { useRef, useState, useEffect, useCallback, Suspense, SetStateAction, Dispatch} from "react";
+// import React from "react";
+// import WaveSurfer from "wavesurfer.js";
+// import RecordPlugin from "wavesurfer.js/dist/plugins/record.esm.js";
+// import {
+//     StopIcon, 
+//     PlayFillIcon, 
+//     PauseFillIcon, 
+//     MicFillIcon2, 
+//     MicMuteFillIcon2,
+// } from "@/components/Icons";
+// import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
+// import useAudioRecorder from "@/hooks/useAudioRecorder";
+// import {type MediaAudioTrackSettings} from "@/hooks/useAudioRecorder";
+// import Timer from "@/components/Timer";
+// import { LiveAudioVisualizer } from "@/components/LiveAudioVisualizer";
 
 
 // // transcription functions
@@ -246,103 +246,9 @@ import { AudioVisualizer, LiveAudioVisualizer } from "react-audio-visualize";
 
 // }
 
-type recordingCompleteCallback = (blob: Blob) => Promise<void>;
-
-const AudioRecorder =  (props:{
-    audioTrackSettings: MediaAudioTrackSettings,
-    showVisualizer: boolean,
-    onRecordingComplete: recordingCompleteCallback,
-}) => {
-    const { audioTrackSettings, showVisualizer = true, onRecordingComplete } = props;
-    const {
-        startRecording,
-        stopRecording,
-        togglePauseResume,
-        recordingBlob,
-        isRecording,
-        isPaused,
-        recordingTime,
-        mediaRecorder,
-    } =  useAudioRecorder(
-            audioTrackSettings,
-    );
-       
-    const [shouldSave, setShouldSave] = useState(false);
-
-    const stopAudioRecorder = () =>  {
-        setShouldSave(true);
-        stopRecording();
-    };
-
-    useEffect(() => {
-        if (shouldSave  && recordingBlob != null && onRecordingComplete != null) {
-            onRecordingComplete(recordingBlob);
-            // if (downloadOnSavePress) {
-            //     void downloadBlob(recordingBlob);
-            // }
-        }
-    }, [onRecordingComplete, recordingBlob, shouldSave]);
-
-    return (
-        <div className={`${"space-x-2"}`}>
-            <button
-                className="bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-4 py-4"
-                //onClick={() => stopAudioRecorder()}
-                type="button"
-            >
-                <i className="bi bi-trash3-fill"></i>
-            </button>
-            
-            {showVisualizer && (
-                <span
-                    className={`{""}`}
-                >
-                    {mediaRecorder && (
-                        <Suspense fallback={<></>}>
-                            <LiveAudioVisualizer
-                                mediaRecorder={mediaRecorder}
-                                barWidth={2}
-                                gap={2}
-                                width={140}
-                                height={20}
-                                fftSize={512}
-                                maxDecibels={-10}
-                                minDecibels={-80}
-                                smoothingTimeConstant={0.4}
-                            />
-                        </Suspense>
-                    )}
-                </span>
-            )}
-
-            <span className={``}>
-                {Math.floor(recordingTime / 60)}:
-                {String(recordingTime % 60).padStart(2, "0")}
-            </span>
-
-            <button
-                className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
-                onClick={togglePauseResume}
-                type="button"
-            >
-                {isPaused ? <i className="bi bi-mic-fill"></i> : <i className="bi bi-pause-fill"></i>}
-            </button>
-            
-            <button
-                className="bg-red-600 hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
-                onClick={() => stopAudioRecorder()}
-                type="button"
-            >
-                <i className="bi bi-stop-fill"></i>
-            </button>
-        </div>
-    );
-}
-
-export {
-    //transcribeAudio,
-    //WaveSurferAudioPlayer, 
-    //WaveSurferAudioRecoder,
-    AudioRecorder,
-};
+// export {
+//     transcribeAudio,
+//     WaveSurferAudioPlayer, 
+//     WaveSurferAudioRecoder,
+// };
 

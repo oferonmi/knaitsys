@@ -62,8 +62,9 @@ const useAudioRecorder: (
 		setTimerInterval(undefined);
 	}, [timerInterval, setTimerInterval]);
 
-	// Calling this method would result in the recording to start. Sets `isRecording` to true
-	
+	/* 
+	* Calling this method would result in the recording to start. Sets `isRecording` to true
+	*/ 
 	const startRecording: () => void = useCallback(() => {
 		if (timerInterval != null) return;
 
@@ -90,8 +91,8 @@ const useAudioRecorder: (
 		});
 	}, [timerInterval, audioTrackSettings, _startTimer]);
 
-	/**
-	 * Calling this method results in a recording in progress being stopped and the resulting audio being present in `recordingBlob`. Sets `isRecording` to false
+	/* 
+	Calling this method results in a recording in progress being stopped and the resulting audio being present in `recordingBlob`. Sets `isRecording` to false
 	 */
 	const stopRecording: () => void = useCallback(() => {
 		mediaRecorder?.stop();

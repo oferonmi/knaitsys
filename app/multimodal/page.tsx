@@ -3,10 +3,7 @@
 import { useChat } from 'ai/react';
 import { useRef, useState, useEffect, type FormEvent } from 'react';
 import Image from "next/image";
-import {
-//   transcribeAudio,
-  AudioRecorder,
-} from "@/components/Audio";
+import { AudioRecorder } from "@/components/AudioRecorder";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
 import { ToastContainer, toast } from "react-toastify";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
@@ -53,13 +50,6 @@ export default function MultiModalChat() {
 
     const [showFileAttactmentUI, setShowFileAttactmentUI] = useState<boolean>(false);
     const [showSendButton, setShowSendButton] = useState<boolean>(false);
-
-    const [isRecording, setIsRecording] = useState(false);
-	const [isPaused, setIsPaused] = useState(false);
-	const [recordingTime, setRecordingTime] = useState(0);
-	const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>();
-	const [timerInterval, setTimerInterval] = useState<NodeJS.Timer>();
-	const [recordedBlob, setRecordedBlob] = useState<Blob>();
 
     const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -131,12 +121,16 @@ export default function MultiModalChat() {
         echoCancellation: true,
     }
 
+    const recorderControls = useAudioRecorder(recorderSettings);
+
     const audioRecorderUI = (
         <div>
             <AudioRecorder
                 audioTrackSettings={recorderSettings}
+                recorderCtrls={recorderControls}
                 showVisualizer={true}
-                onRecordingComplete={async (blob: Blob) => await transcribeAudioIn(blob)}   
+                onRecordingComplete={async (blob: Blob) => await transcribeAudioIn(blob)} 
+                setCloseRecorder={setShowAudioRecorder}  
             />
         </div>
     );
@@ -202,7 +196,11 @@ export default function MultiModalChat() {
                         setShowFileAttactmentUI(false);
                     }}
                 >
-                    {showAudioRecorder ? <div className='container flex mx-auto my-auto space-x-2 w-full-'>{audioRecorderUI}</div> :
+                    {showAudioRecorder ? 
+                        <div className='flex items-center rounded-full bg-white border border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1'>
+                            {audioRecorderUI}
+                        </div> 
+                        :
                         <>
                             <div>
                                 {!showFileAttactmentUI ?
@@ -263,7 +261,11 @@ export default function MultiModalChat() {
                                 <button
                                     className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
                                     type="button"
-                                    onClick={() => setShowAudioRecorder(true)}
+                                    onClick={() => {
+                                        // recorderControls.isRecording ? recorderControls.stopRecording : recorderControls.startRecording;
+                                        setShowAudioRecorder(true);
+                                        recorderControls.startRecording();
+                                    }}
                                 >
                                     {/* { loadingAnimation } */}
                                     {/* <span className={isLoading ? "hidden" : ""}> */}
