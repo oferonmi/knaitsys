@@ -310,7 +310,7 @@ const SummarizerPage = () => {
         </select>
       </div> */}
 
-      <div className="flex mt-2 ml-auto space-x-3">
+      <div className="flex ml-auto space-x-3">
         {/* <div>
           <button
             className=" bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
@@ -371,7 +371,7 @@ const SummarizerPage = () => {
 
   // summary page home button
   const homeButton = (
-    <div className="flex mt-2 space-x-3">
+    <div className="flex ml-auto space-x-3">
       <button
         className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
         type="button"
@@ -446,7 +446,7 @@ const SummarizerPage = () => {
           {selectedPDF === null ? (
             <p className="text-xs text-gray-500 ">PDF files</p>
           ) : (
-            <p>{selectedPDF.name} file attached</p>
+            <p className="text-xs text-gray-500 ">{selectedPDF.name} file attached</p>
           )}
         </div>
         <input
@@ -641,21 +641,24 @@ const SummarizerPage = () => {
 
   // Display section for orignal input text
   const origTextDisplay = (
-    <form className="w-full flex flex-col" onSubmit={summarizeRawText}>
+    <form className="w-full flex flex-col " onSubmit={summarizeRawText}>
       <div className="w-full h-dvh border-r border-kaito-brand-ash-green bg-gray-50">
         <textarea
           id="textInput"
           // rows={40}
-          className="w-full mb-0 px-4 py-4 text-sm text-black bg-white bg-opacity-60 border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-[75%]" //h-[75%]
+          className="w-full mb-0 px-4 py-4 text-sm text-black bg-white bg-opacity-60 border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-screen" //h-[75%]
           value={inputTextCorpus}
           onChange={(e) => setInputTextCorpus(e.target.value)}
           placeholder="Paste in the text you want to summarize..."
         ></textarea>
 
-        <div className=" flex flex-row px-3 py-2 border-t h-[25%] mb-0">
-          <div className="flex-1">{homeButton}</div>
-          <div className="flex-1 text-kaito-brand-ash-green">Edit orignal text above ☝️ and resend, if disatisfied with generated summary.</div>
-          <div className="flex-1">{summarizerCtrlButtons}</div>
+        <div 
+          // className=" flex flex-row px-3 py-2 border-t h-[25%] mb-0"
+          className="fixed bottom-0 border border-gray-300 rounded-full shadow-xl space-x-2 text-black flex flex-row items-center mb-20 px-3 py-3 "
+        >
+          <div>{homeButton}</div>
+          {/* <div className="flex-1 text-kaito-brand-ash-green">Edit orignal text above ☝️ and resend, if disatisfied with generated summary.</div> */}
+          <div>{summarizerCtrlButtons}</div>
         </div>
       </div>  
     </form>

@@ -60,6 +60,7 @@ export default function MultiModalChat() {
     }, [messages]);
 
     const transcribeAudioIn = async(audioBlob: Blob) => {
+        //console.log("Recored blob: " + audioBlob);
         // try {
         //     // get recorded audio blob from blob URL
         //     //let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
