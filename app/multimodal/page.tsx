@@ -160,36 +160,114 @@ export default function MultiModalChat() {
         </>
     );
 
-    return (
+    const mutliModInputs = (
         <>
-            <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
-                <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40  text-black">
-                    {messages.length > 0
-                        ? [...messages].map((m, i) => {
-                            const sourceKey = (messages.length - 1 - i).toString();
-                            return (
-                                <ChatMessageBubble
-                                    key={m.id}
-                                    message={m}
-                                    aiEmoji={"🤖"}
-                                    sources={sourcesForMessages[sourceKey]}
-                                ></ChatMessageBubble>
-                            );
-                        })
-                    : ""}
-                </div>
+            {showAudioRecorder ? 
+                <div className='flex items-center rounded-full bg-white border border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1'>
+                    {audioRecorderUI}
+                </div> 
+                :
+                <>
+                    <div>
+                        {!showFileAttactmentUI ?
+                            <Tooltip content="Upload File" className="inline-flex">
+                                <button
+                                    type="button"
+                                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
+                                    onClick={() => {
+                                        setShowFileAttactmentUI(true);
+                                    }}
+                                >
+                                    <ClipIcon />
+                                    <span className="sr-only">Attach file</span>
+                                </button>
+                            </Tooltip>
+                            :
+                            <input
+                                type="file"
+                                className="border fill-kaito-brand-ash-green"
+                                onChange={event => {
+                                    if (event.target.files) {
+                                        setFiles(event.target.files);
+                                    }
+                                }}
+                                multiple
+                                ref={fileInputRef}
+                            />
+                        }
+                    </div>
+                    
+                    <input
+                        className="w-full h-14 p-2 rounded-full border border-kaito-brand-ash-green focus:border-kaito-brand-ash-green text-kaito-brand-ash-green placeholder:text-gray-400 "
+                        value={input}
+                        placeholder=" Say something..."
+                        //ref={textInputRef}
+                        onChange={(e) => {
+                            handleInputChange(e);
+                            
+                            if (e.target.value.length > 0) {
+                                setShowSendButton(true);
+                            } else {
+                                setShowSendButton(false);
+                            }
+                        }}
+                    />
+                
+                    {showSendButton ?
+                        <button
+                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                            type="submit"
+                        >
+                            { loadingAnimation }
+                            <span className={isLoading ? "hidden" : ""}>
+                                <SendIcon />
+                            </span>
+                        </button>
+                        :
+                        <button
+                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
+                            type="button"
+                            onClick={() => {
+                                setShowAudioRecorder(true);
+                                recorderControls.startRecording();
+                            }}
+                        >
+                            {/* { loadingAnimation } */}
+                            {/* <span className={isLoading ? "hidden" : ""}> */}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
+                                <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
+                                <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
+                            </svg>
+                            {/* </span> */}
+                        </button>
+                    }
+                </>
+            }                  
+        </>
+    );
 
-                <div ref={bottomRef} />
-            
+    const multiModLandingPgUI = (
+        <>
+            <div className="flex flex-col justify-center items-center md:p-8  min-h-screen max-w-2xl mx-auto my-auto ">
+                <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
+                    State your query / questions using multimodal input.
+                </h1>
+
+                <p className="text-black text-lg text-center">
+                    Use any of the inputs to make your inquiry.
+                </p>
+
+                <br></br>
+
                 <form
-                    className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
+                    className="w-full max-w-3xl border border-gray-300 rounded-lg shadow-xl space-x-2 text-black flex justify-center items-center pt-9 pb-9 px-5"
                     onSubmit={event => {
                         handleSubmit(event, {
                             experimental_attachments: files,
                         });
-                        
+                            
                         setFiles(undefined);
-                        
+                            
                         if (fileInputRef.current) {
                             fileInputRef.current.value = '';
                         }
@@ -197,90 +275,64 @@ export default function MultiModalChat() {
                         setShowFileAttactmentUI(false);
                     }}
                 >
-                    {showAudioRecorder ? 
-                        <div className='flex items-center rounded-full bg-white border border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1'>
-                            {audioRecorderUI}
-                        </div> 
-                        :
-                        <>
-                            <div>
-                                {!showFileAttactmentUI ?
-                                    <Tooltip content="Upload File" className="inline-flex">
-                                        <button
-                                            type="button"
-                                            className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
-                                            onClick={() => {
-                                                setShowFileAttactmentUI(true);
-                                            }}
-                                        >
-                                            <ClipIcon />
-                                            <span className="sr-only">Attach file</span>
-                                        </button>
-                                    </Tooltip>
-                                :
-                                    <input
-                                        type="file"
-                                        className="border fill-kaito-brand-ash-green"
-                                        onChange={event => {
-                                            if (event.target.files) {
-                                                setFiles(event.target.files);
-                                            }
-                                        }}
-                                        multiple
-                                        ref={fileInputRef}
-                                    />
-                                }
-                            </div>
-
-                            <input
-                                className="w-full h-14 p-2 rounded-full border border-kaito-brand-ash-green focus:border-kaito-brand-ash-green text-kaito-brand-ash-green placeholder:text-gray-400 "
-                                value={input}
-                                placeholder=" Say something..."
-                                //ref={textInputRef}
-                                onChange={(e) => {
-                                    handleInputChange(e);
-
-                                    if (e.target.value.length > 0) {
-                                        setShowSendButton(true);
-                                    } else {
-                                        setShowSendButton(false);
-                                    }
-                                }}
-                            />
-
-                            {showSendButton ?
-                                <button
-                                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
-                                    type="submit"
-                                >
-                                    { loadingAnimation }
-                                    <span className={isLoading ? "hidden" : ""}>
-                                        <SendIcon />
-                                    </span>
-                                </button>
-                            :
-                                <button
-                                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
-                                    type="button"
-                                    onClick={() => {
-                                        setShowAudioRecorder(true);
-                                        recorderControls.startRecording();
-                                    }}
-                                >
-                                    {/* { loadingAnimation } */}
-                                    {/* <span className={isLoading ? "hidden" : ""}> */}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
-                                        <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
-                                        <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
-                                    </svg>
-                                    {/* </span> */}
-                                </button>
-                            }
-                        </>
-                    }                  
-                </form>   
+                    {mutliModInputs}            
+                </form>
             </div>
-            {messages.length > 0 ? <div className="  bottom-0"><Footer /></div> : ""}
+        </>
+    );
+
+    return (
+        <>
+            {messages.length > 0 ?
+                <>
+                    {/* Chat section */}
+                    <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
+                        <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40  text-black">
+                            {messages.length > 0  ?
+                            [...messages].map((m, i) => {
+                                const sourceKey = (messages.length - 1 - i).toString();
+                                return (
+                                    <ChatMessageBubble
+                                        key={m.id}
+                                        message={m}
+                                        aiEmoji={"🤖"}
+                                        sources={sourcesForMessages[sourceKey]}
+                                    />
+                                );
+                            })
+                            : ""} 
+                        </div>
+
+                        <div ref={bottomRef} />
+                    
+                        <form
+                            className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
+                            onSubmit={event => {
+                                handleSubmit(event, {
+                                    experimental_attachments: files,
+                                });
+                                
+                                setFiles(undefined);
+                                
+                                if (fileInputRef.current) {
+                                    fileInputRef.current.value = '';
+                                }
+
+                                setShowFileAttactmentUI(false);
+                            }}
+                        >
+                            {mutliModInputs}            
+                        </form>   
+                    </div>
+                    {messages.length > 0 ? <div className="  bottom-0"><Footer /></div> : ""}
+                </>
+            : 
+                <>
+                    {/* Main section */}
+                    {multiModLandingPgUI} 
+                    <div className="  bottom-0"><Footer /></div>
+                </>
+            }
         </>
     );
 }
