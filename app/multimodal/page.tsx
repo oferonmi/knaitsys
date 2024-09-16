@@ -250,7 +250,7 @@ export default function MultiModalChat() {
         <>
             <div className="flex flex-col justify-center items-center md:p-8  min-h-screen max-w-2xl mx-auto my-auto ">
                 <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
-                    State your query / questions using multimodal input.
+                    State your query / questions using the various multimodal input options.
                 </h1>
 
                 <p className="text-black text-lg text-center">
@@ -289,17 +289,17 @@ export default function MultiModalChat() {
                     <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
                         <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40  text-black">
                             {messages.length > 0  ?
-                            [...messages].map((m, i) => {
-                                const sourceKey = (messages.length - 1 - i).toString();
-                                return (
-                                    <ChatMessageBubble
-                                        key={m.id}
-                                        message={m}
-                                        aiEmoji={"🤖"}
-                                        sources={sourcesForMessages[sourceKey]}
-                                    />
-                                );
-                            })
+                                [...messages].map((m, i) => {
+                                    const sourceKey = (messages.length - 1 - i).toString();
+                                    return (
+                                        <ChatMessageBubble
+                                            key={m.id}
+                                            message={m}
+                                            aiEmoji={"🤖"}
+                                            sources={sourcesForMessages[sourceKey]}
+                                        />
+                                    );
+                                })
                             : ""} 
                         </div>
 

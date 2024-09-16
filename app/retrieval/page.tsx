@@ -31,7 +31,6 @@ export default function RetrievalPage() {
         />
       )}
       {status === "unauthenticated" && redirect("/auth/signIn")}
-      {!readyToChat && <Footer />}
     </>
   );
 }
