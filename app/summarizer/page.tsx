@@ -652,13 +652,14 @@ const SummarizerPage = () => {
           placeholder="Paste in the text you want to summarize..."
         ></textarea>
 
+        <div className="fixed bottom-0">
         <div 
-          // className=" flex flex-row px-3 py-2 border-t h-[25%] mb-0"
-          className="fixed bottom-0 border border-gray-300 rounded-full shadow-xl space-x-2 text-black flex flex-row items-center mb-20 px-3 py-3 "
+          className=" border border-gray-300 rounded-full shadow-xl space-x-2 text-black flex flex-row items-center mb-20 px-3 py-3"
         >
           <div>{homeButton}</div>
           {/* <div className="flex-1 text-kaito-brand-ash-green">Edit orignal text above ☝️ and resend, if disatisfied with generated summary.</div> */}
           <div>{summarizerCtrlButtons}</div>
+        </div>
         </div>
       </div>  
     </form>
