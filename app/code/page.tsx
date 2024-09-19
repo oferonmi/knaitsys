@@ -24,7 +24,7 @@ const CodebotPage = () => {
   >({});
 
   const handleLlmApiChange = (event: { target: { value: any } }) => {
-    setLlmApiRoute("/api/code_gen/" + event.target.value);
+    setLlmApiRoute("/api/" + event.target.value);
   };
 
   // use OpenAI chat completion
@@ -90,13 +90,20 @@ const CodebotPage = () => {
                   required
                 >
                   <option value="">--Select LLM--</option>
-                  <option value="codellama">
-                    CodeLlama-2-Ollama
+                  <option value="multimodal/chat/openai">GPT-4o-mini</option>
+                  <option value="code_gen/codellama">
+                    CodeLlama7B-Ollama
                   </option>
-                  <option value="codellama_II_fireworks">
-                    CodeLlama-2-Fwks
+                  {/* <option value="code_gen/codellama_fireworks">
+                    CodeLlama13B-Fwks
+                  </option> */}
+                  <option value="code_gen/qwen2.5coder">
+                    Qwen2.5Coder-Ollama
                   </option>
-                  {/* <option value="starcoder_7b_int8">StarCoder-7b-Fwks</option> */}
+                  {/* <option value="code_gen/codegemma">
+                    CodeGemma-Ollama
+                  </option> */}
+                  {/* <option value="code_gen/starcoder_7b_int8">StarCoder-7b-Fwks</option> */}
                 </select>
 
                 <ChatForm

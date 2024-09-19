@@ -1,10 +1,9 @@
-import { createOpenAI } from '@ai-sdk/openai'
-import { convertToCoreMessages, generateText, streamText } from 'ai'
+import { convertToCoreMessages, streamText } from "ai";
+import { createOllama } from 'ollama-ai-provider';
 
-const fireworks = createOpenAI({
-  apiKey: process.env.FIREWORKS_API_KEY ?? '',
-  baseURL: 'https://api.fireworks.ai/inference/v1'
-})
+const ollama = createOllama({
+    baseURL: 'http://127.0.0.1:11434/api', //NOTE: Use a different URL prefix for API calls, e.g., to use proxy servers.
+});
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";
@@ -16,8 +15,8 @@ export async function POST(req: Request) {
     // Extract the `messages` from the body of the request
     const { messages } = await req.json();
 
-    //Model URl
-    const llm = fireworks('accounts/fireworks/models/llama-v3-8b-instruct');
+    //NOTE: Make sure the 'llava' model has been downloaded to local or proxy machine from Ollama's model library
+    const llm = ollama('qwen2.5-coder');
 
     const result = await streamText({
         model: llm,
@@ -26,4 +25,3 @@ export async function POST(req: Request) {
 
     return result.toDataStreamResponse();
 }
-

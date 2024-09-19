@@ -16,8 +16,8 @@ export async function POST(req: Request) {
     // Extract the `messages` from the body of the request
     const { messages } = await req.json();
 
-    //Model URl
-    const llm = fireworks('accounts/fireworks/models/llama-v3-8b-instruct');
+    //Model URL
+    const llm = fireworks('accounts/fireworks/models/code-llama-13b-instruct');
 
     const result = await streamText({
         model: llm,
@@ -26,4 +26,3 @@ export async function POST(req: Request) {
 
     return result.toDataStreamResponse();
 }
-

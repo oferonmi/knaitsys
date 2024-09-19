@@ -1,32 +1,28 @@
-import OpenAI from "openai";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+import { createOpenAI } from '@ai-sdk/openai'
+import { convertToCoreMessages, generateText, streamText } from 'ai'
 
-// Create an OpenAI API client (that's edge friendly!)
-// but configure it to point to fireworks.ai
-const fireworks = new OpenAI({
-  apiKey: process.env.FIREWORKS_API_KEY || "",
-  baseURL: "https://api.fireworks.ai/inference/v1",
-});
+const fireworks = createOpenAI({
+  apiKey: process.env.FIREWORKS_API_KEY ?? '',
+  baseURL: 'https://api.fireworks.ai/inference/v1'
+})
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";
 
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 30;
+
 export async function POST(req: Request) {
-  // Extract the `messages` from the body of the request
-  const { messages } = await req.json();
+    // Extract the `messages` from the body of the request
+    const { messages } = await req.json();
 
-  // Ask Fireworks for a streaming chat completion using Qwen 72b chat model
-  // @see https://fireworks.ai/models/fireworks/mixtral-8x7b-instruct
-  const response = await fireworks.chat.completions.create({
-    model: "accounts/fireworks/models/mixtral-8x7b-instruct",
-    stream: true,
-    max_tokens: 1000,
-    messages,
-  });
+    //Model URl
+    const llm = fireworks('accounts/fireworks/models/mixtral-8x7b-instruct');
 
-  // Convert the response into a friendly text-stream.
-  const stream = OpenAIStream(response);
+    const result = await streamText({
+        model: llm,
+        messages: convertToCoreMessages(messages),
+    });
 
-  // Respond with the stream
-  return new StreamingTextResponse(stream);
+    return result.toDataStreamResponse();
 }
