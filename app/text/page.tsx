@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import {
   ChatIcon,
   ClipBoardDataFullIcon,
@@ -27,21 +28,21 @@ const TextProcessorPage = () => {
       <div className="grid grid-flow-col justify-items-stretch place-items-center gap-4 max-w-2xl pb-5 mx-auto mt-4 sm:px-4 text-gray-700">
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
           <Link href="/chat">
-            <ChatIcon />
+            <i className="bi bi-chat-text-fill" style={{fontSize: 64}}></i>
             <p>Chat</p>
           </Link>
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
           <Link href="/summarizer">
-            <CardTextIcon />
+            <i className="bi bi-card-text" style={{fontSize: 64}}></i>
             <p>Recap</p>
           </Link>
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
           <Link href="/retrieval">
-            <ClipBoardDataFullIcon />
+            <i className="bi bi-database-fill-up" style={{fontSize: 64}}></i>
             <p>Retrieval</p>
           </Link>
         </div>
