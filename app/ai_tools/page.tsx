@@ -15,7 +15,7 @@ const AiToolsPage = () => {
       </div>
 
       <div className="mt-2 text-xl text-black">
-        Choose your preferred Natural Language Interface (NLI) for your
+        Choose your preferred Natural Language Interface (NLI) mode for your
         knowledge work.
       </div>
 

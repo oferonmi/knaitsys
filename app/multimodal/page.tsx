@@ -7,6 +7,7 @@ import { AudioRecorder } from "@/components/AudioRecorder";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
 import { ToastContainer, toast } from "react-toastify";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { SendIcon, ClipIcon } from '@/components/Icons';
 import { Footer } from "@/components/Footer";
 import { Tooltip } from "flowbite-react";

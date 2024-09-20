@@ -10,6 +10,8 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Emoji from "@/components/Emoji";
+import { Tooltip } from "flowbite-react";
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 const CodebotPage = () => {
   // sessions
@@ -30,6 +32,7 @@ const CodebotPage = () => {
   // use OpenAI chat completion
   const {
     messages,
+    setMessages,
     input,
     handleInputChange,
     handleSubmit,
@@ -83,12 +86,22 @@ const CodebotPage = () => {
             <div 
               className="fixed bottom-0 border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9"
             >
-                <select
-                  onChange={handleLlmApiChange}
-                  className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
-                  id="llm-selector"
-                  required
+              <Tooltip content="Clear Chat Thread" className="inline-flex">
+                <button
+                  className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-6 py-5 mr-2"
+                  type="button"
+                  onClick={() => { setMessages([]); } }
                 >
+                  <i className="bi bi-trash3-fill"></i>
+                </button>
+              </Tooltip>
+
+              <select
+                onChange={handleLlmApiChange}
+                className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
+                id="llm-selector"
+                required
+              >
                   <option value="">--Select LLM--</option>
                   <option value="multimodal/chat/openai">GPT-4o-mini</option>
                   <option value="code_gen/codellama">
@@ -104,14 +117,14 @@ const CodebotPage = () => {
                     CodeGemma-Ollama
                   </option> */}
                   {/* <option value="code_gen/starcoder_7b_int8">StarCoder-7b-Fwks</option> */}
-                </select>
+              </select>
 
-                <ChatForm
-                  userInput={input}
-                  onChangeHandler={handleInputChange}
-                  onSubmitHandler={handleSubmit}
-                  isLoading={chatEndpointIsLoading}
-                />
+              <ChatForm
+                userInput={input}
+                onChangeHandler={handleInputChange}
+                onSubmitHandler={handleSubmit}
+                isLoading={chatEndpointIsLoading}
+              />
             </div>
           </div>
           <div className="w-full bottom-0"><Footer /></div>

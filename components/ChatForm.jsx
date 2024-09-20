@@ -1,4 +1,4 @@
-import {SendIcon } from '@/components/Icons';
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { useRef, useState } from 'react';
 
 const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) => {
@@ -47,7 +47,7 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) =>
           onChange={onChangeHandler}
         />
         <button
-          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5"
           type="submit"
         >
           <div
@@ -58,7 +58,7 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) =>
           >
             <svg
               aria-hidden="true"
-              className="w-6 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
+              className="w-5 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -75,7 +75,7 @@ const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) =>
             <span className="sr-only">Loading...</span>
           </div>
           <span className={isLoading ? "hidden" : ""}>
-            <SendIcon />
+            <i className="bi bi-send-fill"></i>
           </span>
         </button>
       </form>
