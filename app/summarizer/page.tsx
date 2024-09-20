@@ -701,7 +701,7 @@ const SummarizerPage = () => {
             <span className="whitespace-pre-wrap flex flex-col">
               {summarizedText}
             </span>
-            <Tooltip content="Copy Text" className="inline-flex">
+            <Tooltip content="Copy to clipboard" className="inline-flex">
               <button className="ml-2 mb-auto" type="button" onClick={() => copy(summarizedText)}>
                 <i className="bi bi-copy"></i>
               </button>

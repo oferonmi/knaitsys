@@ -100,7 +100,7 @@ export function ChatMessageBubble(props: {
           ""
         )}
       </div>
-      <Tooltip content="Copy Text" className="inline-flex">
+      <Tooltip content="Copy to clipboard" className="inline-flex">
         <button className="ml-2 mb-auto" type="button" onClick={() => copy(props.message.content)}>
           <i className="bi bi-copy"></i>
         </button>
