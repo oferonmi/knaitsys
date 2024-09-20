@@ -1,5 +1,8 @@
 import type { Message } from "ai/react";
 import Image from "next/image";
+import copy from 'copy-to-clipboard';
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
+import { Tooltip } from "flowbite-react";
 
 export function ChatMessageBubble(props: {
   message: Message;
@@ -51,13 +54,13 @@ export function ChatMessageBubble(props: {
                   src={attachment.url}
                   width={450}
                   height={450}
-                  alt={attachment?.name}
+                  alt={attachment?.name ?? ''}
                 />
               ))
             }
 
             {/* Input audio preview */}
-            {props.message?.experimental_attachments?.filter(
+            {/* {props.message?.experimental_attachments?.filter(
                 attachment => attachment?.contentType?.startsWith('audio/'),
               )
               .map((attachment, index) => (
@@ -65,10 +68,10 @@ export function ChatMessageBubble(props: {
                   //key={`${props.message.id}-${index}`}
                   src={attachment.url}
                   controls
-                  //alt={attachment?.name}
+                  //alt={attachment?.name ?? ''}
                 />
               ))
-            }
+            } */}
           </div>
 
         {props.sources && props.sources.length ? (
@@ -97,6 +100,11 @@ export function ChatMessageBubble(props: {
           ""
         )}
       </div>
+      <Tooltip content="Copy Text" className="inline-flex">
+        <button className="ml-2 mb-auto" type="button" onClick={() => copy(props.message.content)}>
+          <i className="bi bi-copy"></i>
+        </button>
+      </Tooltip>
     </div>
   );
 }

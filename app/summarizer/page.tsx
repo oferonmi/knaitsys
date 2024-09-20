@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { 
   ClipIcon, 
   CloudUploadIcon, 
@@ -18,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "flowbite-react";
 import { useDropzone } from "react-dropzone";
 import { Document } from "@langchain/core/documents";
+import copy from 'copy-to-clipboard';
 
 const SummarizerPage = () => {
   const { data: session, status } = useSession();
@@ -689,10 +691,9 @@ const SummarizerPage = () => {
       </h2>
 
       <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
-        {/* <h2 className="text-black text-2xl flex justify-center mt-2">
-          Summary Flash Card
-        </h2> */}
+        {/* Summary Flash Card */}
         {summarizedText.length > 0 ? (
+          <>
           <div
             className={`${cardColorHex}  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
             // className="bg-[#c8a8d5] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-300"
@@ -700,7 +701,13 @@ const SummarizerPage = () => {
             <span className="whitespace-pre-wrap flex flex-col">
               {summarizedText}
             </span>
+            <Tooltip content="Copy Text" className="inline-flex">
+              <button className="ml-2 mb-auto" type="button" onClick={() => copy(summarizedText)}>
+                <i className="bi bi-copy"></i>
+              </button>
+            </Tooltip>
           </div>
+          </>
         ) : (
           ""
         )}
