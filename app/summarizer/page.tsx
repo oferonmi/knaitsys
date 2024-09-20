@@ -33,6 +33,7 @@ const SummarizerPage = () => {
   const [inputTextCorpus, setInputTextCorpus] = useState("");
   const [inputUrl, setInputUrl] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [copyIcon, setCopyIcon] = useState(<i className="bi bi-copy"></i>)
 
   const onDrop = useCallback((acceptedFiles: any) => {
     // Do something with the files
@@ -702,8 +703,16 @@ const SummarizerPage = () => {
               {summarizedText}
             </span>
             <Tooltip content="Copy to clipboard" className="inline-flex">
-              <button className="ml-2 mb-auto" type="button" onClick={() => copy(summarizedText)}>
-                <i className="bi bi-copy"></i>
+              <button 
+                className="ml-2 mb-auto" 
+                type="button" 
+                onClick={() => {
+                  copy(summarizedText)
+                  setCopyIcon(<i className="bi bi-check2-square"></i>)
+                  setTimeout(() => {setCopyIcon(<i className="bi bi-copy"></i>)},400)
+                }}
+              >
+                {copyIcon}
               </button>
             </Tooltip>
           </div>

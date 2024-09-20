@@ -3,12 +3,14 @@ import Image from "next/image";
 import copy from 'copy-to-clipboard';
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { Tooltip } from "flowbite-react";
+import { useState } from "react";
 
 export function ChatMessageBubble(props: {
   message: Message;
   aiEmoji?: string;
   sources?: any[];
 }) {
+  const [copyIcon, setCopyIcon] = useState(<i className="bi bi-copy"></i>)
   const bubbleColorHexArr = [
     "bg-[#cba3e0]",
     "bg-[#d2ccf2]",
@@ -101,8 +103,16 @@ export function ChatMessageBubble(props: {
         )}
       </div>
       <Tooltip content="Copy to clipboard" className="inline-flex">
-        <button className="ml-2 mb-auto" type="button" onClick={() => copy(props.message.content)}>
-          <i className="bi bi-copy"></i>
+        <button 
+          className="ml-2 mb-auto" 
+          type="button" 
+          onClick={() => {
+            copy(props.message.content)
+            setCopyIcon(<i className="bi bi-check2-square"></i>)
+            setTimeout(() => {setCopyIcon(<i className="bi bi-copy"></i>)},400)
+          }}
+        >
+          {copyIcon}
         </button>
       </Tooltip>
     </div>
