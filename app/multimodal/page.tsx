@@ -8,18 +8,31 @@ import useAudioRecorder from "@/hooks/useAudioRecorder";
 import { ToastContainer, toast } from "react-toastify";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
-import { SendIcon, ClipIcon } from '@/components/Icons';
 import { Footer } from "@/components/Footer";
 import { Tooltip } from "flowbite-react";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 export default function MultiModalChat() {
+    // sessions
+    const { data: session, status } = useSession();
+
     //LLM engine API route
     const [llmApiRoute, setLlmApiRoute] = useState("/api/multimodal/chat/openai");
     const [sourcesForMessages, setSourcesForMessages] = useState<
         Record<string, any>
     >({});
     const [recordedAudioUrl, setRecordedAudioUrl] = useState("");
-    const { messages, input, setInput, handleInputChange, handleSubmit, isLoading } = useChat({
+    
+    const { 
+        messages,  
+        setMessages, 
+        input, 
+        setInput, 
+        handleInputChange, 
+        handleSubmit, 
+        isLoading 
+    } = useChat({
         api: llmApiRoute,
         onResponse(response) {
             const sourcesHeader = response.headers.get("x-sources");
@@ -283,44 +296,49 @@ export default function MultiModalChat() {
 
     return (
         <>
-            {messages.length > 0 ?
+            {status === "authenticated" && (
                 <>
-                    {/* Chat section */}
-                    <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
-                        <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40  text-black">
-                            {messages.length > 0  ?
-                                [...messages].map((m, i) => {
-                                    const sourceKey = (messages.length - 1 - i).toString();
-                                    return (
-                                        <ChatMessageBubble
-                                            key={m.id}
-                                            message={m}
-                                            aiEmoji={"🤖"}
-                                            sources={sourcesForMessages[sourceKey]}
-                                        />
-                                    );
-                                })
-                            : ""} 
-                        </div>
+                    {messages.length > 0 ?
+                        <>
+                            {/* Chat section */}
+                            <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
+                                <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40  text-black">
+                                    {messages.length > 0  ?
+                                        [...messages].map((m, i) => {
+                                            const sourceKey = (messages.length - 1 - i).toString();
+                                            return (
+                                                <ChatMessageBubble
+                                                    key={m.id}
+                                                    message={m}
+                                                    aiEmoji={"🤖"}
+                                                    sources={sourcesForMessages[sourceKey]}
+                                                />
+                                            );
+                                        })
+                                    : ""} 
+                                </div>
 
-                        <div ref={bottomRef} />
-                    
-                        <form
-                            className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
-                            onSubmit={(event) => handleSend(event)}
-                        >
-                            {mutliModInputs}            
-                        </form>   
-                    </div>
-                    {messages.length > 0 ? <div className="  bottom-0"><Footer /></div> : ""}
+                                <div ref={bottomRef} />
+                            
+                                <form
+                                    className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
+                                    onSubmit={(event) => handleSend(event)}
+                                >
+                                    {mutliModInputs}            
+                                </form>   
+                            </div>
+                            {messages.length > 0 ? <div className="  bottom-0"><Footer /></div> : ""}
+                        </>
+                    : 
+                        <>
+                            {/* Main section */}
+                            {landingPgUI} 
+                            <div className="  bottom-0"><Footer /></div>
+                        </>
+                    }
                 </>
-            : 
-                <>
-                    {/* Main section */}
-                    {landingPgUI} 
-                    <div className="  bottom-0"><Footer /></div>
-                </>
-            }
+            )}
+            {status === "unauthenticated" && redirect("/auth/signIn")}
         </>
     );
 }
