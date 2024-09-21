@@ -48,6 +48,12 @@ const AudioRecorder =  (props:{
         stopRecording();
     };
 
+    // useEffect(() => {
+    //     if (!isRecording) {
+    //         recorderCtrls != null ? recorderCtrls.startRecording() : defaultCtrls.startRecording();
+    //     }
+    // },[isRecording, recorderCtrls, defaultCtrls])
+
     useEffect(() => {
         if (recordingBlob != null && onRecordingComplete != null) {
             onRecordingComplete(recordingBlob);
@@ -60,8 +66,7 @@ const AudioRecorder =  (props:{
                 className="flex bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-5 py-4"
                 onClick={() => { 
                     isRecording && stopRecording();
-                    //resetRecorder();
-                    setCloseRecorder(false);
+                    setCloseRecorder(true);
                 }}
                 type="button"
             >
@@ -105,7 +110,8 @@ const AudioRecorder =  (props:{
             <button
                 className="bg-red-600 hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
                 onClick={() => {
-                    stopAudioRecorder()
+                    isRecording && stopAudioRecorder()
+                    setCloseRecorder(true);
                 }}
                 type="button"
             >

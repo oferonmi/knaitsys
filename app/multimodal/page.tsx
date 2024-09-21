@@ -60,9 +60,10 @@ export default function MultiModalChat() {
         }
     }, [messages]);
 
-    const transcribeAudioIn = async(audioBlob: Blob) => {
-        //console.log("Recored blob: " + audioBlob);
-        // try {
+    const transcribeAudioIn = async (audioBlob: Blob) => {
+        setShowAudioRecorder(false);
+        // console.log("Recorded blob URL: " + URL.createObjectURL(audioBlob));
+        try {
         //     // get recorded audio blob from blob URL
         //     //let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
 
@@ -112,10 +113,24 @@ export default function MultiModalChat() {
         //         //apperecordernd(stt_resp_txt); //TO DO modify string into a Message type before appending
         //     };
             
-        // } catch (error: any) {
-        //     console.error(error);
-        //     alert(error.message);
-        // }
+        } catch (error: any) {
+            console.error(error);
+            alert(error.message);
+        }
+    }
+
+    const handleSend = (event: FormEvent<HTMLFormElement>) => {
+        handleSubmit(event, {
+                            experimental_attachments: files,
+        });
+                            
+        setFiles(undefined);
+                            
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+
+        setShowFileAttactmentUI(false);
     }
 
     const recorderSettings = {
@@ -131,7 +146,7 @@ export default function MultiModalChat() {
                 audioTrackSettings={recorderSettings}
                 recorderCtrls={recorderControls}
                 showVisualizer={true}
-                onRecordingComplete={async (blob: Blob) => await transcribeAudioIn(blob)} 
+                onRecordingComplete={ (blob: Blob) => transcribeAudioIn(blob)} 
                 setCloseRecorder={setShowAudioRecorder}  
             />
         </div>
@@ -174,18 +189,19 @@ export default function MultiModalChat() {
                             <Tooltip content="Upload File" className="inline-flex">
                                 <button
                                     type="button"
-                                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
+                                    className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5"
                                     onClick={() => {
                                         setShowFileAttactmentUI(true);
                                     }}
                                 >
-                                    <ClipIcon />
+                                    <i className="bi bi-paperclip"></i>
                                     <span className="sr-only">Attach file</span>
                                 </button>
                             </Tooltip>
                             :
                             <input
                                 type="file"
+                                id="multimod-file-in"
                                 className="border fill-kaito-brand-ash-green"
                                 onChange={event => {
                                     if (event.target.files) {
@@ -199,7 +215,8 @@ export default function MultiModalChat() {
                     </div>
                     
                     <input
-                        className="w-full h-14 p-2 rounded-full border border-kaito-brand-ash-green focus:border-kaito-brand-ash-green text-kaito-brand-ash-green placeholder:text-gray-400 "
+                        className="w-full h-16 p-2 rounded-full border border-kaito-brand-ash-green focus:border-kaito-brand-ash-green text-kaito-brand-ash-green placeholder:text-gray-400 "
+                        id="multimod-text-in"
                         value={input}
                         placeholder=" Say something..."
                         //ref={textInputRef}
@@ -216,30 +233,24 @@ export default function MultiModalChat() {
                 
                     {showSendButton ?
                         <button
-                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-5"
+                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5"
                             type="submit"
                         >
                             { loadingAnimation }
                             <span className={isLoading ? "hidden" : ""}>
-                                <SendIcon />
+                                <i className="bi bi-send-fill"></i>
                             </span>
                         </button>
                         :
                         <button
-                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-6"
+                            className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5"
                             type="button"
                             onClick={() => {
                                 setShowAudioRecorder(true);
                                 recorderControls.startRecording();
                             }}
                         >
-                            {/* { loadingAnimation } */}
-                            {/* <span className={isLoading ? "hidden" : ""}> */}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-mic-fill" viewBox="0 0 16 16">
-                                <path d="M5 3a3 3 0 0 1 6 0v5a3 3 0 0 1-6 0z"/>
-                                <path d="M3.5 6.5A.5.5 0 0 1 4 7v1a4 4 0 0 0 8 0V7a.5.5 0 0 1 1 0v1a5 5 0 0 1-4.5 4.975V15h3a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1h3v-2.025A5 5 0 0 1 3 8V7a.5.5 0 0 1 .5-.5"/>
-                            </svg>
-                            {/* </span> */}
+                            <i className="bi bi-mic-fill"></i>
                         </button>
                     }
                 </>
@@ -247,7 +258,7 @@ export default function MultiModalChat() {
         </>
     );
 
-    const multiModLandingPgUI = (
+    const landingPgUI = (
         <>
             <div className="flex flex-col justify-center items-center md:p-8  min-h-screen max-w-2xl mx-auto my-auto ">
                 <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
@@ -262,19 +273,7 @@ export default function MultiModalChat() {
 
                 <form
                     className="w-full max-w-3xl border border-gray-300 rounded-lg shadow-xl space-x-2 text-black flex justify-center items-center pt-9 pb-9 px-5"
-                    onSubmit={event => {
-                        handleSubmit(event, {
-                            experimental_attachments: files,
-                        });
-                            
-                        setFiles(undefined);
-                            
-                        if (fileInputRef.current) {
-                            fileInputRef.current.value = '';
-                        }
-
-                        setShowFileAttactmentUI(false);
-                    }}
+                    onSubmit={(event) => handleSend(event) }
                 >
                     {mutliModInputs}            
                 </form>
@@ -308,19 +307,7 @@ export default function MultiModalChat() {
                     
                         <form
                             className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
-                            onSubmit={event => {
-                                handleSubmit(event, {
-                                    experimental_attachments: files,
-                                });
-                                
-                                setFiles(undefined);
-                                
-                                if (fileInputRef.current) {
-                                    fileInputRef.current.value = '';
-                                }
-
-                                setShowFileAttactmentUI(false);
-                            }}
+                            onSubmit={(event) => handleSend(event)}
                         >
                             {mutliModInputs}            
                         </form>   
@@ -330,7 +317,7 @@ export default function MultiModalChat() {
             : 
                 <>
                     {/* Main section */}
-                    {multiModLandingPgUI} 
+                    {landingPgUI} 
                     <div className="  bottom-0"><Footer /></div>
                 </>
             }
