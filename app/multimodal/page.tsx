@@ -23,7 +23,7 @@ export default function MultiModalChat() {
         Record<string, any>
     >({});
     const [recordedAudioUrl, setRecordedAudioUrl] = useState("");
-    
+
     const { 
         messages,  
         setMessages, 
@@ -189,14 +189,27 @@ export default function MultiModalChat() {
         </>
     );
 
-    const mutliModInputs = (
+    const mainInputsUI = (
         <>
             {showAudioRecorder ? 
+                // Recorder widget
                 <div className='flex items-center rounded-full bg-white border border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1'>
                     {audioRecorderUI}
                 </div> 
                 :
+                //  main form input widgets
                 <>
+                    {messages.length > 0 && (
+                        <Tooltip content="Clear Chat Thread" className="inline-flex">
+                            <button
+                                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-6 py-5 mr-2"
+                                type="button"
+                                onClick={() => { setMessages([]); } }
+                            >
+                                <i className="bi bi-trash3-fill"></i>
+                            </button>
+                        </Tooltip>
+                    )}
                     <div>
                         {!showFileAttactmentUI ?
                             <Tooltip content="Upload File" className="inline-flex">
@@ -288,7 +301,7 @@ export default function MultiModalChat() {
                     className="w-full max-w-3xl border border-gray-300 rounded-lg shadow-xl space-x-2 text-black flex justify-center items-center pt-9 pb-9 px-5"
                     onSubmit={(event) => handleSend(event) }
                 >
-                    {mutliModInputs}            
+                    {mainInputsUI}            
                 </form>
             </div>
         </>
@@ -324,7 +337,7 @@ export default function MultiModalChat() {
                                     className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
                                     onSubmit={(event) => handleSend(event)}
                                 >
-                                    {mutliModInputs}            
+                                    {mainInputsUI}            
                                 </form>   
                             </div>
                             {messages.length > 0 ? <div className="  bottom-0"><Footer /></div> : ""}
