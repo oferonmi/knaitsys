@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useCallback, Suspense, SetStateAction, Dispatch} from "react";
+import { useRef, useState, useEffect, useCallback, Suspense, SetStateAction, Dispatch, use} from "react";
 import React from "react";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import useAudioRecorder from "@/hooks/useAudioRecorder";
@@ -18,15 +18,15 @@ const AudioRecorder =  (props:{
     mediaRecorderOptions?: MediaRecorderOptions,
     showVisualizer: boolean,
     onRecordingComplete: (blob: Blob) => void,
-    setCloseRecorder: Dispatch<SetStateAction<boolean>>,
+    setShowRecorder: Dispatch<SetStateAction<boolean>>,
 }) => {
     const { 
         audioTrackSettings, 
         recorderCtrls, 
         mediaRecorderOptions, 
         showVisualizer = true, 
-        onRecordingComplete, 
-        setCloseRecorder,
+        onRecordingComplete,
+        setShowRecorder,
     } = props;
 
     const defaultCtrls = useAudioRecorder(
@@ -42,14 +42,13 @@ const AudioRecorder =  (props:{
         isRecording,
         isPaused,
         recordingTime,
-        mediaRecorder,
-        resetRecorder
+        mediaRecorder
     } = recorderCtrls ?? defaultCtrls;
 
     const closeAudioRecorder: () => void = useCallback(() => {
         stopRecording();
-        setCloseRecorder(true);
-    },[setCloseRecorder, stopRecording]);
+        setShowRecorder(false);
+    },[isRecording, setShowRecorder, stopRecording]);
 
     const stopAudioRecorder: () => void = useCallback(() =>  {
         closeAudioRecorder();

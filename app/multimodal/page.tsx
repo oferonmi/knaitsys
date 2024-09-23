@@ -159,8 +159,8 @@ export default function MultiModalChat() {
                 audioTrackSettings={recorderSettings}
                 recorderCtrls={recorderControls}
                 showVisualizer={true}
-                onRecordingComplete={(blob: Blob) => processAudioIn(blob)} 
-                setCloseRecorder={setShowAudioRecorder}  
+                onRecordingComplete={(blob: Blob) => processAudioIn(blob)}
+                setShowRecorder={setShowAudioRecorder} 
             />
         </div>
     );
