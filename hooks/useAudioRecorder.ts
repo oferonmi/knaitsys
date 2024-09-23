@@ -9,6 +9,7 @@ export interface recorderControls {
 	isPaused: boolean;
 	recordingTime: number;
 	mediaRecorder?: MediaRecorder;
+	resetRecorder: () => void;
 }
 
 export type MediaAudioTrackSettings = Pick<
@@ -123,14 +124,18 @@ const useAudioRecorder: (
 		}
 	}, [isPaused, mediaRecorder, _startTimer, _stopTimer]);
 
-	// const resetRecorder: () => void = useCallback(() => {
-	// 	// if (isRecording) {
-	// 	// 	stopRecording();
-	// 	// }
-	// 	if (mediaRecorder != null) {
-	// 		setMediaRecorder(undefined);
-	// 	}
-	// },[mediaRecorder])
+	const resetRecorder: () => void = useCallback(() => {
+		if (isRecording) {
+			stopRecording();
+		}
+
+		if (mediaRecorder != null){ 
+			setMediaRecorder(undefined);
+		} else{ 
+			return;
+		}
+		
+	},[isRecording, mediaRecorder, stopRecording])
 
 	return {
 		startRecording,
@@ -141,6 +146,7 @@ const useAudioRecorder: (
 		isPaused,
 		recordingTime,
 		mediaRecorder,
+		resetRecorder,
 	};
 };
 

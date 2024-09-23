@@ -9,14 +9,15 @@ import Timer from "@/components/Timer";
 import { LiveAudioVisualizer } from "@/components/LiveAudioVisualizer";
 
 
-type recordingCompleteCallback = (blob: Blob) => Promise<void>;
+// type recordingCompleteCallback = (blob: Blob) => Promise<void>;
+// type recordingResetCallback = () => void;
 
 const AudioRecorder =  (props:{
     audioTrackSettings: MediaAudioTrackSettings,
     recorderCtrls: recorderControls,
     mediaRecorderOptions?: MediaRecorderOptions,
     showVisualizer: boolean,
-    onRecordingComplete: recordingCompleteCallback,
+    onRecordingComplete: (blob: Blob) => void,
     setCloseRecorder: Dispatch<SetStateAction<boolean>>,
 }) => {
     const { 
@@ -25,7 +26,7 @@ const AudioRecorder =  (props:{
         mediaRecorderOptions, 
         showVisualizer = true, 
         onRecordingComplete, 
-        setCloseRecorder
+        setCloseRecorder,
     } = props;
 
     const defaultCtrls = useAudioRecorder(
@@ -42,35 +43,33 @@ const AudioRecorder =  (props:{
         isPaused,
         recordingTime,
         mediaRecorder,
+        resetRecorder
     } = recorderCtrls ?? defaultCtrls;
 
-    const stopAudioRecorder = () =>  {
+    const closeAudioRecorder: () => void = useCallback(() => {
         stopRecording();
-    };
+        setCloseRecorder(true);
+    },[setCloseRecorder, stopRecording]);
 
-    // useEffect(() => {
-    //     if (!isRecording) {
-    //         recorderCtrls != null ? recorderCtrls.startRecording() : defaultCtrls.startRecording();
-    //     }
-    // },[isRecording, recorderCtrls, defaultCtrls])
+    const stopAudioRecorder: () => void = useCallback(() =>  {
+        closeAudioRecorder();
 
-    useEffect(() => {
         if (recordingBlob != null && onRecordingComplete != null) {
             onRecordingComplete(recordingBlob);
         }
-    }, [onRecordingComplete, recordingBlob]);
+
+    },[closeAudioRecorder, onRecordingComplete, recordingBlob]);
 
     return (
         <div className="flex space-x-2 ">
             <button
                 className="flex bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-5 py-4"
                 onClick={() => { 
-                    isRecording && stopRecording();
-                    setCloseRecorder(true);
+                    closeAudioRecorder();
                 }}
                 type="button"
             >
-                <i className="bi bi-trash3-fill"></i>
+                <i className="bi bi-x"></i>
             </button>
             
             {showVisualizer && (
@@ -98,7 +97,7 @@ const AudioRecorder =  (props:{
             </div>
 
             <button
-                className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
+                className="bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-5 py-4"
                 onClick={() => {
                     togglePauseResume();
                 }}
@@ -108,10 +107,9 @@ const AudioRecorder =  (props:{
             </button>
             
             <button
-                className="bg-red-600 hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
+                className="hover:bg-red-600 bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
                 onClick={() => {
-                    isRecording && stopAudioRecorder()
-                    setCloseRecorder(true);
+                    stopAudioRecorder();
                 }}
                 type="button"
             >
