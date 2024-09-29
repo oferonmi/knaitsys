@@ -93,10 +93,11 @@ const ChatbotPage = () => {
                 <option value="chat/openai">GPT-3.5</option>
                 <option value="multimodal/chat/openai">GPT-4o-mini</option>
                 {/* <option value="replicate">Llama-2-Rplcte</option> */}
-                <option value="chat/llamaIII_fireworks">Llama-3-Fwks</option>
-                <option value="chat/llamaIII_groq">Llama-3-Groq</option>
-                {/* <option value="chat/qwenII_fireworks">Qwen-2-Fwks</option> */}
-                <option value="chat/qwenII">Qwen-2-Ollama</option>
+                <option value="chat/llama3_fireworks">Llama-3-Fwks</option>
+                <option value="chat/llama3_groq">Llama-3-Groq</option>
+                <option value="multimodal/chat/llama3_groq">Llama-3.2-Groq</option>
+                {/* <option value="chat/qwen2_fireworks">Qwen-2-Fwks</option> */}
+                <option value="chat/qwen2">Qwen-2-Ollama</option>
                 <option value="chat/mixtral_MoE8x7B_Instruct_fireworks">
                   Mixtral-MoE8x7B-Fwks
                 </option>

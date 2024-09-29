@@ -1,7 +1,7 @@
 'use client';
 
 import { useChat } from 'ai/react';
-import { useRef, useState, useEffect, type FormEvent } from 'react';
+import { useRef, useState, useEffect, type FormEvent, useCallback, use } from 'react';
 import Image from "next/image";
 import { AudioRecorder } from "@/components/AudioRecorder";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
@@ -61,11 +61,13 @@ export default function MultiModalChat() {
 
     const [showAudioRecorder, setShowAudioRecorder] = useState<boolean>(false);
     const [transcribedText, setTranscribedText] = useState("");
+	const [audioIn, setAudioIn] = useState();
 
     const [showFileAttactmentUI, setShowFileAttactmentUI] = useState<boolean>(false);
     const [showSendButton, setShowSendButton] = useState<boolean>(false);
 
     const bottomRef = useRef<HTMLDivElement>(null);
+	const sendButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         if (messages?.length > 0 ) {
@@ -73,58 +75,57 @@ export default function MultiModalChat() {
         }
     }, [messages]);
 
-    const processAudioIn = async (audioBlob: Blob) => {
-        setShowAudioRecorder(false);
-        // console.log("Recorded blob URL: " + URL.createObjectURL(audioBlob));
+	const transcribeAudio = async() => {
+		// transcribe audio prompt
+		const stt_response = await fetch("/api/speech_to_text/whisper", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ 
+				audio: audioIn 
+			}),
+		});
+		
+		
+		if (stt_response.status == 200) {
+			// get transcript data
+			const stt_resp_json = await stt_response.json();
+
+			const stt_resp_txt = stt_resp_json.transcript.text;
+			// console.log(`STT response: ${stt_resp_txt}`);
+
+			setTranscribedText(stt_resp_txt);
+			//console.log(`STT response: ${transcribedText}`);
+		} else {
+			throw (
+				new Error(
+					`speech to text failed with status ${stt_response.status}`
+				)
+			);
+		}
+	}
+
+    const processAudioBlob = (audioBlob: Blob) => {
         try {
-        //     // get recorded audio blob from blob URL
-        //     //let audioBlob = await fetch(recordedAudioUrl).then((resp) => resp.blob());
+            const reader = new FileReader();
+            reader.readAsDataURL(audioBlob);
 
-        //     const reader = new FileReader();
-        //     reader.readAsDataURL(audioBlob);
+            reader.onloadend = () => {
+				const audioBuffer = reader.result;
+				// console.log(audioBuffer);
+				// const audioStr = new TextDecoder('utf-8').decode(audioBuffer);
 
-        //     reader.onloadend = async () => {
-        //         // Remove the data URL prefix
-        //         // const audioBinary = reader.result;
-        //         // const view = new Float64Array(audioBinary.);
-        //         // const base64Audio = view.slice(1, view.length - 1);
-        //         //const base64Audio = reader.result?.split(",")[1];
-        //         const base64Audio = reader.result?.slice(1, -1);
+				// Remove the data URL prefix
+				const base64Audio = reader.result?.split(",")[1];
+				// console.log(typeof base64Audio);
+				// const base64Audio = audioStr.split(",")[1];
 
-        //         // transcribe audio prompt
-        //         const stt_response = await fetch("/api/speech_to_text/whisper", {
-        //             method: "POST",
-        //             headers: {
-        //                 "Content-Type": "application/json",
-        //             },
-        //             body: JSON.stringify({ 
-        //                 audio: base64Audio 
-        //             }),
-        //         });
+				setAudioIn(base64Audio);
 
-        //         // get transcript data
-        //         const stt_resp_data = await stt_response.json();
-
-        //         if (stt_response.status !== 200) {
-        //             throw (
-        //                 stt_resp_data.error ||
-        //                 new Error(
-        //                 `speech to text failed with status ${stt_response.status}`
-        //                 )
-        //             );
-        //         }
-
-        //         const stt_resp_txt = stt_resp_data.transcript.text;
-        //         // console.log(`STT response: ${stt_resp_txt}`);
-
-        //         setTranscribedText(stt_resp_txt);
-
-        //         // update input data to only current input
-        //         //setInput(stt_resp_txt);
-
-        //         // pass transcribed text to LLM API end point and update completion data state
-        //         //apperecordernd(stt_resp_txt); //TO DO modify string into a Message type before appending
-        //     };
+				// transcribe audio
+				// transcribeAudio();
+            };
             
         } catch (error: any) {
             console.error(error);
@@ -132,9 +133,26 @@ export default function MultiModalChat() {
         }
     }
 
+	const processAudioIn =  useCallback(async(audioBlob: Blob) =>  {
+		// get audio content
+		processAudioBlob(audioBlob);
+
+		// convert to text
+		await transcribeAudio();
+		
+		// update input text
+    	setInput(transcribedText);
+
+		// if (textInputRef.current?.value != null && sendButtonRef.current) {
+		// 	setShowSendButton(true);
+		// 	sendButtonRef.current?.click();
+		// 	setTranscribedText("");
+		// }
+	},[textInputRef, sendButtonRef])
+
     const handleSend = (event: FormEvent<HTMLFormElement>) => {
         handleSubmit(event, {
-                            experimental_attachments: files,
+            experimental_attachments: files,
         });
                             
         setFiles(undefined);
@@ -239,7 +257,7 @@ export default function MultiModalChat() {
                         id="multimod-text-in"
                         value={input}
                         placeholder=" Say something..."
-                        //ref={textInputRef}
+                        ref={textInputRef}
                         onChange={(e) => {   
                             if (e.target.value.length > 0) {
                                 setShowSendButton(true);
@@ -252,7 +270,7 @@ export default function MultiModalChat() {
                     {showSendButton ? (
                         <button
                             className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5"
-                            type="submit"
+                            type="submit" ref={sendButtonRef}
                         >
                             { loadingAnimation }
                             <span className={isLoading ? "hidden" : ""}>
@@ -296,6 +314,23 @@ export default function MultiModalChat() {
 			</form>
        </div>
     );
+
+	// Temporal. for debug purpose
+	useEffect(() => {
+		console.log(`Transcribed audio text: ${transcribedText}`);
+	},[transcribedText])
+
+	// trigger LLM text input update
+	useEffect(() => {
+		// update input text
+    	// setInput(transcribedText);
+
+		if (textInputRef.current?.value != null && sendButtonRef.current) {
+			setShowSendButton(true);
+			sendButtonRef.current?.click();
+			setTranscribedText("");
+		}
+	},[transcribedText])
 
     return (
         <>
