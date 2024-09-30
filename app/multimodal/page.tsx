@@ -75,7 +75,7 @@ export default function MultiModalChat() {
         }
     }, [messages]);
 
-	const transcribeAudio = async() => {
+	const transcribeAudio = useCallback(async() => {
 		// transcribe audio prompt
 		const stt_response = await fetch("/api/speech_to_text/whisper", {
 			method: "POST",
@@ -104,7 +104,7 @@ export default function MultiModalChat() {
 				)
 			);
 		}
-	}
+	},[audioIn]);
 
     const processAudioBlob = (audioBlob: Blob) => {
         try {
@@ -148,7 +148,7 @@ export default function MultiModalChat() {
 		// 	sendButtonRef.current?.click();
 		// 	setTranscribedText("");
 		// }
-	},[textInputRef, sendButtonRef])
+	},[transcribeAudio, setInput, transcribedText])
 
     const handleSend = (event: FormEvent<HTMLFormElement>) => {
         handleSubmit(event, {
