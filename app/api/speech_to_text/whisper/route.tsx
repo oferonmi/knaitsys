@@ -67,20 +67,20 @@ const transcribeAudio = async (audioData: Buffer) => {
 	const mp3AudioData = await convertAudioToMp3(audioData);
 
 	// Write the MP3 audio data to a file
-	const outputPath = "/tmp/output.mp3";
-	fs.writeFileSync(outputPath, mp3AudioData);
+	const inputMp3Path = "/tmp/output.mp3";
+	fs.writeFileSync(inputMp3Path, mp3AudioData);
 
 	// Transcribe the audio
 	const transcription = await openai.audio.transcriptions.create({
-		file: fs.createReadStream(outputPath),
+		file: fs.createReadStream(inputMp3Path),
 		model: "whisper-1",
 	});
 
 	// Delete the temporary file
-	fs.unlinkSync(outputPath);
+	fs.unlinkSync(inputMp3Path);
 
 	// output transcribed text
-	return transcription;
+	return transcription.text;
 };
 
 // Function for converting audio data to MP3 format using ffmpeg

@@ -48,7 +48,7 @@ const AudioRecorder =  (props:{
     const closeAudioRecorder: () => void = useCallback(() => {
         stopRecording();
         setShowRecorder(false);
-    },[isRecording, setShowRecorder, stopRecording]);
+    },[setShowRecorder, stopRecording]);
 
     const stopAudioRecorder: () => void = useCallback(() =>  {
         closeAudioRecorder();

@@ -60,8 +60,8 @@ export default function MultiModalChat() {
     const textInputRef = useRef<HTMLInputElement>(null);
 
     const [showAudioRecorder, setShowAudioRecorder] = useState<boolean>(false);
-    const [transcribedText, setTranscribedText] = useState("");
-	const [audioIn, setAudioIn] = useState();
+    const [transcribedText, setTranscribedText] = useState<String | undefined>("");
+    const [audioIn, setAudioIn] = useState<String | undefined>("");
 
     const [showFileAttactmentUI, setShowFileAttactmentUI] = useState<boolean>(false);
     const [showSendButton, setShowSendButton] = useState<boolean>(false);
@@ -112,14 +112,15 @@ export default function MultiModalChat() {
             reader.readAsDataURL(audioBlob);
 
             reader.onloadend = () => {
-				const audioBuffer = reader.result;
-				// console.log(audioBuffer);
-				// const audioStr = new TextDecoder('utf-8').decode(audioBuffer);
+				const audioBuffer = reader.result ? reader.result : undefined;
+				console.log(typeof audioBuffer);
+                
+				//const audioStr = new TextDecoder('utf-8').decode(audioBuffer);
 
 				// Remove the data URL prefix
-				const base64Audio = reader.result?.split(",")[1];
-				// console.log(typeof base64Audio);
-				// const base64Audio = audioStr.split(",")[1];
+				//const base64Audio = audioStr.split(",")[1];
+                const base64Audio = audioBuffer?.split(",")[1];
+				console.log(base64Audio);
 
 				setAudioIn(base64Audio);
 
@@ -138,17 +139,17 @@ export default function MultiModalChat() {
 		processAudioBlob(audioBlob);
 
 		// convert to text
-		await transcribeAudio();
+		//await transcribeAudio();
 		
 		// update input text
-    	setInput(transcribedText);
+    	//setInput(transcribedText);
 
 		// if (textInputRef.current?.value != null && sendButtonRef.current) {
 		// 	setShowSendButton(true);
 		// 	sendButtonRef.current?.click();
 		// 	setTranscribedText("");
 		// }
-	},[transcribeAudio, setInput, transcribedText])
+	},[])
 
     const handleSend = (event: FormEvent<HTMLFormElement>) => {
         handleSubmit(event, {
