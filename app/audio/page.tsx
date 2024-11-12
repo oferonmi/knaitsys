@@ -2,14 +2,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import "@/node_modules/bootstrap-icons/font/bootstrap-icons.css";
-import {
-  ChatIcon,
-  ClipBoardDataFullIcon,
-  CardTextIcon,
-} from "@/components/Icons";
 
 const AudioProcessorPage = () => {
   // sessions
@@ -28,7 +21,7 @@ const AudioProcessorPage = () => {
 
       <div className="grid grid-flow-col justify-items-stretch place-items-center gap-4 max-w-2xl pb-5 mx-auto mt-4 sm:px-4 text-gray-700">
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <Link href="/chat">
+          <Link href="/tts">
             <i className="bi bi-body-text" style={{ fontSize: 32 }}></i>
             <i className="bi bi-arrow-right-short" style={{ fontSize: 32 }}></i>
             <i className="bi bi-soundwave" style={{ fontSize: 32 }}></i>
@@ -37,7 +30,7 @@ const AudioProcessorPage = () => {
         </div>
 
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <Link href="/summarizer">
+          <Link href="/stt">
             <i className="bi bi-soundwave" style={{ fontSize: 32 }}></i>
             <i className="bi bi-arrow-right-short" style={{ fontSize: 32 }}></i>
             <i className="bi bi-body-text" style={{ fontSize: 32 }}></i>
@@ -48,12 +41,7 @@ const AudioProcessorPage = () => {
     </div>
   );
 
-  return (
-    <>
-      {status === "authenticated" && audioProcessorPageContent}
-      {status === "unauthenticated" && redirect("/auth/signIn")}
-    </>
-  );
+  return status === "authenticated" ? audioProcessorPageContent : redirect("/auth/signIn")
 };
 
 export default AudioProcessorPage;
