@@ -296,24 +296,24 @@ export default function MultiModalChat() {
     );
 
     const frontSectionUI = (
-       <div className="flex flex-col justify-center items-center md:p-8  min-h-screen max-w-2xl mx-auto my-auto ">
-			<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
-				State your query / questions using the various multimodal input options.
-			</h1>
-			
-			<p className="text-black text-lg text-center">
-				Use any of the inputs to make your inquiry.
-			</p>
-			
-			<br></br>
-			
-			<form
-				className="w-full max-w-3xl border border-gray-300 rounded-lg shadow-xl space-x-2 text-black flex justify-center items-center pt-9 pb-9 px-5"
-				onSubmit={(event) => handleSend(event) }
-			>
-				{chatFormWidgets}            
-			</form>
-       </div>
+      <div className="flex flex-col justify-center items-center md:p-8  min-h-screen max-w-3xl mx-auto my-auto ">
+        <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
+          Query or Question a Gen AI Multimodal Chatbot.
+        </h1>
+
+        <p className="text-black text-lg text-center">
+          Use any of the inputs to make your inquiry.
+        </p>
+
+        <br></br>
+
+        <form
+          className="w-full max-w-3xl border border-gray-300 rounded-lg shadow-xl space-x-2 text-black flex justify-center items-center pt-9 pb-9 px-5"
+          onSubmit={(event) => handleSend(event)}
+        >
+          {chatFormWidgets}
+        </form>
+      </div>
     );
 
 	// Temporal. for debug purpose
@@ -370,7 +370,7 @@ export default function MultiModalChat() {
                         </>
 					):( 
                         <>
-                            {/* Main section */}
+                            {/* Landing section */}
                             {frontSectionUI} 
                             <div className="  bottom-0"><Footer /></div>
                         </>

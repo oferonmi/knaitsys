@@ -522,13 +522,13 @@ const SummarizerPage = () => {
           autoComplete="off"
           autoFocus={false}
           name="url_input_bar"
-          className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+          className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
           placeholder="  Search"
           required={true}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button
-          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
+          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
           type="submit"
         >
           <div

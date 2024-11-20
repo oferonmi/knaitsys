@@ -23,7 +23,7 @@ const AudioProcessorPage = () => {
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
           <Link href="/tts">
             <i className="bi bi-body-text" style={{ fontSize: 32 }}></i>
-            <i className="bi bi-arrow-right-short" style={{ fontSize: 32 }}></i>
+            <i className="bi bi-chevron-right" style={{ fontSize: 32 }}></i>
             <i className="bi bi-soundwave" style={{ fontSize: 32 }}></i>
             <p>Text to Speech</p>
           </Link>
@@ -32,7 +32,7 @@ const AudioProcessorPage = () => {
         <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
           <Link href="/stt">
             <i className="bi bi-soundwave" style={{ fontSize: 32 }}></i>
-            <i className="bi bi-arrow-right-short" style={{ fontSize: 32 }}></i>
+            <i className="bi bi-chevron-right" style={{ fontSize: 32 }}></i>
             <i className="bi bi-body-text" style={{ fontSize: 32 }}></i>
             <p>Speech to Text</p>
           </Link>
