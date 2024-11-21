@@ -1,24 +1,13 @@
 "use client";
 import { useState, useRef, type FormEvent, useCallback, useEffect } from "react";
-import { useChat, useCompletion } from "ai/react";
-import Emoji from "@/components/Emoji";
 import { Footer } from "@/components/Footer";
-import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
-import { 
-  ClipIcon, 
-  CloudUploadIcon, 
-  TextBodyIcon, 
-  LinkIcon, 
-  SendIcon
-} from "@/components/Icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "flowbite-react";
 import { useDropzone } from "react-dropzone";
-import { Document } from "@langchain/core/documents";
 import copy from 'copy-to-clipboard';
 
 const SummarizerPage = () => {
@@ -326,14 +315,14 @@ const SummarizerPage = () => {
 
         <div>
           <button
-            className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+            className="items-center py-4 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
             type="submit"
           >
             <div
               role="status"
               className={`${loading ? "" : "hidden"} flex justify-center`}
             >
-              {/* Send icon  */}
+              {/* Loading wheel animation  */}
               <svg
                 aria-hidden="true"
                 className="w-6 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
@@ -353,19 +342,11 @@ const SummarizerPage = () => {
               <span className="sr-only">Loading...</span>
             </div>
 
-            {/* Loading wheel icon*/}
-            <span className={`${loading ? "hidden" : ""}`}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="bi bi-send-fill "
-                viewBox="0 0 16 16"
-              >
-                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
-              </svg>
-            </span>
+            {/* Send icon*/}
+            <div className={`${loading ? "hidden" : ""}`}>
+              <i className="bi bi-send-fill"></i>
+              <span className="sr-only">Send</span>
+            </div>
           </button>
         </div>
       </div>
@@ -376,24 +357,15 @@ const SummarizerPage = () => {
   const homeButton = (
     <div className="flex ml-auto space-x-3">
       <button
-        className="items-center py-4 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+        className="items-center py-3 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
         type="button"
         onClick={() => {
           // setInputTextCorpus("");
           setSummarizedText("");
         }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          className="bi bi-house-fill"
-          viewBox="0 0 16 16"
-        >
-          <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
-          <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
-        </svg>
+        <i className="bi bi-house-fill"></i>
+        <span className="sr-only">Home</span>
       </button>
     </div>
   );
@@ -436,7 +408,7 @@ const SummarizerPage = () => {
         })}
       >
         <div className="flex flex-col items-center justify-center pt-24 pb-28">
-          <CloudUploadIcon />
+          <i className="bi bi-file-earmark-arrow-up text-gray-500 text-4xl"></i>
           <div className="mb-2 text-sm text-gray-500 ">
             <span className="font-semibold">
               {isDragActive ? (
@@ -449,7 +421,9 @@ const SummarizerPage = () => {
           {selectedPDF === null ? (
             <p className="text-xs text-gray-500 ">PDF files</p>
           ) : (
-            <p className="text-xs text-gray-500 ">{selectedPDF.name} file attached</p>
+            <p className="text-xs text-gray-500 ">
+              {selectedPDF.name} file attached
+            </p>
           )}
         </div>
         <input
@@ -554,7 +528,8 @@ const SummarizerPage = () => {
             <span className="sr-only">Loading...</span>
           </div>
           <span className={loading ? "hidden" : ""}>
-            <SendIcon />
+            <i className="bi bi-send-fill"></i>
+            <span className="sr-only">Send</span>
           </span>
         </button>
       </form>
@@ -569,12 +544,12 @@ const SummarizerPage = () => {
             <Tooltip content="Upload Text" className="inline-flex">
               <button
                 type="button"
-                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
                 onClick={() => {
                   setInputType("text");
                 }}
               >
-                <TextBodyIcon />
+                <i className="bi bi-body-text"></i>
                 <span className="sr-only">Paste text</span>
               </button>
             </Tooltip>
@@ -584,13 +559,13 @@ const SummarizerPage = () => {
             <Tooltip content="Upload PDF" className="inline-flex">
               <button
                 type="button"
-                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
                 onClick={() => {
                   setInputType("file");
                 }}
               >
-                <ClipIcon />
-                <span className="sr-only">Attach file</span>
+                <i className="bi bi bi-file-earmark-arrow-up"></i>
+                <span className="sr-only">Upload PDF</span>
               </button>
             </Tooltip>
           </li>
@@ -599,41 +574,28 @@ const SummarizerPage = () => {
             <Tooltip content="Enter Webpage Address" className="inline-flex">
               <button
                 type="button"
-                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
                 onClick={() => {
                   setInputType("url");
                 }}
               >
-                <LinkIcon />
-                <span className="sr-only">
-                  Paste webpage URL
-                </span>
+                <i className="bi bi-globe2"></i>
+                <span className="sr-only">Paste webpage URL</span>
               </button>
             </Tooltip>
           </li>
-          
+
           <li className="p-3">
             <Tooltip content="Enter Search Query" className="inline-flex">
               <button
                 type="button"
-                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4 "
+                className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
                 onClick={() => {
                   setInputType("search");
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-search"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-                </svg>
-                <span className="sr-only">
-                  Type in your search query
-                </span>
+                <i className="bi bi-search"></i>
+                <span className="sr-only">Type in your search query</span>
               </button>
             </Tooltip>
           </li>

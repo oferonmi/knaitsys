@@ -1,5 +1,4 @@
 import { useState, type FormEvent, Dispatch, SetStateAction } from "react";
-import { SendIcon } from "@/components/Icons";
 import { toast } from "react-toastify";
 
 export function SearchIndexUploadForm(props: {
@@ -69,7 +68,7 @@ export function SearchIndexUploadForm(props: {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button
-          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-4"
+          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
           type="submit"
         >
           <div
@@ -95,7 +94,8 @@ export function SearchIndexUploadForm(props: {
             <span className="sr-only">Loading...</span>
           </div>
           <span className={isLoading ? "hidden" : ""}>
-            <SendIcon />
+            <i className="bi bi-send-fill"></i>
+            <span className="sr-only">Send</span>
           </span>
         </button>
       </form>

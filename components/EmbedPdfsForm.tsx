@@ -4,8 +4,6 @@ import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction, u
 import { toast } from "react-toastify";
 import { Tooltip } from "flowbite-react";
 import { useDropzone } from "react-dropzone";
-import { CloudUploadIcon } from "@/components/Icons";
-
 
 export function EmbedPdfsForm(props: {
   setReadyToChat: Dispatch<SetStateAction<boolean>>;
@@ -105,7 +103,7 @@ export function EmbedPdfsForm(props: {
           })}
         >
           <div className="flex flex-col items-center justify-center pt-24 pb-28">
-            <CloudUploadIcon />
+            <i className="bi bi-file-earmark-arrow-up text-gray-500 text-4xl"></i>
             <div className="mb-2 text-sm text-gray-500 ">
               <span className="font-semibold">
                 {isDragActive ? (
@@ -143,7 +141,7 @@ export function EmbedPdfsForm(props: {
           <Tooltip content="Ingest">
             <button
               type="submit"
-              className="flex shrink-0 px-4 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full max-h-24 max-w-24 items-center"
+              className="flex shrink-0 px-5 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full max-h-24 max-w-24 items-center"
             >
               <div
                 role="status"
@@ -170,18 +168,8 @@ export function EmbedPdfsForm(props: {
                 <span className="sr-only">Loading...</span>
               </div>
               <span className={isLoading ? "hidden" : ""}>
-                {/* Upload */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="bi bi-upload"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5" />
-                  <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z" />
-                </svg>
+                <i className="bi bi-upload"></i>
+                <span className="sr-only">Upload</span>
               </span>
             </button>
           </Tooltip>
