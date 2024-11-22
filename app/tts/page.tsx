@@ -47,7 +47,7 @@ export default function TTSPage() {
           placeholder="Enter text to convert to speech..."
           value={text}
           onChange={(e) => setText(e.target.value)}
-          className="min-h-[200px] mb-4"
+          className="min-h-[400px] mb-4"
         />
 
         <div className="flex justify-end gap-4 ">
@@ -62,7 +62,11 @@ export default function TTSPage() {
 
         {audioUrl && (
           <div className="mt-4">
-            <audio controls src={audioUrl} className="w-full">
+            <audio
+              controls
+              src={audioUrl}
+              className="w-full rounded-full border border-kaito-brand-ash-green"
+            >
               Your browser does not support the audio element.
             </audio>
           </div>
