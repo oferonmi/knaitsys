@@ -77,7 +77,7 @@ export default function MultiModalChat() {
 
 	const transcribeAudio = useCallback(async() => {
 		// transcribe audio prompt
-		const stt_response = await fetch("/api/speech_to_text/whisper", {
+		const stt_response = await fetch("/api/stt/whisper", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
