@@ -39,7 +39,7 @@ export default function TTSPage() {
   return (
     <div className="container mx-auto p-4 max-w-4xl h-screen">
       <h1 className="text-3xl md:text-3xl mb-4 text-gray-700 text-center">
-        Text to Speech
+        Convert Text to Speech
       </h1>
 
       <Card className="p-4 border-kaito-brand-ash-green">
