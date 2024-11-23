@@ -18,7 +18,7 @@ export default function MultiModalChat() {
     const { data: session, status } = useSession();
 
     //LLM engine API route
-    const [llmApiRoute, setLlmApiRoute] = useState("/api/multimodal/chat/openai");
+    const [llmApiRoute, setLlmApiRoute] = useState("/api/multimodal/chat/llava");
     const [sourcesForMessages, setSourcesForMessages] = useState<
         Record<string, any>
     >({});
@@ -75,81 +75,50 @@ export default function MultiModalChat() {
         }
     }, [messages]);
 
-	const transcribeAudio = useCallback(async() => {
-		// transcribe audio prompt
-		const stt_response = await fetch("/api/stt/whisper", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({ 
-				audio: audioIn 
-			}),
-		});
-		
-		
-		if (stt_response.status == 200) {
-			// get transcript data
-			const stt_resp_json = await stt_response.json();
+	const transcribeAudio = async () => {
+        const response = await fetch("/api/stt/whisper", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ audio: audioIn }),
+        });
 
-			const stt_resp_txt = stt_resp_json.transcript.text;
-			// console.log(`STT response: ${stt_resp_txt}`);
-
-			setTranscribedText(stt_resp_txt);
-			//console.log(`STT response: ${transcribedText}`);
-		} else {
-			throw (
-				new Error(
-					`speech to text failed with status ${stt_response.status}`
-				)
-			);
-		}
-	},[audioIn]);
-
-    const processAudioBlob = (audioBlob: Blob) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(audioBlob);
-
-            reader.onloadend = () => {
-				const audioBuffer = reader.result ? reader.result : undefined;
-				console.log(typeof audioBuffer);
-                
-				//const audioStr = new TextDecoder('utf-8').decode(audioBuffer);
-
-				// Remove the data URL prefix
-				//const base64Audio = audioStr.split(",")[1];
-                const base64Audio = audioBuffer?.split(",")[1];
-				console.log(base64Audio);
-
-				setAudioIn(base64Audio);
-
-				// transcribe audio
-				// transcribeAudio();
-            };
-            
-        } catch (error: any) {
-            console.error(error);
-            alert(error.message);
+        if (!response.ok) {
+            throw new Error(`Speech to text failed: ${response.status}`);
         }
-    }
 
-	const processAudioIn =  useCallback(async(audioBlob: Blob) =>  {
-		// get audio content
-		processAudioBlob(audioBlob);
+        const { transcript } = await response.json();
+        setTranscribedText(transcript);
+    };
 
-		// convert to text
-		//await transcribeAudio();
-		
-		// update input text
-    	//setInput(transcribedText);
+    const processAudioBlob = async (audioBlob: Blob) => {
+        try {
+            const base64Audio = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const result = reader.result as string;
+                    resolve(result.split(',')[1]);
+                };
+                reader.readAsDataURL(audioBlob);
+            });
 
-		// if (textInputRef.current?.value != null && sendButtonRef.current) {
-		// 	setShowSendButton(true);
-		// 	sendButtonRef.current?.click();
-		// 	setTranscribedText("");
-		// }
-	},[])
+            setAudioIn(base64Audio);
+            await transcribeAudio();
+        } catch (error) {
+            console.error('Failed to process audio:', error);
+            toast.error('Failed to process audio');
+        }
+    };
+
+    const handleAudioRecordingComplete = (audioBlob: Blob) => {
+        // transcribe audio
+        processAudioBlob(audioBlob);
+
+        //TODO: query LLM with the transcribed text
+
+        //TODO: update messages with the transcribed text
+
+        //TODO: update messages with the LLM response
+    };
 
     const handleSend = (event: FormEvent<HTMLFormElement>) => {
         handleSubmit(event, {
@@ -178,7 +147,7 @@ export default function MultiModalChat() {
                 audioTrackSettings={recorderSettings}
                 recorderCtrls={recorderControls}
                 showVisualizer={true}
-                onRecordingComplete={(blob: Blob) => processAudioIn(blob)}
+                onRecordingComplete={handleAudioRecordingComplete}
                 setShowRecorder={setShowAudioRecorder} 
             />
         </div>
@@ -322,16 +291,16 @@ export default function MultiModalChat() {
 	},[transcribedText])
 
 	// trigger LLM text input update
-	useEffect(() => {
-		// update input text
-    	// setInput(transcribedText);
+	// useEffect(() => {
+	// 	// update input text
+    // 	// setInput(transcribedText);
 
-		if (textInputRef.current?.value != null && sendButtonRef.current) {
-			setShowSendButton(true);
-			sendButtonRef.current?.click();
-			setTranscribedText("");
-		}
-	},[transcribedText])
+	// 	if (textInputRef.current?.value != null && sendButtonRef.current) {
+	// 		setShowSendButton(true);
+	// 		sendButtonRef.current?.click();
+	// 		setTranscribedText("");
+	// 	}
+	// },[transcribedText])
 
     return (
         <>

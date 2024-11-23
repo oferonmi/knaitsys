@@ -37,7 +37,7 @@ export default function TTSPage() {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl h-screen">
+    <div className="container mx-auto p-4 max-w-3xl h-screen">
       <h1 className="text-3xl md:text-3xl mb-4 text-gray-700 text-center">
         Convert Text to Speech
       </h1>
