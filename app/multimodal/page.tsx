@@ -18,7 +18,9 @@ export default function MultiModalChat() {
     const { data: session, status } = useSession();
 
     //LLM engine API route
-    const [llmApiRoute, setLlmApiRoute] = useState("/api/multimodal/chat/llava");
+    const [llmApiRoute, setLlmApiRoute] = useState(
+      "/api/multimodal/chat/llava"
+    );
     const [sourcesForMessages, setSourcesForMessages] = useState<
         Record<string, any>
     >({});

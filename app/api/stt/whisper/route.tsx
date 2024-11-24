@@ -15,8 +15,8 @@ const AUDIO_PATHS = {
 	output: `${TEMP_DIR}/output.mp3`,
 } as const;
 
-async function convertAudioToMp3(audioData: Buffer) {
-	await fsPromises.writeFile(AUDIO_PATHS.input, audioData);
+async function convertAudioToMp3(audioBuffer: Buffer) {
+	await fsPromises.writeFile(AUDIO_PATHS.input, audioBuffer);
 	await execAsync(`ffmpeg -i ${AUDIO_PATHS.input} ${AUDIO_PATHS.output}`);
 	const mp3Data = await fsPromises.readFile(AUDIO_PATHS.output);
 	await Promise.all([
@@ -26,9 +26,11 @@ async function convertAudioToMp3(audioData: Buffer) {
 	return mp3Data;
 }
 
-async function transcribeAudio(audioData: Buffer) {
-	const mp3Data = await convertAudioToMp3(audioData);
-	await fsPromises.writeFile(AUDIO_PATHS.output, mp3Data);
+async function transcribeAudio(audioBuffers: Buffer[]) {
+	for (const audioBuffer of audioBuffers) {
+		const mp3Data = await convertAudioToMp3(audioBuffer);
+		await fsPromises.writeFile(AUDIO_PATHS.output, mp3Data);
+	}
 	
 	const transcription = await openai.audio.transcriptions.create({
 		file: fs.createReadStream(AUDIO_PATHS.output),
@@ -48,9 +50,26 @@ export async function POST(request: NextRequest) {
 	}
 
 	try {
-		const { audio: base64Audio } = await request.json();
-		const audioBuffer = Buffer.from(base64Audio, "base64");
-		const transcript = await transcribeAudio(audioBuffer);
+		// const { audio: base64Audio } = await request.json();
+		// const audioBuffer = Buffer.from(base64Audio, "base64");
+		// const transcript = await transcribeAudio(audioBuffer);
+
+		const formData = await request.formData();
+		// for single audio file
+		// const audioBlob = formData.get("file") as Blob;
+		// for multiple audio files
+		// const audioBlobs = formData.getAll("file") as Blob[];
+		const audioBuffers: Buffer[] = [];
+		const entries = Array.from(formData.entries());
+		for (const [key, value] of entries) {
+			if (typeof value === 'object' && ('Blob' in value  || 'File' in value )) {
+				const audioBlob = value as Blob | File;
+				const arrayBuffer = await audioBlob.arrayBuffer();
+				const buffer = Buffer.from(arrayBuffer);
+				audioBuffers.push(buffer);
+			}
+		}
+		const transcript = await transcribeAudio(audioBuffers);
 		return NextResponse.json({ transcript }, { status: 200 });
 	} catch (error: any) {
 		console.error("Transcription error:", error);

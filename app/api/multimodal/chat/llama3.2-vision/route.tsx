@@ -2,7 +2,7 @@ import { convertToCoreMessages, streamText } from "ai";
 import { createOllama } from "ollama-ai-provider";
 
 const ollama = createOllama({
-  baseURL: "http://127.0.0.1:11434/api", //NOTE: Use a different URL prefix for API calls, e.g., to use proxy servers.
+  baseURL: "http://127.0.0.1:11434/api/chat", //NOTE: Use a different URL prefix for API calls, e.g., to use proxy servers.
 });
 
 // IMPORTANT! Set the runtime to edge
