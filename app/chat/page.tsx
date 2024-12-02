@@ -77,10 +77,10 @@ const ChatbotPage = () => {
         </option>
         <option value="multimodal/chat/llava">Llava-Ollama</option>
         <option value="multimodal/chat/phi3">Phi3-Ollama</option>
+        <option value="chat/anthropic">Claude-3.5-Haiku</option>
         {/* <option value="chat/gemma_7b_instruct_fireworks">Gemma-7b-Fwks</option> */}
         {/* <option value="chat/langchain">LangChain</option> */}
-        <option value="chat/huggingface">OpenAssistant-HF</option>
-        {/* <option value="chat/anthropic">Claude-1</option> */}
+        {/* <option value="chat/huggingface">OpenAssistant-HF</option> */}
       </select>
 
       <ChatForm

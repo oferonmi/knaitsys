@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const result = await streamText({
         model: llm,
         messages: convertToCoreMessages(messages),
-    });
+    } as any);
 
     return result.toDataStreamResponse();
 }

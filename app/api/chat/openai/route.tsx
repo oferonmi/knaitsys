@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const result = await streamText({
     model: openai('gpt-3.5-turbo'),
     messages: convertToCoreMessages(messages),
-  });
+  } as any);
 
   return result.toDataStreamResponse();
 }

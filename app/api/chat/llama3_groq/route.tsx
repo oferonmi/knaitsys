@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   const result = await streamText({
     model: groq('llama-3.1-70b-versatile'),
     messages: convertToCoreMessages(messages),
-  });
+  } as any);
 
   return result.toDataStreamResponse();
 }
