@@ -11,31 +11,43 @@ const execAsync = util.promisify(exec);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const TEMP_DIR = path.resolve("./public/tmp");
+// const TEMP_DIR = path.join(__dirname, "public", "tmp");
+
+// Ensure the directory exists
+if (!fs.existsSync(TEMP_DIR)) {
+	fs.mkdirSync(TEMP_DIR, { recursive: true });
+}
+
+// const AUDIO_PATHS = {
+// 	input: `${TEMP_DIR}/input.webm`,
+// 	output: `${TEMP_DIR}/output.mp3`,
+// } as const;
+
 const AUDIO_PATHS = {
-	input: `${TEMP_DIR}/input.webm`,
-	output: `${TEMP_DIR}/output.mp3`,
+	input: path.join(TEMP_DIR, "input.webm"),
+	output: path.join(TEMP_DIR, "output.mp3"),
 } as const;
 
 async function convertAudioToMp3(audioBuffer: Buffer) {
-  // Ensure temp directory exists
-  await fsPromises.mkdir(TEMP_DIR, { recursive: true });
-  // write audio buffer to input file
-  await fsPromises.writeFile(AUDIO_PATHS.input, audioBuffer);
-  // convert audio to mp3
-  await execAsync(`ffmpeg -i ${AUDIO_PATHS.input} ${AUDIO_PATHS.output}`);
-  // read mp3 file
-  const mp3Data = await fsPromises.readFile(AUDIO_PATHS.output);
-  // delete input and output files
-  await Promise.all([
-    fsPromises.unlink(AUDIO_PATHS.input),
-    fsPromises.unlink(AUDIO_PATHS.output),
-  ]);
-  return mp3Data;
+	// Ensure temp directory exists
+	// await fsPromises.mkdir(TEMP_DIR, { recursive: true });
+	// write audio buffer to input file
+	await fsPromises.writeFile(AUDIO_PATHS.input, audioBuffer);
+	// convert audio to mp3
+	await execAsync(`ffmpeg -i ${AUDIO_PATHS.input} ${AUDIO_PATHS.output}`);
+	// read mp3 file
+	const mp3Data = await fsPromises.readFile(AUDIO_PATHS.output);
+	// delete input and output files
+	await Promise.all([
+		fsPromises.unlink(AUDIO_PATHS.input),
+		fsPromises.unlink(AUDIO_PATHS.output),
+	]);
+	return mp3Data;
 }
 
 async function transcribeAudio(audioBuffers: Buffer[]) {
 	// Ensure temp directory exists
-	await fsPromises.mkdir(TEMP_DIR, { recursive: true });
+	// await fsPromises.mkdir(TEMP_DIR, { recursive: true });
 	// convert each audio buffer to mp3
 	for (const audioBuffer of audioBuffers) {
 		const mp3Data = await convertAudioToMp3(audioBuffer);
@@ -64,6 +76,10 @@ export async function POST(request: NextRequest) {
 	try {
 		// get audio files from form data
 		const formData = await request.formData();
+		//for debug purpose
+		formData.forEach((value, key) => {
+			console.log(key, value);
+		});
 		// for single audio file
 		// const audioBlob = formData.get("file") as Blob;
 		// for multiple audio files

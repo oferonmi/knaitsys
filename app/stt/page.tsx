@@ -69,20 +69,26 @@ export default function STTPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Speech to Text</h1>
-      
+    <div className="container mx-auto px-4 py-8  h-screen">
+      <h1 className="text-3xl md:text-3xl mb-6 text-gray-700 text-center">
+        Speech to Text
+      </h1>
+
       <div className="flex flex-col items-center gap-4">
         <Button
           onClick={isRecording ? stopRecording : startRecording}
           variant={isRecording ? "destructive" : "default"}
-          className="w-16 h-16 rounded-full"
+          className="w-16 h-16 rounded-full bg-kaito-brand-ash-green"
         >
-          {isRecording ? <Square className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+          {isRecording ? (
+            <Square className="h-6 w-6" />
+          ) : (
+            <Mic className="h-6 w-6" />
+          )}
         </Button>
-        
+
         <p className="text-sm text-muted-foreground">
-          {isRecording ? 'Recording...' : 'Click to start recording'}
+          {isRecording ? "Recording..." : "Click to start recording"}
         </p>
 
         {isProcessing && (

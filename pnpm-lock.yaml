@@ -17,6 +17,9 @@ importers:
       '@ai-sdk/openai':
         specifier: ^0.0.37
         version: 0.0.37(zod@3.23.8)
+      '@ai-sdk/xai':
+        specifier: ^1.0.5
+        version: 1.0.5(zod@3.23.8)
       '@huggingface/inference':
         specifier: ^2.8.1
         version: 2.8.1
@@ -262,6 +265,15 @@ packages:
       zod:
         optional: true
 
+  '@ai-sdk/provider-utils@2.0.3':
+    resolution: {integrity: sha512-Cyk7GlFEse2jQ4I3FWYuZ1Zhr5w1mD9SHMJTYm/in1rd7r89nmEoQiOy3h8YV2ZvTa2/6aR10xZ4M0k4B3BluA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      zod:
+        optional: true
+
   '@ai-sdk/provider@0.0.12':
     resolution: {integrity: sha512-oOwPQD8i2Ynpn22cur4sk26FW3mSy6t6/X/K1Ay2yGBKYiSpRyLfObhOrZEGsXDx+3euKy4nEZ193R36NM+tpQ==}
     engines: {node: '>=18'}
@@ -325,6 +337,12 @@ packages:
     peerDependenciesMeta:
       vue:
         optional: true
+
+  '@ai-sdk/xai@1.0.5':
+    resolution: {integrity: sha512-XNl2K5Oeme4/CgvTRAHWOWfYRk4ZVaMsabUHdI3h/MY9+8n/2pKxWw5HGk8rkj1i5uUuEksPT44txbdSvkfUWQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -4405,6 +4423,15 @@ snapshots:
     optionalDependencies:
       zod: 3.23.8
 
+  '@ai-sdk/provider-utils@2.0.3(zod@3.23.8)':
+    dependencies:
+      '@ai-sdk/provider': 1.0.1
+      eventsource-parser: 3.0.0
+      nanoid: 3.3.8
+      secure-json-parse: 2.7.0
+    optionalDependencies:
+      zod: 3.23.8
+
   '@ai-sdk/provider@0.0.12':
     dependencies:
       json-schema: 0.4.0
@@ -4467,6 +4494,12 @@ snapshots:
       vue: 3.4.31(typescript@5.3.3)
     transitivePeerDependencies:
       - zod
+
+  '@ai-sdk/xai@1.0.5(zod@3.23.8)':
+    dependencies:
+      '@ai-sdk/provider': 1.0.1
+      '@ai-sdk/provider-utils': 2.0.3(zod@3.23.8)
+      zod: 3.23.8
 
   '@alloc/quick-lru@5.2.0': {}
 
