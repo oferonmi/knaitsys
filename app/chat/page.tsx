@@ -1,7 +1,6 @@
 "use client"
 import ChatForm from "@/components/ChatForm";
 import ChatThread from "@/components/ChatThread";
-import EmptyThreadState from "@/components/EmptyThreadState";
 import { Footer } from "@/components/Footer";
 import { useChat } from "ai/react";
 import { useSession } from "next-auth/react";
@@ -12,18 +11,42 @@ import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "flowbite-react";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
+// Add type for LLM API routes to improve type safety and maintainability
+type LlmRoute = {
+  value: string;
+  label: string;
+  isMultimodal?: boolean;
+};
+
+const LLM_OPTIONS: LlmRoute[] = [
+  { value: 'chat/openai', label: 'GPT-3.5' },
+  { value: 'multimodal/chat/openai', label: 'GPT-4o-mini', isMultimodal: true },
+  { value: 'chat/llama3_fireworks', label: 'Llama-3-Fwks' },
+  { value: 'chat/llama3_groq', label: 'Llama-3-Groq' },
+  { value: 'multimodal/chat/llama3_groq', label: 'Llama-3.2-Groq', isMultimodal: true },
+  { value: 'chat/anthropic', label: 'Claude-3.5-Haiku' },
+  { value: 'chat/mixtral_MoE8x7B_Instruct_fireworks', label: 'Mixtral-MoE8x7B-Fwks' },
+  { value: 'chat/xai', label: 'Grok-Beta' },
+  { value: 'chat/qwen2', label: 'Qwen-2-Ollama' },
+  { value: 'multimodal/chat/llava', label: 'Llava-Ollama', isMultimodal: true },
+  { value: 'multimodal/chat/phi3', label: 'Phi3-Ollama', isMultimodal: true },
+];
+
+const DEFAULT_LLM_ROUTE = '/api/chat/openai';
+
 const ChatbotPage = () => {
   // sessions
   const { data: session, status } = useSession();
 
   //LLM engine API route
-  const [llmApiRoute, setLlmApiRoute] = useState("/api/chat/openai");
+  const [llmApiRoute, setLlmApiRoute] = useState<string>(DEFAULT_LLM_ROUTE);
   const [sourcesForMessages, setSourcesForMessages] = useState<
     Record<string, any>
   >({});
 
-  const handleLlmApiChange = (event: { target: { value: any } }) => {
-    setLlmApiRoute("/api/"+ event.target.value);
+  const handleLlmApiChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newRoute = event.target.value;
+    setLlmApiRoute(newRoute ? `/api/${newRoute}` : DEFAULT_LLM_ROUTE);
   };
 
   // use OpenAI chat completion
@@ -55,36 +78,26 @@ const ChatbotPage = () => {
     },
   });
 
-  const keyChatFormWidgets = (
-    <>
-      <select
-        onChange={handleLlmApiChange}
-        className="inline-flex items-center py-5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
-        id="llm-selector"
-        required
-      >
-        <option value="">--Select LLM--</option>
-        <option value="chat/openai">GPT-3.5</option>
-        <option value="multimodal/chat/openai">GPT-4o-mini</option>
-        {/* <option value="replicate">Llama-2-Rplcte</option> */}
-        <option value="chat/llama3_fireworks">Llama-3-Fwks</option>
-        <option value="chat/llama3_groq">Llama-3-Groq</option>
-        <option value="multimodal/chat/llama3_groq">Llama-3.2-Groq</option>
-        <option value="chat/anthropic">Claude-3.5-Haiku</option>
-        {/* <option value="chat/qwen2_fireworks">Qwen-2-Fwks</option> */}
-        <option value="chat/mixtral_MoE8x7B_Instruct_fireworks">
-          Mixtral-MoE8x7B-Fwks
+  const LlmSelector = () => (
+    <select
+      onChange={handleLlmApiChange}
+      value={llmApiRoute.replace('/api/', '')}
+      className="inline-flex items-center py-5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2"
+      id="llm-selector"
+      required
+    >
+      <option value="">--Select LLM--</option>
+      {LLM_OPTIONS.map(({ value, label }) => (
+        <option key={value} value={value}>
+          {label}
         </option>
-        <option value="chat/xai">Grok-Beta</option>
-        <option value="chat/qwen2">Qwen-2-Ollama</option>
-        <option value="multimodal/chat/llava">Llava-Ollama</option>
-        <option value="multimodal/chat/phi3">Phi3-Ollama</option>
+      ))}
+    </select>
+  );
 
-        {/* <option value="chat/gemma_7b_instruct_fireworks">Gemma-7b-Fwks</option> */}
-        {/* <option value="chat/langchain">LangChain</option> */}
-        {/* <option value="chat/huggingface">OpenAssistant-HF</option> */}
-      </select>
-
+  const ChatFormWidgets = (
+    <>
+      <LlmSelector />
       <ChatForm
         userInput={input}
         onChangeHandler={handleInputChange}
@@ -109,7 +122,7 @@ const ChatbotPage = () => {
       <div
         className="w-full max-w-3xl border border-gray-300 rounded-lg shadow-xl space-x-2 text-black flex justify-center items-center pt-9 pb-9 px-5"
       >
-        {keyChatFormWidgets}
+        {ChatFormWidgets}
       </div>
     </div>
   );
@@ -144,7 +157,7 @@ const ChatbotPage = () => {
                     </Tooltip>
 
                     {/* main chat form widgets */}
-                    {keyChatFormWidgets}
+                    {ChatFormWidgets}
                   </div>
                 </div>
               </>
