@@ -11,7 +11,7 @@ export default function STTPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
-  const startRecording = async () => {
+  async function startRecording(){
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
@@ -24,9 +24,15 @@ export default function STTPage() {
         }
       };
 
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-        await processAudio(audioBlob);
+      mediaRecorder.onstop = () => {
+        setTimeout(async () => {
+          try {
+            const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
+            await processAudio(audioBlob);
+          } catch (error) {
+            console.error('Error processing audio after stop:', error);
+          }
+        }, 2);
       };
 
       mediaRecorder.start();
@@ -34,39 +40,54 @@ export default function STTPage() {
     } catch (error) {
       console.error('Error accessing microphone:', error);
     }
-  };
+  }
 
-  const stopRecording = () => {
+  function stopRecording(){
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
       mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
     }
-  };
+  }
 
-  const  processAudio = async (audioBlob: Blob) => {
+  async function processAudio(audioBlob: Blob) {
     setIsProcessing(true);
     try {
+      // Validate the blob
+      if (!audioBlob || audioBlob.size === 0) {
+        throw new Error('Invalid audio data');
+      }
+
       const formData = new FormData();
       formData.append('file', audioBlob, 'audio.webm');
 
       const response = await fetch('/api/stt/whisper', {
         method: 'POST',
         body: formData,
+        // Add timeout and headers
+        headers: {
+          'Accept': 'application/json',
+        },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to transcribe audio');
+        const errorData = await response.text();
+        throw new Error(`Server error: ${response.status} - ${errorData}`);
       }
 
       const data = await response.json();
+      if (!data || !data.transcript) {
+        throw new Error('Invalid response format');
+      }
+
       setTranscript(data.transcript);
     } catch (error) {
       console.error('Error processing audio:', error);
+      setTranscript('Error processing audio. Please try again.'); // User feedback
     } finally {
       setIsProcessing(false);
     }
-  };
+  }
 
   return (
     <div className="container mx-auto px-4 py-8  h-screen">

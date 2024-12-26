@@ -34,5 +34,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# temporary directory content
+/tmp
+/temp
+
 # sound files
 *.mp3
+*.webm
