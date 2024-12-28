@@ -24,7 +24,7 @@ async function ensureDirectoryExists(dirPath: string) {
 async function checkFFmpeg() {
 	try {
 		await execAsync('ffmpeg -version');
-		console.log('FFmpeg is available');
+		// console.log('FFmpeg is available');
 		return true;
 	} catch (error) {
 		console.error('FFmpeg is not installed or not in PATH:', error);
@@ -43,8 +43,10 @@ async function convertAudioToMp3(audioBuffer: Buffer) {
 	try {
 		// write audio buffer to input file
 		await fsPromises.writeFile(inputPath, audioBuffer);
+		
 		// convert audio to mp3
 		await execAsync(`ffmpeg -i "${inputPath}" "${outputPath}"`);
+
 		// read mp3 file
 		const mp3Data = await fsPromises.readFile(outputPath);
 		return mp3Data;
@@ -66,32 +68,68 @@ async function convertAudioToMp3(audioBuffer: Buffer) {
 	}
 }
 
+async function processFormDataAudio(formData: FormData): Promise<Buffer[]> {
+    const audioBuffers: Buffer[] = [];
+    const entries = Array.from(formData.entries());
+    
+    if (entries.length === 0) {
+        throw new Error('No audio files provided in form data');
+    }
+
+    for (const [key, value] of entries) {
+        try {
+            if (!(value instanceof Blob)) {
+                console.warn(`Skipping entry '${key}': Expected Blob/File, got ${typeof value}`);
+                continue;
+            }
+
+            // Optional: Check file type
+            if (!value.type.startsWith('audio/')) {
+                console.warn(`Skipping file '${key}': Invalid file type ${value.type}`);
+                continue;
+            }
+
+            const arrayBuffer = await value.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            audioBuffers.push(buffer);
+        } catch (error: any) {
+            console.error(`Error processing audio file '${key}':`, error);
+            throw new Error(`Failed to process audio file '${key}': ${error.message}`);
+        }
+    }
+
+    if (audioBuffers.length === 0) {
+        throw new Error('No valid audio files found in form data');
+    }
+
+    return audioBuffers;
+}
+
 async function transcribeAudio(audioBuffers: Buffer[]) {
 	try {
-		await ensureDirectoryExists(TEMP_DIR);
-		const timestamp = Date.now();
-		const outputPath = path.join(TEMP_DIR, `final-${timestamp}.mp3`);
+    await ensureDirectoryExists(TEMP_DIR);
+    const timestamp = Date.now();
+    const outputPath = path.join(TEMP_DIR, `final-${timestamp}.mp3`);
 
-		// Process each audio buffer
-		for (const audioBuffer of audioBuffers) {
-			const mp3Audio = await convertAudioToMp3(audioBuffer);
-			console.log("", mp3Audio); //for debug purpose. Remove after fix.
-			//TO DO: It seems file is not created. Find out why.
-			await fsPromises.writeFile(outputPath, mp3Audio);
-		}
+    // Process each audio buffer
+    for (const audioBuffer of audioBuffers) {
+      const mp3Audio = await convertAudioToMp3(audioBuffer);
+      await fsPromises.writeFile(outputPath, mp3Audio); // may need to append mutlipe audio to one file
+    }
 
-		// Transcribe
-		const transcription = await openai.audio.transcriptions.create({
-			file: fs.createReadStream(outputPath),
-			model: "whisper-1",
-		});
+    // Transcribe
+    // const transcription = {text: "Dummy transcription text"}; //remove if Whisper API used
+    const transcription = await openai.audio.transcriptions.create({
+      file: fs.createReadStream(outputPath),
+      model: "whisper-1",
+    });
 
-		// Cleanup
-		await fsPromises.unlink(outputPath).catch(() => {});
+    // Cleanup
+    await fsPromises.unlink(outputPath).catch(() => {});
 
-		return transcription.text;
-	} catch (error) {
-		console.error("Error in transcribeAudio:", error);
+    return transcription.text;
+  } catch (error) {
+		console.error("Error in transcribeAudio: ", error);
 		throw error;
 	}
 }
@@ -105,7 +143,7 @@ export async function POST(request: NextRequest) {
 		);
 	}
 
-	// Add FFmpeg check
+	// Check if FFmpeg installed
 	const ffmpegAvailable = await checkFFmpeg();
 	if (!ffmpegAvailable) {
 		return NextResponse.json(
@@ -115,25 +153,8 @@ export async function POST(request: NextRequest) {
 	}
 
 	try {
-		// get audio files from form data
 		const formData = await request.formData();
-		//for debug purpose
-		formData.forEach((value, key) => {
-			console.log(key, value);
-		});
-		
-		const audioBuffers: Buffer[] = [];
-		const entries = Array.from(formData.entries());
-		for (const [key, value] of entries) {
-			if (typeof value === "object" && ("Blob" in value || "File" in value)) {
-				const audioBlob = value as Blob | File;
-				const arrayBuffer = await audioBlob.arrayBuffer();
-				const buffer = Buffer.from(arrayBuffer);
-				audioBuffers.push(buffer);
-			}
-		}
-		
-		// transcribe audio
+		const audioBuffers = await processFormDataAudio(formData);
 		const transcript = await transcribeAudio(audioBuffers);
 		return NextResponse.json({ transcript }, { status: 200 });
 	} catch (error: any) {
