@@ -1,6 +1,6 @@
 'use client';
 
-import { useChat } from 'ai/react';
+import { Message, useChat } from 'ai/react';
 import { useRef, useState, useEffect, type FormEvent, useCallback, use } from 'react';
 import Image from "next/image";
 import { AudioRecorder } from "@/components/AudioRecorder";
@@ -19,15 +19,16 @@ export default function MultiModalChat() {
 
     //LLM engine API route
     const [llmApiRoute, setLlmApiRoute] = useState(
-      "/api/multimodal/chat/llava"
+      "/api/multimodal/chat/openai"
     );
     const [sourcesForMessages, setSourcesForMessages] = useState<
         Record<string, any>
     >({});
-    const [recordedAudioUrl, setRecordedAudioUrl] = useState("");
 
     const { 
-        messages,  
+        messages,
+        reload,
+        append,  
         setMessages, 
         input, 
         setInput, 
@@ -62,8 +63,7 @@ export default function MultiModalChat() {
     const textInputRef = useRef<HTMLInputElement>(null);
 
     const [showAudioRecorder, setShowAudioRecorder] = useState<boolean>(false);
-    const [transcribedText, setTranscribedText] = useState<String | undefined>("");
-    const [audioIn, setAudioIn] = useState<String | undefined>("");
+    const [audioInTranscript, setAudioInTranscript] = useState("");
 
     const [showFileAttactmentUI, setShowFileAttactmentUI] = useState<boolean>(false);
     const [showSendButton, setShowSendButton] = useState<boolean>(false);
@@ -77,52 +77,59 @@ export default function MultiModalChat() {
         }
     }, [messages]);
 
-	const transcribeAudio = async () => {
-        const response = await fetch("/api/stt/whisper", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ audio: audioIn }),
-        });
 
-        if (!response.ok) {
-            throw new Error(`Speech to text failed: ${response.status}`);
-        }
-
-        const { transcript } = await response.json();
-        setTranscribedText(transcript);
-    };
-
-    const processAudioBlob = async (audioBlob: Blob) => {
+    async function processRecordedAudioIn(audioBlob: Blob) {
+        // setIsProcessing(true);
         try {
-            const base64Audio = await new Promise<string>((resolve) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const result = reader.result as string;
-                    resolve(result.split(',')[1]);
-                };
-                reader.readAsDataURL(audioBlob);
+            // Validate the blob
+            if (!audioBlob || audioBlob.size === 0) {
+                throw new Error("Invalid audio data");
+            }
+
+            const formData = new FormData();
+            formData.append("file", audioBlob, "audio.webm");
+
+            const response = await fetch("/api/stt/whisper", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    Accept: "application/json",
+                },
             });
 
-            setAudioIn(base64Audio);
-            await transcribeAudio();
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(`Server error: ${response.status} - ${errorData}`);
+            }
+
+            const data = await response.json();
+                if (!data || !data.transcript) {
+                throw new Error("Invalid response format");
+            }
+
+            setAudioInTranscript(data.transcript);
+            // append transcript to chat thread
+            setMessages([
+                ...messages,
+                {
+                    id: String(Date.now()),
+                    role: "user",
+                    content: data.transcript,
+                },
+            ]);
+            // trigger LLM API call and update chat thread with response
+            reload();
+
+            setShowSendButton(true);
         } catch (error) {
-            console.error('Failed to process audio:', error);
-            toast.error('Failed to process audio');
+            console.error("Error processing audio:", error);
+            setAudioInTranscript(""); // User feedback
+        } finally {
+            // setIsProcessing(false);
         }
-    };
+    }
 
-    const handleAudioRecordingComplete = (audioBlob: Blob) => {
-        // transcribe audio
-        processAudioBlob(audioBlob);
-
-        //TODO: query LLM with the transcribed text
-
-        //TODO: update messages with the transcribed text
-
-        //TODO: update messages with the LLM response
-    };
-
-    const handleSend = (event: FormEvent<HTMLFormElement>) => {
+    function handleSend(event: FormEvent<HTMLFormElement>){
         handleSubmit(event, {
             experimental_attachments: files,
         });
@@ -143,16 +150,34 @@ export default function MultiModalChat() {
 
     const recorderControls = useAudioRecorder(recorderSettings);
 
+    useEffect(() => {
+        // Just request permissions without starting/stopping recorder
+        const initializeRecorder = async () => {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const mediaRecorder = new MediaRecorder(stream);
+                // Release the stream immediately after permission
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                // recorderControls.startRecording();
+                // recorderControls.stopRecording();
+            } catch (error) {
+                console.error("Failed to initialize recorder:", error);
+            }
+        };
+        
+        initializeRecorder();
+    }); // Run once on component mount
+
     const audioRecorderWidget = (
-        <div className='flex items-center rounded-full bg-white border border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1'>
-            <AudioRecorder
-                audioTrackSettings={recorderSettings}
-                recorderCtrls={recorderControls}
-                showVisualizer={true}
-                onRecordingComplete={handleAudioRecordingComplete}
-                setShowRecorder={setShowAudioRecorder} 
-            />
-        </div>
+      <div className="flex items-center rounded-full bg-white border border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1">
+        <AudioRecorder
+            audioTrackSettings={recorderSettings}
+            recorderCtrls={recorderControls}
+            showVisualizer={true}
+            onRecordingComplete={processRecordedAudioIn}
+            setShowRecorder={setShowAudioRecorder}
+        />
+      </div>
     );
 
     const loadingAnimation = (
@@ -253,9 +278,19 @@ export default function MultiModalChat() {
                         <button
                             className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5"
                             type="button"
-                            onClick={() => {
-                                setShowAudioRecorder(true);
-                                recorderControls.startRecording();
+                            onClick={async () => {
+                                try {
+                                  await new Promise((resolve) =>
+                                    setTimeout(resolve, 100)
+                                  ); // Small delay
+                                  recorderControls.startRecording();
+                                  setShowAudioRecorder(true);
+                                } catch (error) {
+                                    toast("Failed to start recording. Please check your microphone permissions.", {
+                                        theme: "dark",
+                                    });
+                                    console.error("Recording failed to start:", error);
+                                }
                             }}
                         >
                             <i className="bi bi-mic-fill"></i>
@@ -288,21 +323,9 @@ export default function MultiModalChat() {
     );
 
 	// Temporal. for debug purpose
-	useEffect(() => {
-		console.log(`Transcribed audio text: ${transcribedText}`);
-	},[transcribedText])
-
-	// trigger LLM text input update
 	// useEffect(() => {
-	// 	// update input text
-    // 	// setInput(transcribedText);
-
-	// 	if (textInputRef.current?.value != null && sendButtonRef.current) {
-	// 		setShowSendButton(true);
-	// 		sendButtonRef.current?.click();
-	// 		setTranscribedText("");
-	// 	}
-	// },[transcribedText])
+    //     console.log(`Transcribed audio text: ${audioInTranscript}`);
+    // }, [audioInTranscript]);
 
     return (
         <>

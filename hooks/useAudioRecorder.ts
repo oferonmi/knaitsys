@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 export interface recorderControls {
 	startRecording: () => void;
@@ -50,6 +50,9 @@ const useAudioRecorder: (
 	const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout>();
 	const [recordingBlob, setRecordingBlob] = useState<Blob>();
 
+	const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+	const chunksRef = useRef<Blob[]>([]);
+
 	const _startTimer: () => void = useCallback(() => {
 		const interval = setInterval(() => {
 			setRecordingTime((time) => time + 1);
@@ -76,15 +79,48 @@ const useAudioRecorder: (
 				stream,
 				mediaRecorderOptions
 			);
+
+			// mediaRecorderRef.current = recorder;
+			// setMediaRecorder(recorder);
+			// recorder.start();
+			// _startTimer();
+
+			// recorder.addEventListener("dataavailable", (event) => {
+			// 	chunksRef.current = [];
+			// 	if (event.data.size > 0) {
+			// 		chunksRef.current.push(event.data);
+			// 	}
+			
+			// 	try {
+			// 		const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
+			// 		setRecordingBlob(audioBlob);
+			// 	} catch (error: any) {
+			// 		throw new Error(`Failed to create Blob of audio : ${error.message}`);
+			// 	}
+			// 	recorder.stream.getTracks().forEach((t) => t.stop());
+			// 	setMediaRecorder(undefined);
+			// });
+
+			recorder.ondataavailable = (e) => {
+				if (e.data.size > 0) {
+					chunksRef.current.push(e.data);
+				}
+			};
+
+			recorder.onstop = () => {
+				setTimeout(async () => {
+					try {
+						const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
+						setRecordingBlob(audioBlob);
+					} catch (error) {
+						console.error('Error processing audio after stop:', error);
+					}
+				}, 2);
+			};
+
 			setMediaRecorder(recorder);
 			recorder.start();
 			_startTimer();
-
-			recorder.addEventListener("dataavailable", (event) => {
-				setRecordingBlob(event.data);
-				recorder.stream.getTracks().forEach((t) => t.stop());
-				setMediaRecorder(undefined);
-			});
 		})
 		.catch((err: DOMException) => {
 			console.log(err.name, err.message, err.cause);
@@ -95,18 +131,39 @@ const useAudioRecorder: (
 	Calling this method results in a recording in progress being stopped and the resulting audio being present in `recordingBlob`. Sets `isRecording` to false
 	 */
 	const stopRecording: () => void = useCallback(() => {
-		mediaRecorder?.stop();
-		_stopTimer();
-		setRecordingTime(0);
-		setIsRecording(false);
-		setIsPaused(false);
-	}, [
-		mediaRecorder,
-		setRecordingTime,
-		setIsRecording,
-		setIsPaused,
-		_stopTimer,
-	]);
+		try {
+			// if (!mediaRecorderRef.current || !isRecording) {
+			// 	return;
+			// }
+			if (!mediaRecorder || isRecording == false) {
+				return;
+			}
+
+			// Stop recording
+			// mediaRecorderRef.current.stop();
+			mediaRecorder?.stop();
+			
+			// Cleanup
+			const cleanup = () => {
+				_stopTimer();
+				setRecordingTime(0);
+				setIsRecording(false);
+				setIsPaused(false);
+				
+				// Stop all tracks
+				// mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
+				mediaRecorder?.stream.getTracks().forEach(track => track.stop());
+				// mediaRecorderRef.current = null;
+			};
+
+			cleanup();
+		} catch (error) {
+			console.error('Error stopping recording:', error);
+			// Ensure state is reset even if error occurs
+			setIsRecording(false);
+			setIsPaused(false);
+		}
+	}, [_stopTimer, isRecording, mediaRecorder]);
 
 	/**
 	 * Calling this method would pause the recording if it is currently running or resume if it is paused. Toggles the value `isPaused`
@@ -114,14 +171,16 @@ const useAudioRecorder: (
 	const togglePauseResume: () => void = useCallback(() => {
 		if (isPaused) {
 			setIsPaused(false);
-			mediaRecorder?.resume();
+			// mediaRecorder?.resume();
+			mediaRecorderRef.current?.resume();
 			_startTimer();
 		} else {
 			setIsPaused(true);
 			_stopTimer();
-			mediaRecorder?.pause();
+			// mediaRecorder?.pause();
+			mediaRecorderRef.current?.pause();
 		}
-	}, [isPaused, mediaRecorder, _startTimer, _stopTimer]);
+	}, [isPaused, _startTimer, _stopTimer]);
 
 	return {
 		startRecording,
