@@ -1,9 +1,10 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 export interface recorderControls {
 	startRecording: () => void;
 	stopRecording: () => void;
 	togglePauseResume: () => void;
+	recorderReady: boolean;
 	recordingBlob?: Blob;
 	isRecording: boolean;
 	isPaused: boolean;
@@ -30,6 +31,7 @@ export type MediaAudioTrackSettings = Pick<
  * @details `startRecording`: Calling this method would result in the recording to start. Sets `isRecording` to true
  * @details `stopRecording`: This results in a recording in progress being stopped and the resulting audio being present in `recordingBlob`. Sets `isRecording` to false
  * @details `togglePauseResume`: Calling this method would pause the recording if it is currently running or resume if it is paused. Toggles the value `isPaused`
+ * @details `recorderReady` : A bollean value indicating if recorder is ready for use.
  * @details `recordingBlob`: This is the recording blob that is created after `stopRecording` has been called
  * @details `isRecording`: A boolean value that represents whether a recording is currently in progress
  * @details `isPaused`: A boolean value that represents whether a recording in progress is paused
@@ -49,9 +51,35 @@ const useAudioRecorder: (
 	const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder>();
 	const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout>();
 	const [recordingBlob, setRecordingBlob] = useState<Blob>();
+	const [recorderReady, setRecorderReady] = useState(false);
 
 	const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 	const chunksRef = useRef<Blob[]>([]);
+
+	/*
+	* Initiallize recorder once on component mount
+	*/
+	useEffect(() => {
+		const initializeRecorder = async () => {
+			try {
+				const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+				mediaRecorderRef.current = new MediaRecorder(stream);
+				setRecorderReady(true);
+				setMediaRecorder(mediaRecorderRef.current);
+				// Cleanup stream
+				stream.getTracks().forEach(track => track.stop());
+			} catch (error) {
+				console.error('Failed to initialize recorder:', error);
+			}
+		};
+
+		initializeRecorder();
+		
+		return () => {
+			mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
+			setRecorderReady(false);
+		};
+	}, []);
 
 	const _startTimer: () => void = useCallback(() => {
 		const interval = setInterval(() => {
@@ -66,84 +94,50 @@ const useAudioRecorder: (
 	}, [timerInterval, setTimerInterval]);
 
 	/* 
-	* Calling this method would result in the recording to start. Sets `isRecording` to true
+	* Method starts recording to start. Sets `isRecording` to true
 	*/ 
-	const startRecording: () => void = useCallback(() => {
+	const startRecording: () => void = useCallback(async () => {
 		if (timerInterval != null) return;
-
-		navigator.mediaDevices
-		.getUserMedia({ audio: audioTrackSettings ?? true })
-		.then((stream) => {
-			setIsRecording(true);
-			const recorder: MediaRecorder = new MediaRecorder(
-				stream,
-				mediaRecorderOptions
-			);
-
-			// mediaRecorderRef.current = recorder;
-			// setMediaRecorder(recorder);
-			// recorder.start();
-			// _startTimer();
-
-			// recorder.addEventListener("dataavailable", (event) => {
-			// 	chunksRef.current = [];
-			// 	if (event.data.size > 0) {
-			// 		chunksRef.current.push(event.data);
-			// 	}
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+			mediaRecorderRef.current = new MediaRecorder(stream);
+			setMediaRecorder(mediaRecorderRef.current);
 			
-			// 	try {
-			// 		const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-			// 		setRecordingBlob(audioBlob);
-			// 	} catch (error: any) {
-			// 		throw new Error(`Failed to create Blob of audio : ${error.message}`);
-			// 	}
-			// 	recorder.stream.getTracks().forEach((t) => t.stop());
-			// 	setMediaRecorder(undefined);
-			// });
-
-			recorder.ondataavailable = (e) => {
-				if (e.data.size > 0) {
-					chunksRef.current.push(e.data);
+			// Initialize chunks array at start of recording
+			const chunks: BlobPart[] = [];
+			
+			mediaRecorderRef.current.ondataavailable = (event: BlobEvent) => {
+				if (event.data.size > 0) {
+					chunks.push(event.data);
 				}
 			};
 
-			recorder.onstop = () => {
-				setTimeout(async () => {
-					try {
-						const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-						setRecordingBlob(audioBlob);
-					} catch (error) {
-						console.error('Error processing audio after stop:', error);
-					}
-				}, 2);
+			mediaRecorderRef.current.onstop = () => {
+				const blob = new Blob(chunks, { type: 'audio/webm' });
+				setRecordingBlob(blob);
+				chunks.length = 0; // Clear chunks
 			};
 
-			setMediaRecorder(recorder);
-			recorder.start();
+			// Request data every 1 second (or less) while recording
+			mediaRecorderRef.current.start(1000);
+			setIsRecording(true);
 			_startTimer();
-		})
-		.catch((err: DOMException) => {
-			console.log(err.name, err.message, err.cause);
-		});
-	}, [timerInterval, audioTrackSettings, mediaRecorderOptions, _startTimer]);
+		} catch (error) {
+			console.error('Error starting recording:', error);
+			setIsRecording(false);
+		}
+	}, [_startTimer, timerInterval]);
 
 	/* 
 	Calling this method results in a recording in progress being stopped and the resulting audio being present in `recordingBlob`. Sets `isRecording` to false
 	 */
-	const stopRecording: () => void = useCallback(() => {
+	const stopRecording: () => void = useCallback(async () => {
 		try {
-			// if (!mediaRecorderRef.current || !isRecording) {
-			// 	return;
-			// }
-			if (!mediaRecorder || isRecording == false) {
+			if (!mediaRecorderRef.current || !isRecording) {
 				return;
 			}
-
-			// Stop recording
-			// mediaRecorderRef.current.stop();
-			mediaRecorder?.stop();
 			
-			// Cleanup
+			// Cleanup 
 			const cleanup = () => {
 				_stopTimer();
 				setRecordingTime(0);
@@ -151,24 +145,34 @@ const useAudioRecorder: (
 				setIsPaused(false);
 				
 				// Stop all tracks
-				// mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
-				mediaRecorder?.stream.getTracks().forEach(track => track.stop());
+				mediaRecorderRef.current?.stream.getTracks().forEach(track => track.stop());
+				// mediaRecorder?.stream.getTracks().forEach(track => track.stop());
 				// mediaRecorderRef.current = null;
 			};
 
+			// Add minimum recording duration
+			const minRecordingTime = 1000; // 1 second
+			if (recordingTime < minRecordingTime) {
+				setTimeout(() => {
+					mediaRecorderRef.current?.stop();
+					cleanup();
+				}, minRecordingTime - recordingTime);
+				return;
+			}
+
+       		mediaRecorderRef.current.stop();
 			cleanup();
 		} catch (error) {
 			console.error('Error stopping recording:', error);
-			// Ensure state is reset even if error occurs
 			setIsRecording(false);
 			setIsPaused(false);
 		}
-	}, [_stopTimer, isRecording, mediaRecorder]);
+	}, [_stopTimer, isRecording, recordingTime]);
 
 	/**
-	 * Calling this method would pause the recording if it is currently running or resume if it is paused. Toggles the value `isPaused`
+	 * Method pauses the recording if currently running or resume if paused. Toggles value of `isPaused`
 	 */
-	const togglePauseResume: () => void = useCallback(() => {
+	const togglePauseResume: () => void = useCallback(async () => {
 		if (isPaused) {
 			setIsPaused(false);
 			// mediaRecorder?.resume();
@@ -186,6 +190,7 @@ const useAudioRecorder: (
 		startRecording,
 		stopRecording,
 		togglePauseResume,
+		recorderReady,
 		recordingBlob,
 		isRecording,
 		isPaused,

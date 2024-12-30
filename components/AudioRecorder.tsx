@@ -8,10 +8,6 @@ import {recorderControls, type MediaAudioTrackSettings} from "@/hooks/useAudioRe
 import Timer from "@/components/Timer";
 import { LiveAudioVisualizer } from "@/components/LiveAudioVisualizer";
 
-
-// type recordingCompleteCallback = (blob: Blob) => Promise<void>;
-// type recordingResetCallback = () => void;
-
 const AudioRecorder =  (props:{
     audioTrackSettings: MediaAudioTrackSettings,
     recorderCtrls: recorderControls,
@@ -35,46 +31,59 @@ const AudioRecorder =  (props:{
     );
 
     const {
+        // Recording controls
         startRecording,
         stopRecording,
         togglePauseResume,
-        recordingBlob,
+
+        // Recording state
         isRecording,
         isPaused,
         recordingTime,
-        mediaRecorder
+
+        // Recording data
+        recordingBlob,
+        mediaRecorder,
     } = recorderCtrls ?? defaultCtrls;
 
-    const closeAudioRecorder: () => void = useCallback(() => {
-        stopRecording();
-        setShowRecorder(false);
-    },[setShowRecorder, stopRecording]);
+    const closeAudioRecorder = useCallback(() => {
+        try {
+            stopRecording();
+            setShowRecorder(false);
+        } catch (error) {
+            console.error('Failed to close audio recorder:', error);
+            // Ensure recorder UI is hidden even if stopping fails
+            setShowRecorder(false);
+        }
+    }, [stopRecording, setShowRecorder]);
 
-    const stopAudioRecorder: () => void = useCallback(() =>  {
+    const stopAudioRecorder = useCallback(() => {
         closeAudioRecorder();
 
-        if (recordingBlob != null && onRecordingComplete != null) {
+        if (recordingBlob && onRecordingComplete) {
             onRecordingComplete(recordingBlob);
         }
+    }, [closeAudioRecorder, onRecordingComplete, recordingBlob]);
 
-    },[closeAudioRecorder, onRecordingComplete, recordingBlob]);
+    const buttonBaseStyle = "flex items-center font-semibold text-gray-200 rounded-full px-5 py-4 bg-kaito-brand-ash-green hover:bg-red-600";
 
-    return (
-        <div className="flex space-x-2 ">
+    const AudioControls = () => (
+        <div className="flex space-x-2">
+            {/* Close Button */}
             <button
-                className="flex bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-5 py-4"
-                onClick={() => { 
-                    closeAudioRecorder();
-                }}
+                className={buttonBaseStyle}
+                onClick={closeAudioRecorder}
                 type="button"
+                aria-label="Close recorder"
             >
-                <i className="bi bi-x"></i>
+                <i className="bi bi-x" />
             </button>
             
+            {/* Audio Visualizer */}
             {showVisualizer && (
-                <div className="flex items-center ">
+                <div className="flex items-center">
                     {mediaRecorder && (
-                        <Suspense fallback={<></>}>
+                        <Suspense fallback={null}>
                             <LiveAudioVisualizer
                                 mediaRecorder={mediaRecorder}
                                 barWidth={2}
@@ -91,29 +100,36 @@ const AudioRecorder =  (props:{
                 </div>
             )}
 
-            <div className={`flex items-center`}>
-                <Timer secondsElasped={recordingTime}/>
+            {/* Timer */}
+            <div className="flex items-center">
+                <Timer secondsElasped={recordingTime} />
             </div>
 
+            {/* Pause/Resume Button */}
             <button
-                className="bg-kaito-brand-ash-green hover:bg-red-600 items-center font-semibold text-gray-200 rounded-full px-5 py-4"
-                onClick={() => {
-                    togglePauseResume();
-                }}
+                className={buttonBaseStyle}
+                onClick={togglePauseResume}
                 type="button"
+                aria-label={isPaused ? "Resume recording" : "Pause recording"}
             >
-                {isPaused ? <i className="bi bi-mic-fill"></i> : <i className="bi bi-pause-fill"></i>}
+                <i className={`bi ${isPaused ? "bi-mic-fill" : "bi-pause-fill"}`} />
             </button>
             
+            {/* Stop Button */}
             <button
-                className="hover:bg-red-600 bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
-                onClick={() => {
-                    stopAudioRecorder();
-                }}
+                className={buttonBaseStyle}
+                onClick={stopAudioRecorder}
                 type="button"
+                aria-label="Stop recording"
             >
-                <i className="bi bi-stop-fill"></i>
+                <i className="bi bi-stop-fill" />
             </button>
+        </div>
+    );
+
+    return (
+        <div className="flex space-x-2 ">
+            <AudioControls />
         </div>
     );
 };
