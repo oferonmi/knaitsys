@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio";
 import { PromptTemplate } from "@langchain/core/prompts";
 import {
   RecursiveCharacterTextSplitter,

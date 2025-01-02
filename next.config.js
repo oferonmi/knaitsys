@@ -70,6 +70,9 @@ const nextConfig = {
 
       // config.externals["node:fs"] = "commonjs node:fs";
       // config.externals.push({ vectordb: 'vectordb' });
+      
+      // disable webpack caching
+      config.cache = false;
 
       return config;
   },

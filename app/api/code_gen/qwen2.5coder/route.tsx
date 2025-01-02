@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     //NOTE: Make sure the 'llava' model has been downloaded to local or proxy machine from Ollama's model library
-    const llm = ollama('qwen2.5-coder');
+    const llm = ollama("qwen2.5-coder");
 
     const result = await streamText({
         model: llm,
