@@ -1,4 +1,4 @@
-import { WebPDFLoader } from "langchain/document_loaders/web/pdf";
+import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { PromptTemplate } from "@langchain/core/prompts";
 import {
   RecursiveCharacterTextSplitter,
