@@ -1,17 +1,17 @@
 import { ChatWindowMessage } from "@/schema/ChatWindowMessage";
 
-import { WebPDFLoader } from "langchain/document_loaders/web/pdf";
-import { HuggingFaceTransformersEmbeddings } from "langchain/embeddings/hf_transformers";
+import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
+import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
 import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
-import { ChatOllama } from "langchain/chat_models/ollama";
+import { ChatOllama } from "@langchain/community/chat_models/ollama";
 import { Document } from "langchain/document";
 
 import {
-  ChatPromptTemplate,
-  MessagesPlaceholder,
-  PromptTemplate,
+	ChatPromptTemplate,
+	MessagesPlaceholder,
+	PromptTemplate,
 } from "@langchain/core/prompts";
-import { BaseLanguageModel } from "langchain/base_language";
+import { BaseLanguageModel } from "@langchain/core/language_models/base";
 import { BaseRetriever } from "@langchain/core/retrievers";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
@@ -37,11 +37,11 @@ export const runtime = "edge";
 // const client = createClient(supabase_url, supabase_anon_key);
 
 const pinecone = new Pinecone({
-  apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
+  	apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
 });
 
 const pineconeIndex = pinecone.Index(
-  process.env.NEXT_PUBLIC_PINECONE_INDEX!
+  	process.env.NEXT_PUBLIC_PINECONE_INDEX!
 );
 
 // const embeddings = new HuggingFaceTransformersEmbeddings({
@@ -58,11 +58,11 @@ const embeddings = new OpenAIEmbeddings({openAIApiKey: process.env.NEXT_PUBLIC_O
 //     },
 // );
 const vectorstore = new PineconeStore(
-  embeddings,
-  {
-    pineconeIndex,
-    maxConcurrency: 5,
-  }
+	embeddings,
+	{
+		pineconeIndex,
+		maxConcurrency: 5,
+	}
 );
 
 
@@ -73,9 +73,9 @@ const vectorstore = new PineconeStore(
 // });
 
 const openai = new ChatOpenAI({
-  modelName: "gpt-3.5-turbo-1106",
-  temperature: 0.2,
-  openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+	modelName: "gpt-3.5-turbo-1106",
+	temperature: 0.2,
+	openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
 });
 
 const REPHRASE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
@@ -86,7 +86,7 @@ Follow Up Input: {question}
 Standalone Question:`;
 
 const rephraseQuestionChainPrompt = PromptTemplate.fromTemplate(
-  REPHRASE_QUESTION_TEMPLATE,
+  	REPHRASE_QUESTION_TEMPLATE,
 );
 
 const RESPONSE_SYSTEM_TEMPLATE = `You are an experienced researcher, expert at interpreting and answering questions from first principles based on provided sources. Using the provided context, answer the user's question to the best of your ability using the resources provided.
@@ -100,167 +100,167 @@ Anything between the following \`context\` html blocks is retrieved from a knowl
 REMEMBER: If there is no relevant information within the context, just say "Hmm, I'm not sure." Don't try to make up an answer. Anything between the preceding 'context' html blocks is retrieved from a knowledge bank, not part of the conversation with the user.`;
 
 const responseChainPrompt = ChatPromptTemplate.fromMessages<{
-  context: string;
-  chat_history: BaseMessage[];
-  question: string;
+	context: string;
+	chat_history: BaseMessage[];
+	question: string;
 }>([
-  ["system", RESPONSE_SYSTEM_TEMPLATE],
-  new MessagesPlaceholder("chat_history"),
-  ["user", `{question}`],
+	["system", RESPONSE_SYSTEM_TEMPLATE],
+	new MessagesPlaceholder("chat_history"),
+	["user", `{question}`],
 ]);
 
 const formatDocs = (docs: Document[]) => {
-  return docs
-    .map((doc, i) => `<doc id='${i}'>${doc.pageContent}</doc>`)
-    .join("\n");
+	return docs
+		.map((doc, i) => `<doc id='${i}'>${doc.pageContent}</doc>`)
+		.join("\n");
 };
 
 const createRetrievalChain = (
-  llm: BaseLanguageModel,
-  retriever: BaseRetriever,
-  chatHistory: ChatWindowMessage[],
+	llm: BaseLanguageModel,
+	retriever: BaseRetriever,
+	chatHistory: ChatWindowMessage[],
 ) => {
-  if (chatHistory.length) {
-    return RunnableSequence.from([
-      rephraseQuestionChainPrompt,
-      llm,
-      new StringOutputParser(),
-      retriever,
-      formatDocs,
-    ]);
-  } else {
-    return RunnableSequence.from([
-      (input) => input.question,
-      retriever,
-      formatDocs,
-    ]);
-  }
+	if (chatHistory.length) {
+		return RunnableSequence.from([
+			rephraseQuestionChainPrompt,
+			llm,
+			new StringOutputParser(),
+			retriever,
+			formatDocs,
+		]);
+	} else {
+		return RunnableSequence.from([
+			(input) => input.question,
+			retriever,
+			formatDocs,
+		]);
+	}
 };
 
 const embedPDF = async (pdfBlob: Blob) => {
-  const pdfLoader = new WebPDFLoader(pdfBlob);
-  const docs = await pdfLoader.load();
+	const pdfLoader = new WebPDFLoader(pdfBlob);
+	const docs = await pdfLoader.load();
 
-  const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 500,
-    chunkOverlap: 50,
-  });
+	const splitter = new RecursiveCharacterTextSplitter({
+		chunkSize: 500,
+		chunkOverlap: 50,
+	});
 
-  const splitDocs = await splitter.splitDocuments(docs);
+	const splitDocs = await splitter.splitDocuments(docs);
 
-  self.postMessage({
-    type: "log",
-    data: splitDocs,
-  });
+	self.postMessage({
+		type: "log",
+		data: splitDocs,
+	});
 
-  await vectorstore.addDocuments(splitDocs);
+	await vectorstore.addDocuments(splitDocs);
 };
 
 const _formatChatHistoryAsMessages = async (
-  chatHistory: ChatWindowMessage[],
+  	chatHistory: ChatWindowMessage[],
 ) => {
-  return chatHistory.map((chatMessage) => {
-    if (chatMessage.role === "human") {
-      return new HumanMessage(chatMessage.content);
-    } else {
-      return new AIMessage(chatMessage.content);
-    }
-  });
+	return chatHistory.map((chatMessage) => {
+		if (chatMessage.role === "human") {
+			return new HumanMessage(chatMessage.content);
+		} else {
+			return new AIMessage(chatMessage.content);
+		}
+	});
 };
 
 const queryVectorStore = async (messages: ChatWindowMessage[]) => {
-  const text = messages[messages.length - 1].content;
-  const chatHistory: ChatWindowMessage[] = messages.slice(0, -1);
+	const text = messages[messages.length - 1].content;
+	const chatHistory: ChatWindowMessage[] = messages.slice(0, -1);
 
-  const retrievalChain = createRetrievalChain(
-    openai,
-    vectorstore.asRetriever(),
-    chatHistory,
-  );
+	const retrievalChain = createRetrievalChain(
+		openai,
+		vectorstore.asRetriever(),
+		chatHistory,
+	);
 
-  const responseChain = RunnableSequence.from([
-    responseChainPrompt,
-    openai,
-    new StringOutputParser(),
-  ]);
+	const responseChain = RunnableSequence.from([
+		responseChainPrompt,
+		openai,
+		new StringOutputParser(),
+	]);
 
-  const fullChain = RunnableSequence.from([
-    {
-      question: (input) => input.question,
-      chat_history: RunnableSequence.from([
-        (input) => input.chat_history,
-        _formatChatHistoryAsMessages,
-      ]),
-      context: RunnableSequence.from([
-        (input) => {
-          const formattedChatHistory = input.chat_history
-            .map(
-              (message: ChatWindowMessage) =>
-                `${message.role.toUpperCase()}: ${message.content}`,
-            )
-            .join("\n");
-          return {
-            question: input.question,
-            chat_history: formattedChatHistory,
-          };
-        },
-        retrievalChain,
-      ]),
-    },
-    responseChain,
-  ]);
+	const fullChain = RunnableSequence.from([
+		{
+			question: (input) => input.question,
+			chat_history: RunnableSequence.from([
+				(input) => input.chat_history,
+				_formatChatHistoryAsMessages,
+			]),
+			context: RunnableSequence.from([
+				(input) => {
+					const formattedChatHistory = input.chat_history
+						.map(
+						(message: ChatWindowMessage) =>
+							`${message.role.toUpperCase()}: ${message.content}`,
+						)
+						.join("\n");
+					return {
+						question: input.question,
+						chat_history: formattedChatHistory,
+					};
+				},
+				retrievalChain,
+			]),
+		},
+		responseChain,
+	]);
 
-  const stream = await fullChain.stream({
-    question: text,
-    chat_history: chatHistory,
-  });
+	const stream = await fullChain.stream({
+		question: text,
+		chat_history: chatHistory,
+	});
 
-  for await (const chunk of stream) {
-    if (chunk) {
-      self.postMessage({
-        type: "chunk",
-        data: chunk,
-      });
-    }
-  }
+	for await (const chunk of stream) {
+		if (chunk) {
+			self.postMessage({
+				type: "chunk",
+				data: chunk,
+			});
+		}
+	}
 
-  self.postMessage({
-    type: "complete",
-    data: "OK",
-  });
+	self.postMessage({
+		type: "complete",
+		data: "OK",
+	});
 };
 
 // Listen for messages from the main thread
 self.addEventListener("message", async (event: any) => {
-  self.postMessage({
-    type: "log",
-    data: `Received data!`,
-  });
+	self.postMessage({
+		type: "log",
+		data: `Received data!`,
+	});
 
-  if (event.data.pdf) {
-    try {
-      await embedPDF(event.data.pdf);
-    } catch (e: any) {
-      self.postMessage({
-        type: "error",
-        error: e.message,
-      });
-      throw e;
-    }
-  } else {
-    try {
-      await queryVectorStore(event.data.messages);
-    } catch (e: any) {createRetrievalChain
-      self.postMessage({
-        type: "error",
-        error: `${e.message}. Make sure you are running Ollama.`,
-      });
-      throw e;
-    }
-  }
+	if (event.data.pdf) {
+		try {
+			await embedPDF(event.data.pdf);
+		} catch (e: any) {
+			self.postMessage({
+				type: "error",
+				error: e.message,
+			});
+			throw e;
+		}
+	} else {
+		try {
+			await queryVectorStore(event.data.messages);
+		} catch (e: any) {createRetrievalChain
+			self.postMessage({
+				type: "error",
+				error: `${e.message}. Make sure you are running Ollama.`,
+			});
+			throw e;
+		}
+	}
 
-  self.postMessage({
-    type: "complete",
-    data: "OK",
-  });
+	self.postMessage({
+		type: "complete",
+		data: "OK",
+	});
 });

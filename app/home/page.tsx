@@ -5,8 +5,11 @@ import { redirect } from "next/navigation";
 
 
 export default async function Home() {
+	const session = await getServerSession(authOptions);
+	
+	if (session) {
+		redirect("/ai_tools");
+	}
 
-  const session = await getServerSession(authOptions);
-
-  return <main>{session ? redirect("/ai_tools") : <HomeContent />}</main>;
+	return <main><HomeContent /></main>;
 }

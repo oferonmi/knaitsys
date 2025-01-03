@@ -35,45 +35,45 @@ export async function POST(req: NextRequest) {
     // }
 
     try {
-      const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
-        chunkSize: 256,
-        chunkOverlap: 20,
-      });
+		const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
+			chunkSize: 256,
+			chunkOverlap: 20,
+		});
 
-      // for raw text chunking
-      const splitDocuments = await splitter.createDocuments([text]);
+		// for raw text chunking
+		const splitDocuments = await splitter.createDocuments([text]);
 
-      // const client = createClient(
-      //     process.env.SUPABASE_URL!,
-      //     process.env.SUPABASE_PRIVATE_KEY!,
-      // );
+		// const client = createClient(
+		//     process.env.SUPABASE_URL!,
+		//     process.env.SUPABASE_PRIVATE_KEY!,
+		// );
 
-      // const vectorstore = await SupabaseVectorStore.fromDocuments(
-      //     splitDocuments,
-      //     new OpenAIEmbeddings(),
-      //     {
-      //         client,
-      //         tableName: "documents",
-      //         queryName: "match_documents",
-      //     },
-      // );
+		// const vectorstore = await SupabaseVectorStore.fromDocuments(
+		//     splitDocuments,
+		//     new OpenAIEmbeddings(),
+		//     {
+		//         client,
+		//         tableName: "documents",
+		//         queryName: "match_documents",
+		//     },
+		// );
 
-      const pinecone = new Pinecone({
-        apiKey: process.env.PINECONE_API_KEY!,
-      });
+		const pinecone = new Pinecone({
+			apiKey: process.env.PINECONE_API_KEY!,
+		});
 
-      const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
+		const pineconeIndex = pinecone.Index(process.env.PINECONE_INDEX!);
 
-      const vectorstore = await PineconeStore.fromDocuments(
-        splitDocuments,
-        new OpenAIEmbeddings(),
-        {
-          pineconeIndex,
-          maxConcurrency: 5,
-        }
-      );
+		const vectorstore = await PineconeStore.fromDocuments(
+			splitDocuments,
+			new OpenAIEmbeddings(),
+			{
+				pineconeIndex,
+				maxConcurrency: 5,
+			}
+		);
 
-      return NextResponse.json({ ok: true }, { status: 200 });
+		return NextResponse.json({ ok: true }, { status: 200 });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }

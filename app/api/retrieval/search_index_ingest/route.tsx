@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 
-import { SerpAPILoader } from "langchain/document_loaders/web/serpapi";
-import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+import { SerpAPILoader } from "@langchain/community/document_loaders/web/serpapi";
+import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio";
 
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { Pinecone } from "@pinecone-database/pinecone";
