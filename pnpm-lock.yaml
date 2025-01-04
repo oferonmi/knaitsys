@@ -14,6 +14,9 @@ importers:
       '@ai-sdk/anthropic':
         specifier: ^1.0.6
         version: 1.0.6(zod@3.24.1)
+      '@ai-sdk/google':
+        specifier: ^1.0.12
+        version: 1.0.12(zod@3.24.1)
       '@ai-sdk/openai':
         specifier: ^1.0.12
         version: 1.0.12(zod@3.24.1)
@@ -219,6 +222,12 @@ packages:
 
   '@ai-sdk/anthropic@1.0.6':
     resolution: {integrity: sha512-/9f/CJfR+9rXRV55KSBExMCGeVV7QE5SlagLniak4j74t4/Zg1Aoa69AHftJ78rz/S5srvAB9YtTu52NY+E0mg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
+  '@ai-sdk/google@1.0.12':
+    resolution: {integrity: sha512-vZUK8X997tKmycwCa9d26PoGtIyNEILykYb6JscMoA/pfr5Nss8Ox1JtSGn+PRkehpJhclOaLNWV1JQAjp73aA==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0
@@ -4091,6 +4100,12 @@ snapshots:
       '@ai-sdk/provider-utils': 2.0.5(zod@3.24.1)
       zod: 3.24.1
 
+  '@ai-sdk/google@1.0.12(zod@3.24.1)':
+    dependencies:
+      '@ai-sdk/provider': 1.0.3
+      '@ai-sdk/provider-utils': 2.0.5(zod@3.24.1)
+      zod: 3.24.1
+
   '@ai-sdk/openai-compatible@0.0.13(zod@3.24.1)':
     dependencies:
       '@ai-sdk/provider': 1.0.3
@@ -5162,7 +5177,7 @@ snapshots:
   axios@1.7.4(debug@4.4.0):
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.0)
-      form-data: 4.0.0
+      form-data: 4.0.1
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
