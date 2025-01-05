@@ -28,6 +28,7 @@ const LLM_OPTIONS: LlmRoute[] = [
 	{ value: 'chat/mixtral_MoE8x7B_Instruct_fireworks', label: 'Mixtral-MoE8x7B-Fwks' },
 	{ value: 'chat/xai', label: 'Grok-Beta' },
 	{ value: 'chat/gemini', label: 'Gemini-1.5-Pro', isMultimodal: true},
+	// { value: 'chat/deepseek', label: 'Deepseek-v3' },
 	{ value: 'chat/qwen2', label: 'Qwen-2-Ollama' },
 	{ value: 'multimodal/chat/llava', label: 'Llava-Ollama', isMultimodal: true },
 	{ value: 'multimodal/chat/phi3', label: 'Phi3-Ollama'},

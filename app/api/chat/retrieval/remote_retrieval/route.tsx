@@ -1,11 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  	Message as VercelChatMessage,
-  	StreamingTextResponse,
-  	createStreamDataTransformer,
-	convertToCoreMessages, 
-	streamText
-} from "ai";
+import {Message as VercelChatMessage, streamText, convertToCoreMessages, CoreTool} from "ai";
 
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -18,6 +12,15 @@ import {
   	BytesOutputParser,
   	StringOutputParser,
 } from "@langchain/core/output_parsers";
+
+import { StreamingTextResponse } from "@/components/StreamingTextResponse";
+import { google } from "@ai-sdk/google";
+
+interface StreamTextResult<T> {
+  data: ReadableStream;
+  response: Response;
+  toDataStreamResponse: (headers?: Record<string, string>) => Response;
+}
 
 export const runtime = "edge";
 
@@ -38,6 +41,55 @@ const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
 	});
 	return formattedDialogueTurns.join("\n");
 };
+
+function createStreamTextResult(stream: AsyncIterable<Uint8Array>): StreamTextResult<Record<string, CoreTool<any, any>>> {
+	const encoder = new TextEncoder();
+	const decoder = new TextDecoder();
+
+	const transformStream = new TransformStream({
+		transform(chunk, controller) {
+		const text = decoder.decode(chunk);
+		// Add SSE format with proper separators
+		controller.enqueue(encoder.encode(`data: ${text}\n\n`));
+		}
+	});
+
+	const readable = new ReadableStream({
+		async start(controller) {
+			try {
+				for await (const chunk of stream) {
+				controller.enqueue(chunk);
+				}
+				controller.close();
+			} catch (e) {
+				controller.error(e);
+			}
+		}
+	});
+
+	const processedStream = readable.pipeThrough(transformStream);
+
+	const response = new Response(processedStream, {
+		headers: {
+			'Content-Type': 'text/event-stream',
+			'Cache-Control': 'no-cache',
+			'Connection': 'keep-alive',
+		}
+	});
+
+	return {
+		data: processedStream,
+		response,
+		toDataStreamResponse: (headers?: Record<string, string>) => {
+			return new Response(processedStream, {
+				headers: {
+				...response.headers,
+				...headers
+				}
+			});
+		}
+	};
+}
 
 const CONDENSE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language.
 
@@ -63,8 +115,8 @@ Answer the question based only on the following context and chat history:
   {chat_history}
 </chat_history>
 
-Question: {question}
-`;
+Question: {question}`;
+
 const answerPrompt = PromptTemplate.fromTemplate(ANSWER_TEMPLATE);
 
 /**
@@ -81,7 +133,7 @@ export async function POST(req: NextRequest) {
 		const currentMessageContent = messages[messages.length - 1].content;
 
 		const model = new ChatOpenAI({
-			modelName: "gpt-3.5-turbo-1106",
+			modelName: "gpt-4o-mini",
 			temperature: 0.2,
 		});
 
@@ -168,16 +220,23 @@ export async function POST(req: NextRequest) {
 			),
 		).toString("base64");
 
-		return new StreamingTextResponse(
-			stream.pipeThrough(createStreamDataTransformer()), 
-			{
-				headers: {
-					"x-message-index": (previousMessages.length + 1).toString(),
-					"x-sources": serializedSources,
-				},
-			}
-		);
+		// return new StreamingTextResponse(
+		// 	stream.pipeThrough(createStreamDataTransformer()),
+		// 	{
+			// 	headers: {
+			// 		"x-message-index": (previousMessages.length + 1).toString(),
+			// 		"x-sources": serializedSources,
+			// 	},
+		//  });
+
+
+		const streamResult = createStreamTextResult(stream);
+		return streamResult.toDataStreamResponse({
+			"x-message-index": (previousMessages.length + 1).toString(),
+			"x-sources": serializedSources,
+		});
 	} catch (e: any) {
 		return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
 	}
 }
+
