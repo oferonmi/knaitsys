@@ -14,12 +14,11 @@ import {
 } from "@langchain/core/output_parsers";
 
 import { StreamingTextResponse } from "@/components/StreamingTextResponse";
-import { google } from "@ai-sdk/google";
 
 interface StreamTextResult<T> {
-  data: ReadableStream;
-  response: Response;
-  toDataStreamResponse: (headers?: Record<string, string>) => Response;
+	data: ReadableStream;
+	response: Response;
+	toDataStreamResponse: (headers?: Record<string, string>) => Response;
 }
 
 export const runtime = "edge";
@@ -42,15 +41,29 @@ const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
 	return formattedDialogueTurns.join("\n");
 };
 
-function createStreamTextResult(stream: AsyncIterable<Uint8Array>): StreamTextResult<Record<string, CoreTool<any, any>>> {
+function createStreamTextResult(
+	stream: AsyncIterable<Uint8Array>, headers?: Record<string, string>
+): StreamTextResult<Record<string, CoreTool<any, any>>> {
 	const encoder = new TextEncoder();
 	const decoder = new TextDecoder();
 
 	const transformStream = new TransformStream({
 		transform(chunk, controller) {
-		const text = decoder.decode(chunk);
-		// Add SSE format with proper separators
-		controller.enqueue(encoder.encode(`data: ${text}\n\n`));
+			try {
+				const text = decoder.decode(chunk);
+				const lines = text.split('\n').filter(line => line.trim());
+				
+				for (const line of lines) {
+					if (line.includes('[DONE]')) {
+						return;
+					}
+					// Ensure proper SSE format with data prefix and double newline
+					controller.enqueue(encoder.encode(`data: ${line}\n\n`));
+				}
+			} catch (e) {
+				console.error('Error transforming chunk:', e);
+				controller.error(e);
+			}
 		}
 	});
 
@@ -77,18 +90,21 @@ function createStreamTextResult(stream: AsyncIterable<Uint8Array>): StreamTextRe
 		}
 	});
 
-	return {
+	const streamTextResult = {
 		data: processedStream,
 		response,
-		toDataStreamResponse: (headers?: Record<string, string>) => {
+		toDataStreamResponse: (additionalHeaders?: Record<string, string>) => {
 			return new Response(processedStream, {
 				headers: {
-				...response.headers,
-				...headers
+					...response.headers,
+					...additionalHeaders
 				}
 			});
 		}
 	};
+
+
+	return streamTextResult;
 }
 
 const CONDENSE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language.

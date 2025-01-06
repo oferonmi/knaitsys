@@ -6,17 +6,18 @@ export const UnAuthHeader = () => {
     const pgPathName = usePathname();
 
     return (
-        <div className="header">
-            <nav className="flex flex-row bg-gray-100 w-full items-center space-x-6 justify-between">
-                {pgPathName != "/auth/signIn"?(
-                    <LogInButton />
-                ):(
-                    <></>
-                )}
-                <div className="md:mr-2.5">
+        <header className=" bg-gray-100 px-4 py-2">
+            <nav className="container mx-auto flex items-center justify-between">
+                <div className="flex items-center space-x-4">
                     <SignUpButton />
                 </div>
+
+                {pgPathName !== "/auth/signIn" && (
+                    <div>
+                        <LogInButton />
+                    </div>
+                )}
             </nav>
-        </div>
+        </header>
     );
 }

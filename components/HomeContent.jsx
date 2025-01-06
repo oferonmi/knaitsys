@@ -1,5 +1,6 @@
 import Link from "next/link"
-import HomeBgImg from "../public/d5-render-0NSnrDBogYg-unsplash.jpg"
+// import HomeBgImg from "../public/d5-render-0NSnrDBogYg-unsplash.jpg"
+import HomeBgImg from "@/public/understand_innovate_build_domain_bg_photo_6.jpg"
 
 export const HomeContent = () => {
     return (
@@ -10,7 +11,7 @@ export const HomeContent = () => {
                 Understand, innovate and build using AI.
             </h1>
 
-            <p className="mt-2 text-xl text-black">
+            <p className="mt-2 text-3xl text-white">
                 Adopt Natural Language Interface (NLI) for your knowledge work.
             </p>
 
