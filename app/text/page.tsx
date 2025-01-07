@@ -1,62 +1,55 @@
 "use client"
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
-import {
-  ChatIcon,
-  ClipBoardDataFullIcon,
-  CardTextIcon,
-} from "@/components/Icons";
 
-const TextProcessorPage = () => {
-  // sessions
-  const { data: session, status } = useSession();
+import { withAuth } from "@/components/HOC/withAuth"
+import {type ToolList, ToolsList} from "@/components/ToolsList"
+import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css'
 
-  const textProcessorPageContent = (
-    <div className="flex flex-col bg-teal-100 bg-cover bg-center items-center justify-center h-screen">
-      <div className="font-mono text-3xl text-gray-700 max-w-2xl pb-5 mx-auto mt-4 sm:px-4">
-        Text Processor Tools.
-      </div>
+const textTools: ToolList[] = [
+	{
+		id: 'chat',
+		title: 'Chat Interface',
+		description: 'Chat with / ask questions from several LLM AI models',
+		icon: 'bi bi-chat-dots',
+		path: '/chat'
+	},
+	{
+		id: 'summarize',
+		title: 'Summarization Interface',
+		description: 'Summarize text from various document sources',
+		icon: 'bi bi-card-text',
+		path: '/summarizer'
+	},
+	{
+		id: 'retrieval',
+		title: 'Document Q&A Interface',
+		description: 'Ask questions about content of uploaded documents',
+		icon: 'bi bi-question-circle',
+		path: '/retrieval'
+	}
+]
 
-      <div className="mt-2 text-xl text-black">
-        Tools to process corpus of text using Natural Language Interface (NLI).
-      </div>
+const pageStyles = {
+	container: "flex flex-col min-h-screen",
+	main: "flex-grow bg-teal-100 bg-cover bg-center",
+	content: "container mx-auto px-4 py-8",
+	heading: "text-3xl font-bold text-gray-800 mb-6",
+	description: "text-lg text-gray-600 mb-8"
+} as const
 
-      <div className="grid grid-flow-col justify-items-stretch place-items-center gap-4 max-w-2xl pb-5 mx-auto mt-4 sm:px-4 text-gray-700">
-        <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <Link href="/chat">
-            <i className="bi bi-chat-text-fill" style={{fontSize: 64}}></i>
-            <p>Chat</p>
-          </Link>
-        </div>
+function TextToolsPage() {
+	return (
+		<div className={pageStyles.container}>
+			<main className={pageStyles.main}>
+				<div className={pageStyles.content}>
+					<h1 className={pageStyles.heading}>Text Tools</h1>
+					<p className={pageStyles.description}>
+						Select a text processing tool to begin
+					</p>
+					<ToolsList  tools={textTools}/>
+				</div>
+			</main>
+		</div>
+	)
+}
 
-        <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <Link href="/summarizer">
-            <i className="bi bi-card-text" style={{fontSize: 64}}></i>
-            <p>Recap</p>
-          </Link>
-        </div>
-
-        <div className="border-hidden border-8 hover:border-dotted border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green">
-          <Link href="/retrieval">
-            <i className="bi bi-database-fill-up" style={{fontSize: 64}}></i>
-            <p>Retrieval</p>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-
-  return (
-    <>
-      
-      {status === "authenticated" && textProcessorPageContent}
-      {status === "unauthenticated" && redirect("/auth/signIn")}
-    </>
-  );
-};
-
-export default TextProcessorPage;
+export default withAuth(TextToolsPage)
