@@ -12,7 +12,6 @@ const styles = {
 }
 
 function AiToolsPage() {
-
 	return (
 		<main className={styles.container}>
 			<h1 className={styles.header}>AI Tools Kit</h1>

@@ -351,7 +351,7 @@ export function RetrievalChatWindow(props: {
 	);
 
 	return (
-		<>
+		<main>
 			<div className={`w-full min-h-screen text-black ${readyToChat ? "border" : ""}`}>
 				<h2
 					className={`${
@@ -370,6 +370,6 @@ export function RetrievalChatWindow(props: {
 				<ToastContainer />
 			</div>
 			<div className="w-full bottom-0"><Footer /></div>
-		</>
+		</main>
 	);
 }

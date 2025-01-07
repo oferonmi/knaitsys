@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "flowbite-react";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
+import { withAuth } from "@/components/HOC/withAuth";
 
 // Add type for LLM API routes to improve type safety and maintainability
 type LlmRoute = {
@@ -130,47 +131,38 @@ const ChatbotPage = () => {
 	);
 
 	return (
-		<>
-		{status === "authenticated" && (
-			<>
-			{/* <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen"> */}
-				{messages.length == 0 && landingSectionUI}
+		<main>
+			{messages.length == 0 && landingSectionUI}
 
-				{messages.length > 0 && (
-					<>
-						<div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
-							<ChatThread
-								messages={messages}
-								sysEmoji="🤖"
-								sources={sourcesForMessages} 
-							/>
+			{messages.length > 0 && (
+				<div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
+					<ChatThread
+						messages={messages}
+						sysEmoji="🤖"
+						sources={sourcesForMessages} 
+					/>
 
-							<div
-								className="fixed bottom-0 border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9"
+					<div
+						className="fixed bottom-0 border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9"
+					>
+						<Tooltip content="Clear Chat Thread" className="inline-flex">
+							<button
+								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-6 py-5 mr-2"
+								type="button"
+								onClick={() => { setMessages([]); } }
 							>
-								<Tooltip content="Clear Chat Thread" className="inline-flex">
-									<button
-										className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-6 py-5 mr-2"
-										type="button"
-										onClick={() => { setMessages([]); } }
-									>
-										<i className="bi bi-trash3-fill"></i>
-									</button>
-								</Tooltip>
+								<i className="bi bi-trash3-fill"></i>
+							</button>
+						</Tooltip>
 
-								{/* main chat form widgets */}
-								{ChatFormWidgets}
-							</div>
-						</div>
-					</>
-				)}  
-			{/* </div> */}
+						{/* main chat form widgets */}
+						{ChatFormWidgets}
+					</div>
+				</div>
+			)}  
 			<div className="w-full bottom-0"><Footer /></div>
-			</>
-		)}
-		{status === "unauthenticated" && redirect("/auth/signIn")}
-		</>
+		</main>
 	);
 }
 
-export default ChatbotPage;
+export default withAuth(ChatbotPage);
