@@ -145,7 +145,7 @@ const ChatbotPage = () => {
 					<div
 						className="fixed bottom-0 border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9"
 					>
-						<Tooltip content="Clear Chat Thread" className="inline-flex">
+						<Tooltip content="Clear Chat Thread" className="inline-flex bg-black">
 							<button
 								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-6 py-5 mr-2"
 								type="button"

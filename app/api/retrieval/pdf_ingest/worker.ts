@@ -1,5 +1,4 @@
 import { ChatWindowMessage } from "@/schema/ChatWindowMessage";
-
 import { WebPDFLoader } from "@langchain/community/document_loaders/web/pdf";
 import { HuggingFaceTransformersEmbeddings } from "@langchain/community/embeddings/hf_transformers";
 import { VoyVectorStore } from "@langchain/community/vectorstores/voy";
@@ -37,11 +36,11 @@ export const runtime = "edge";
 // const client = createClient(supabase_url, supabase_anon_key);
 
 const pinecone = new Pinecone({
-  	apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
+	apiKey: process.env.NEXT_PUBLIC_PINECONE_API_KEY!,
 });
 
 const pineconeIndex = pinecone.Index(
-  	process.env.NEXT_PUBLIC_PINECONE_INDEX!
+	process.env.NEXT_PUBLIC_PINECONE_INDEX!
 );
 
 // const embeddings = new HuggingFaceTransformersEmbeddings({

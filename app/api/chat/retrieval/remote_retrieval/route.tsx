@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {Message as VercelChatMessage, streamText, convertToCoreMessages, CoreTool} from "ai";
+import {Message as VercelChatMessage, streamText, convertToCoreMessages, CoreTool, createDataStreamResponse, generateId} from "ai";
 
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -12,14 +12,9 @@ import {
   	BytesOutputParser,
   	StringOutputParser,
 } from "@langchain/core/output_parsers";
+import { openai } from '@ai-sdk/openai';
 
-import { StreamingTextResponse } from "@/components/StreamingTextResponse";
-
-interface StreamTextResult<T> {
-	data: ReadableStream;
-	response: Response;
-	toDataStreamResponse: (headers?: Record<string, string>) => Response;
-}
+// import { StreamingTextResponse } from "@/components/StreamingTextResponse";
 
 export const runtime = "edge";
 
@@ -41,71 +36,76 @@ const formatVercelMessages = (chatHistory: VercelChatMessage[]) => {
 	return formattedDialogueTurns.join("\n");
 };
 
-function createStreamTextResult(
-	stream: AsyncIterable<Uint8Array>, headers?: Record<string, string>
-): StreamTextResult<Record<string, CoreTool<any, any>>> {
-	const encoder = new TextEncoder();
-	const decoder = new TextDecoder();
+// interface StreamTextResult<T> {
+// 	data: ReadableStream;
+// 	// response: Response;
+// 	toDataStreamResponse: (headers?: Record<string, string>) => Response;
+// }
 
-	const transformStream = new TransformStream({
-		transform(chunk, controller) {
-			try {
-				const text = decoder.decode(chunk);
-				const lines = text.split('\n').filter(line => line.trim());
+// function createStreamTextResult(
+// 	stream: AsyncIterable<Uint8Array>, headers?: Record<string, string>
+// ): StreamTextResult<Record<string, CoreTool<any, any>>> {
+// 	const encoder = new TextEncoder();
+// 	const decoder = new TextDecoder();
+
+// 	const transformStream = new TransformStream({
+// 		transform(chunk, controller) {
+// 			try {
+// 				const text = decoder.decode(chunk);
+// 				const lines = text.split('\n').filter(line => line.trim());
 				
-				for (const line of lines) {
-					if (line.includes('[DONE]')) {
-						return;
-					}
-					// Ensure proper SSE format with data prefix and double newline
-					controller.enqueue(encoder.encode(`data: ${line}\n\n`));
-				}
-			} catch (e) {
-				console.error('Error transforming chunk:', e);
-				controller.error(e);
-			}
-		}
-	});
+// 				for (const line of lines) {
+// 					if (line.includes('[DONE]')) {
+// 						return;
+// 					}
+// 					// Ensure proper SSE format with data prefix and double newline
+// 					controller.enqueue(encoder.encode(`data: ${line}\n\n`));
+// 				}
+// 			} catch (e) {
+// 				console.error('Error transforming chunk:', e);
+// 				controller.error(e);
+// 			}
+// 		}
+// 	});
 
-	const readable = new ReadableStream({
-		async start(controller) {
-			try {
-				for await (const chunk of stream) {
-				controller.enqueue(chunk);
-				}
-				controller.close();
-			} catch (e) {
-				controller.error(e);
-			}
-		}
-	});
+// 	const readable = new ReadableStream({
+// 		async start(controller) {
+// 			try {
+// 				for await (const chunk of stream) {
+// 					controller.enqueue(chunk);
+// 				}
+// 				controller.close();
+// 			} catch (e) {
+// 				controller.error(e);
+// 			}
+// 		}
+// 	});
 
-	const processedStream = readable.pipeThrough(transformStream);
+// 	const processedStream = readable.pipeThrough(transformStream);
 
-	const response = new Response(processedStream, {
-		headers: {
-			'Content-Type': 'text/event-stream',
-			'Cache-Control': 'no-cache',
-			'Connection': 'keep-alive',
-		}
-	});
+// 	const response = new Response(processedStream, {
+// 		headers: {
+// 			'Content-Type': 'text/event-stream',
+// 			'Cache-Control': 'no-cache',
+// 			'Connection': 'keep-alive',
+// 		}
+// 	});
 
-	const streamTextResult = {
-		data: processedStream,
-		response,
-		toDataStreamResponse: (additionalHeaders?: Record<string, string>) => {
-			return new Response(processedStream, {
-				headers: {
-					...response.headers,
-					...additionalHeaders
-				}
-			});
-		}
-	};
+// 	const streamTextResult = {
+// 		data: processedStream,
+// 		response,
+// 		toDataStreamResponse: (additionalHeaders?: Record<string, string>) => {
+// 			return new Response(processedStream, {
+// 				headers: {
+// 					...response.headers,
+// 					...additionalHeaders
+// 				}
+// 			});
+// 		}
+// 	};
 
-
-	return streamTextResult;
-}
+// 	return streamTextResult;
+// }
 
 const CONDENSE_QUESTION_TEMPLATE = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question, in its original language.
 
@@ -236,21 +236,79 @@ export async function POST(req: NextRequest) {
 			),
 		).toString("base64");
 
-		// return new StreamingTextResponse(
-		// 	stream.pipeThrough(createStreamDataTransformer()),
-		// 	{
-			// 	headers: {
-			// 		"x-message-index": (previousMessages.length + 1).toString(),
-			// 		"x-sources": serializedSources,
-			// 	},
-		//  });
+		// const encoder = new TextEncoder();
+		// const decoder = new TextDecoder();
 
+		// const transformStream = new TransformStream({
+		// 	transform(chunk, controller) {
+		// 		try {
+		// 			const text = typeof chunk === 'string' 
+		// 				? chunk 
+		// 				: decoder.decode(chunk);
+		// 			controller.enqueue(encoder.encode(`data: ${text}\n\n`));
+		// 		} catch (e) {
+		// 			console.error('Error transforming chunk:', e);
+		// 			controller.error(e);
+		// 		}
+		// 	}
+		// });
 
-		const streamResult = createStreamTextResult(stream);
-		return streamResult.toDataStreamResponse({
-			"x-message-index": (previousMessages.length + 1).toString(),
-			"x-sources": serializedSources,
+		const transformStream = new TransformStream();
+		const streamResponse = stream.pipeThrough(transformStream);
+
+		return new Response(streamResponse, {
+			headers: {
+				'Content-Type': 'text/event-stream',
+				'Cache-Control': 'no-cache',
+				'Connection': 'keep-alive',
+				'x-message-index': (previousMessages.length + 1).toString(),
+				'x-sources': serializedSources,
+			},
 		});
+
+		// return new StreamingTextResponse(streamResponse, {
+		// 	headers: {
+		// 		"x-message-index": (previousMessages.length + 1).toString(),
+		// 		"x-sources": serializedSources,
+		// 	},
+		// });
+
+		// return createDataStreamResponse({
+		// 	status: 200,
+		// 	statusText: 'OK',
+		// 	headers: {
+		// 		"x-message-index": (previousMessages.length + 1).toString(),
+		// 		"x-sources": serializedSources,
+		// 	},
+		// 	execute: dataStream => {
+		// 		dataStream.writeData('initialized call');
+
+		// 		const result = streamText({
+		// 			model: openai('gpt-4o'),
+		// 			messages: convertToCoreMessages(messages),
+		// 			onChunk() {
+		// 				dataStream.writeMessageAnnotation({ chunk: '123' });
+		// 			},
+		// 			onFinish() {
+		// 				// message annotation:
+		// 				dataStream.writeMessageAnnotation({
+		// 					id: generateId(), // e.g. id from saved DB record
+		// 					other: 'information',
+		// 				});
+
+		// 				// call annotation:
+		// 				dataStream.writeData('call completed');
+		// 			},
+		// 		});
+
+		// 		result.mergeIntoDataStream(dataStream);
+		// 	},
+		// 	onError: error => {
+		// 		// Error messages are masked by default for security reasons.
+		// 		// If you want to expose the error message to the client, you can do so here:
+		// 		return error instanceof Error ? error.message : String(error);
+		// 	},
+		// });	
 	} catch (e: any) {
 		return NextResponse.json({ error: e.message }, { status: e.status ?? 500 });
 	}

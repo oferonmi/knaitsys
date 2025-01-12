@@ -8,11 +8,11 @@ export const HomeContent = () => {
 
             <h1 className="font-mono text-5xl text-white mt-30">
                 {/* Craft your own AI Research Assistant. */}
-                Understand, innovate and build using AI.
+                Use AI to understand, innovate and build.
             </h1>
 
             <p className="mt-2 text-3xl text-white">
-                Adopt Natural Language Interface (NLI) for your knowledge work.
+                Adopt Natural Language Interface (NLI) and AI models for your knowledge work.
             </p>
 
             <Link

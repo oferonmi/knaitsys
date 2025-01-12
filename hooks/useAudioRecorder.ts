@@ -69,7 +69,8 @@ const useAudioRecorder: (
 				// Cleanup stream
 				stream.getTracks().forEach(track => track.stop());
 			} catch (error) {
-				console.error('Failed to initialize recorder:', error);
+				// console.error('Failed to initialize recorder:', error);
+				alert('You need to connect a microphone to your device to use this feature.');
 			}
 		};
 

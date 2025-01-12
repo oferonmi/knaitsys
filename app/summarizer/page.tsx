@@ -12,6 +12,8 @@ import { useDropzone } from "react-dropzone";
 import copy from 'copy-to-clipboard';
 import { withAuth } from "@/components/HOC/withAuth";
 
+const toolTipsStyle = "inline-flex bg-black";
+
 const SummarizerPage = () => {
 	const [loading, setLoading] = useState(false);
 
@@ -289,30 +291,30 @@ const SummarizerPage = () => {
 		<div className="flex flex-row">
 			{/*className="flex flex-row"*/}
 			{/* <div className="flex mt-2 mr-auto">
-				<select
-				onChange={handleApiEndpointChange}
-				className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
-				id="llm-selector"
-				required
-				>
-				<option value="">--Select LLM--</option>
-				<option value="openai">GPT-3.5</option>
-				<option value="fireworksai">Llama-2-Fwks</option>
-				<option value="cohere">Co:here</option>
-				<option value="huggingface">OpenAssistant-HF</option>
-				</select>
-			</div> */}
+								<select
+								onChange={handleApiEndpointChange}
+								className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
+								id="llm-selector"
+								required
+								>
+								<option value="">--Select LLM--</option>
+								<option value="openai">GPT-3.5</option>
+								<option value="fireworksai">Llama-2-Fwks</option>
+								<option value="cohere">Co:here</option>
+								<option value="huggingface">OpenAssistant-HF</option>
+								</select>
+							</div> */}
 
 			<div className="flex ml-auto space-x-3">
 				{/* <div>
-				<button
-					className=" bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
-					type="button"
-					// onClick={stop}
-				>
-					<StopIcon />
-				</button>
-				</div> */}
+								<button
+									className=" bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
+									type="button"
+									// onClick={stop}
+								>
+									<StopIcon />
+								</button>
+								</div> */}
 
 				<div>
 					<button
@@ -323,23 +325,25 @@ const SummarizerPage = () => {
 							role="status"
 							className={`${loading ? "" : "hidden"} flex justify-center`}
 						>
-						{/* Loading wheel animation  */}
-							<svg
-								aria-hidden="true"
-								className="w-6 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
-								viewBox="0 0 100 101"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-									fill="currentColor"
-								/>
-								<path
-									d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-									fill="currentFill"
-								/>
-							</svg>
+							{/* Loading wheel animation  */}
+							<span className="flex items-center gap-2">
+								<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+										fill="none"
+									/>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+									/>
+								</svg>
+							</span>
 							<span className="sr-only">Loading...</span>
 						</div>
 
@@ -352,7 +356,7 @@ const SummarizerPage = () => {
 				</div>
 			</div>
 		</div>
-	);
+  	);
 
 	// summary page home button
 	const homeButton = (
@@ -484,128 +488,128 @@ const SummarizerPage = () => {
 
 	// search indices page form
 	const searchInputForm = (
-		<>
-			<h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
-				Enter your search query, send and recieve summary of the search result pages.
-			</h1>
+    <>
+      <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+        Enter your search query, send and recieve summary of the search result
+        pages.
+      </h1>
 
-			<form
-				className="flex w-full space-x-2"
-				id="search-form"
-				onSubmit={summarizeSearchResult}
+      <form
+        className="flex w-full space-x-2"
+        id="search-form"
+        onSubmit={summarizeSearchResult}
+      >
+        <input
+          type="text"
+          autoComplete="off"
+          autoFocus={false}
+          name="url_input_bar"
+          className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+          placeholder="  Search"
+          required={true}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+			<button
+				className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4" type="submit" 
 			>
-				<input
-					type="text"
-					autoComplete="off"
-					autoFocus={false}
-					name="url_input_bar"
-					className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
-					placeholder="  Search"
-					required={true}
-					onChange={(e) => setSearchQuery(e.target.value)}
-				/>
-				<button
-					className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
-					type="submit"
-				>
-					<div
-						role="status"
-						className={`${loading ? "" : "hidden"} flex justify-center`}
-					>
-						<svg
-							aria-hidden="true"
-							className="w-6 h-6 text-white animate-spin dark:text-white fill-kaito-brand-ash-green"
-							viewBox="0 0 100 101"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-								fill="currentColor"
+				<div role="status" className={`${loading ? "" : "hidden"} flex justify-center`}>
+					{/* Loading wheel animation  */}
+					<span className="flex items-center gap-2">
+						<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+							<circle
+								className="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								strokeWidth="4"
+								fill="none"
 							/>
 							<path
-								d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-								fill="currentFill"
+								className="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
 							/>
 						</svg>
-						<span className="sr-only">Loading...</span>
-					</div>
-					<span className={loading ? "hidden" : ""}>
-						<i className="bi bi-send-fill"></i>
-						<span className="sr-only">Send</span>
 					</span>
-				</button>
-			</form>
-		</>
-	);
+					<span className="sr-only">Loading...</span>
+				</div>
+				<span className={loading ? "hidden" : ""}>
+					<i className="bi bi-send-fill"></i>
+					<span className="sr-only">Send</span>
+				</span>
+			</button>
+      </form>
+    </>
+  );
 
 	const SideNavBar = (
 		<>
-			<div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
-				<ul>
-					<li className="p-3">
-						<Tooltip content="Upload Text" className="inline-flex">
-							<button
-								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-								onClick={() => {
-								setInputType("text");
-								}}
-							>
-								<i className="bi bi-body-text"></i>
-								<span className="sr-only">Paste text</span>
-							</button>
-						</Tooltip>
-					</li>
+		<div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
+			<ul>
+				<li className="p-3">
+					<Tooltip content="Upload Text" className={toolTipsStyle}>
+					<button
+						type="button"
+						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+						onClick={() => {
+						setInputType("text");
+						}}
+					>
+						<i className="bi bi-body-text"></i>
+						<span className="sr-only">Paste text</span>
+					</button>
+					</Tooltip>
+				</li>
 
-					<li className="p-3">
-						<Tooltip content="Upload PDF" className="inline-flex">
-							<button
-								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-								onClick={() => {
-								setInputType("file");
-								}}
-							>
-								<i className="bi bi bi-file-earmark-arrow-up"></i>
-								<span className="sr-only">Upload PDF</span>
-							</button>
-						</Tooltip>
-					</li>
+				<li className="p-3">
+					<Tooltip content="Upload PDF" className={toolTipsStyle}>
+					<button
+						type="button"
+						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+						onClick={() => {
+						setInputType("file");
+						}}
+					>
+						<i className="bi bi bi-file-earmark-arrow-up"></i>
+						<span className="sr-only">Upload PDF</span>
+					</button>
+					</Tooltip>
+				</li>
 
-					<li className="p-3">
-						<Tooltip content="Enter Webpage Address" className="inline-flex">
-							<button
-								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-								onClick={() => {
-								setInputType("url");
-								}}
-							>
-								<i className="bi bi-globe2"></i>
-								<span className="sr-only">Paste webpage URL</span>
-							</button>
-						</Tooltip>
-					</li>
+				<li className="p-3">
+					<Tooltip content="Enter Webpage Address" className={toolTipsStyle}>
+					<button
+						type="button"
+						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+						onClick={() => {
+						setInputType("url");
+						}}
+					>
+						<i className="bi bi-globe2"></i>
+						<span className="sr-only">Paste webpage URL</span>
+					</button>
+					</Tooltip>
+				</li>
 
-					<li className="p-3">
-						<Tooltip content="Enter Search Query" className="inline-flex">
-							<button
-								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-								onClick={() => {
-								setInputType("search");
-								}}
-							>
-								<i className="bi bi-search"></i>
-								<span className="sr-only">Type in your search query</span>
-							</button>
-						</Tooltip>
-					</li>
-				</ul>
-			</div>
+				<li className="p-3">
+					<Tooltip content="Enter Search Query" className={toolTipsStyle}>
+					<button
+						type="button"
+						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+						onClick={() => {
+						setInputType("search");
+						}}
+					>
+						<i className="bi bi-search"></i>
+						<span className="sr-only">Type in your search query</span>
+					</button>
+					</Tooltip>
+				</li>
+			</ul>
+		</div>
 		</>
-	);
+  	);
 
 	// Display section for orignal input text
 	const origTextDisplay = (
@@ -650,45 +654,47 @@ const SummarizerPage = () => {
 	// console.log(cardColorHex);
 
 	const FlashCard = (
-		<div className="flex flex-col h-screen">
-		{/* Summarization Flashcard component */}
-		<h2 className="text-black text-2xl flex justify-center mt-2">
-			Summary Flash Card
-		</h2>
+    <div className="flex flex-col h-screen">
+      {/* Summarization Flashcard component */}
+      <h2 className="text-black text-2xl flex justify-center mt-2">
+        Summary Flash Card
+      </h2>
 
-		<div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
-			{/* Summary Flash Card */}
-			{summarizedText.length > 0 ? (
-				<>
-					<div
-						className={`${cardColorHex}  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
-						// className="bg-[#c8a8d5] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-300"
-					>
-						<span className="whitespace-pre-wrap flex flex-col">
-							{summarizedText}
-						</span>
-						<Tooltip content="Copy to clipboard" className="inline-flex">
-							<button 
-								className="ml-2 mb-auto" 
-								type="button" 
-								onClick={() => {
-									copy(summarizedText)
-									setCopyIcon(<i className="bi bi-check2-square"></i>)
-									setTimeout(() => {setCopyIcon(<i className="bi bi-copy"></i>)},400)
-								}}
-							>
-								{copyIcon}
-							</button>
-						</Tooltip>
-					</div>
-				</>
-			) : (
-				""
-			)}
-			{/* <div ref={bottomRef} /> */}
-		</div>
-		</div>
-	);
+      <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
+        {/* Summary Flash Card */}
+        {summarizedText.length > 0 ? (
+          <>
+            <div
+              className={`${cardColorHex}  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
+              // className="bg-[#c8a8d5] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-300"
+            >
+              <span className="whitespace-pre-wrap flex flex-col">
+                {summarizedText}
+              </span>
+              <Tooltip content="Copy to clipboard" className={toolTipsStyle}>
+                <button
+                  className="ml-2 mb-auto"
+                  type="button"
+                  onClick={() => {
+                    copy(summarizedText);
+                    setCopyIcon(<i className="bi bi-check2-square"></i>);
+                    setTimeout(() => {
+                      setCopyIcon(<i className="bi bi-copy"></i>);
+                    }, 400);
+                  }}
+                >
+                  {copyIcon}
+                </button>
+              </Tooltip>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {/* <div ref={bottomRef} /> */}
+      </div>
+    </div>
+  );
 
 	return (
 		<main>

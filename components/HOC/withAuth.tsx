@@ -10,7 +10,7 @@ export function withAuth<T extends object>(WrappedComponent: ComponentType<T>) {
 
         useEffect(() => {
             if (status === 'unauthenticated') {
-                router.push('/auth/signin')
+                router.push('/api/auth/signin')
             }
         }, [status, router])
 

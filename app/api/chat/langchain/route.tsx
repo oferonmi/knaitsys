@@ -1,9 +1,11 @@
 import { NextRequest } from "next/server";
-import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
+import { Message as VercelChatMessage, convertToCoreMessages, streamText } from "ai";
 
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { BytesOutputParser } from "langchain/schema/output_parser";
-import { PromptTemplate } from "langchain/prompts";
+import { ChatOpenAI } from "@langchain/openai";
+import { BytesOutputParser } from "@langchain/core/output_parsers";
+import { PromptTemplate } from "@langchain/core/prompts";
+
+import { openai } from '@ai-sdk/openai';
 
 export const runtime = "edge";
 
@@ -12,7 +14,7 @@ export const runtime = "edge";
  * message history directly into the model.
  */
 const formatMessage = (message: VercelChatMessage) => {
-  return `${message.role}: ${message.content}`;
+  	return `${message.role}: ${message.content}`;
 };
 
 const TEMPLATE = `You are a helpful assistant who explains concept from first principles.
@@ -36,12 +38,10 @@ export async function POST(req: NextRequest) {
     const currentMessageContent = messages[messages.length - 1].content;
 
     const prompt = PromptTemplate.fromTemplate(TEMPLATE);
-    /**
-     * See a full list of supported models at:
-     * https://js.langchain.com/docs/modules/model_io/models/
-     */
+    
     const model = new ChatOpenAI({
-    temperature: 0.8,
+     	temperature: 0.8,
+		streaming: true,
     });
 
     /**
@@ -59,9 +59,18 @@ export async function POST(req: NextRequest) {
     const chain = prompt.pipe(model).pipe(outputParser);
 
     const stream = await chain.stream({
-    chat_history: formattedPreviousMessages.join("\n"),
-    input: currentMessageContent,
+    	chat_history: formattedPreviousMessages.join("\n"),
+    	input: currentMessageContent,
     });
 
-    return new StreamingTextResponse(stream);
+    // return new StreamingTextResponse(stream);
+	return new Response(stream);
+	// const response = await stream.collect();
+
+	// const result = await streamText({
+	// 	model: openai('gpt-3.5-turbo'),
+	// 	messages: convertToCoreMessages(messages),
+	// } as any);
+
+	// return result.toDataStreamResponse();
 }
