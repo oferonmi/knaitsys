@@ -3,8 +3,6 @@ import ChatForm from "@/components/ChatForm";
 import ChatThread from "@/components/ChatThread";
 import { Footer } from "@/components/Footer";
 import { useChat } from "ai/react";
-import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -38,9 +36,6 @@ const LLM_OPTIONS: LlmRoute[] = [
 const DEFAULT_LLM_ROUTE = "/api/chat/llama3_groq";
 
 const ChatbotPage = () => {
-	// sessions
-	const { data: session, status } = useSession();
-
 	//LLM engine API route
 	const [llmApiRoute, setLlmApiRoute] = useState<string>(DEFAULT_LLM_ROUTE);
 	const [sourcesForMessages, setSourcesForMessages] = useState<

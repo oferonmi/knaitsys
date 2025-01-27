@@ -454,8 +454,8 @@ const SummarizerPage = () => {
 			<input
 				type="url"
 				id="urlInput"
-				className="bg-white hover:bg-gray-50 text-kaito-brand-ash-green text-sm rounded-t-lg w-full border-x-0 border-t-0 border-b "
-				placeholder="Type in the URL (http:// address) of webpage you want to summarize."
+				className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+				placeholder="Enter URL (http:// address) of webpage to summarize."
 				value={inputUrl}
 				onChange={(e) => setInputUrl(e.target.value)}
 				required
@@ -465,24 +465,53 @@ const SummarizerPage = () => {
 
 	// URL input form
 	const urlInputForm = (
-		<form className="w-full flex flex-col" onSubmit={summarizeWebPage}>
-			<div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
-				<div className=" bg-white rounded-t-lg">
-					{urlInputBox}
+		<form className="w-full flex space-x-2" onSubmit={summarizeWebPage}>
+			<input
+				type="url"
+				id="urlInput"
+				className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+				placeholder="Enter URL (http:// address) of webpage to summarize."
+				value={inputUrl}
+				onChange={(e) => setInputUrl(e.target.value)}
+				required
+			/>
 
-					<textarea
-						id="pg_content_disp"
-						rows={12}
-						className="w-full mb-4 text-sm text-black bg-white border-0 focus:ring-0 focus:ring-inset  focus:ring-kaito-brand-ash-green"
-						value={inputTextCorpus}
-						// onChange={(e) => setInputTextCorpus(e.target.value)}
-						placeholder="  Preview of webpage content appears here ..."
-						disabled={true}
-					></textarea>
+			<button
+				className="items-center py-4 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+				type="submit"
+			>
+				<div
+					role="status"
+					className={`${loading ? "" : "hidden"} flex justify-center`}
+				>
+					{/* Loading wheel animation  */}
+					<span className="flex items-center gap-2">
+						<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+						<circle
+							className="opacity-25"
+							cx="12"
+							cy="12"
+							r="10"
+							stroke="currentColor"
+							strokeWidth="4"
+							fill="none"
+						/>
+						<path
+							className="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+						/>
+						</svg>
+					</span>
+					<span className="sr-only">Loading...</span>
 				</div>
 
-				<div className="px-3 py-2 border-t ">{summarizerCtrlButtons}</div>
-			</div>
+				{/* Send icon*/}
+				<div className={`${loading ? "hidden" : ""}`}>
+					<i className="bi bi-send-fill"></i>
+					<span className="sr-only">Send</span>
+				</div>
+			</button>
 		</form>
 	);
 
@@ -500,14 +529,14 @@ const SummarizerPage = () => {
         onSubmit={summarizeSearchResult}
       >
         <input
-          type="text"
-          autoComplete="off"
-          autoFocus={false}
-          name="url_input_bar"
-          className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
-          placeholder="  Search"
-          required={true}
-          onChange={(e) => setSearchQuery(e.target.value)}
+			type="text"
+			autoComplete="off"
+			autoFocus={false}
+			name="url_input_bar"
+			className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+			placeholder="  Search"
+			required={true}
+			onChange={(e) => setSearchQuery(e.target.value)}
         />
 			<button
 				className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4" type="submit" 

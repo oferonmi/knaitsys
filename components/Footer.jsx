@@ -3,7 +3,7 @@ import { FacebookIcon, InstagramIcon, XIcon, GitHubIcon, YoutubeIcon } from '@/c
 export const Footer = () => {
    return (
     <>
-        <footer className="border-t border-t-kaito-brand-ash-green">
+        <footer className="border-t border-t-gray-200">
             <div className="px-4 py-6 bg-kaito-brand-gray md:flex md:items-center md:justify-between md:mx-auto">
                 <span className="text-sm text-gray-500 sm:text-center">
                        <a href="#">Gutenkraft Technology Research</a> © {new Date().getFullYear()} 

@@ -16,7 +16,7 @@ export default function audioProcessorLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-teal-100 bg-cover bg-center`}>
+      <body className={`${inter.className} bg-white bg-cover bg-center`}>
         <Header menu={[]} />
         {children}
         <Footer />

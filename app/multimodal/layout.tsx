@@ -16,7 +16,7 @@ export default function MutlimodalBotLayout({
 }) {
 	return (
 		<html lang="en">
-			<body className={`${inter.className} bg-teal-100 bg-cover bg-center`}>
+			<body className={`${inter.className} bg-white bg-cover bg-center`}>
 				<Header
 					menu={[
 						{ id: 1, value: "Text", url: "/text" },

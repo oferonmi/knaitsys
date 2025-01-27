@@ -26,11 +26,13 @@ export function ChatMessageBubble(props: {
 
 	// let bubbleColorHex =
 	//   bubbleColorHexArr[Math.floor(Math.random() * bubbleColorHexArr.length)];
-	let bubbleColorHex = bubbleColorHexArr[7]; //"bg-[#96b7a5] 
+	// let bubbleColorHex = bubbleColorHexArr[7]; //"bg-[#96b7a5] 
+	let bubbleColorHex = "";
+	
 
 	const colorClassName =
 		props.message.role === "user"
-		? "bg-slate-300"
+		? "bg-slate-200"
 		: bubbleColorHex + " text-black";
 	const alignmentClassName =
 		props.message.role === "user" ? "ml-auto" : "mr-auto";
@@ -39,30 +41,31 @@ export function ChatMessageBubble(props: {
 		props.message.role === "user" ? "rounded-br-none " : "rounded-bl-none";
 
 	return (
-		<div
-			className={`${alignmentClassName} ${colorClassName} ${borderRadiusClassName} rounded-lg px-4 py-2 max-w-[80%] mb-8 flex`}
-		>
-			<div className="mr-2">{prefix}</div>
-			<div className="whitespace-pre-wrap flex flex-col">
-				<span>{props.message.content}</span>
+    <div
+      className={`${alignmentClassName} ${colorClassName} ${borderRadiusClassName} border border-slate-100 rounded-lg px-4 py-2 max-w-[80%] mb-8 flex`}
+    >
+      <div className="mr-2">{prefix}</div>
+      <div className="whitespace-pre-wrap flex flex-col">
+        <span>{props.message.content}</span>
 
-				<div>
-					{/* Input image preview */}
-					{props.message?.experimental_attachments?.filter(
-						attachment => attachment?.contentType?.startsWith('image/'),
-					).map((attachment, index) => (
-						<Image
-						key={`${props.message.id}-${index}`}
-						src={attachment.url}
-						width={450}
-						height={450}
-						alt={attachment?.name ?? ''}
-						/>
-					))
-					}
+        <div>
+          {/* Input image preview */}
+          {props.message?.experimental_attachments
+            ?.filter((attachment) =>
+              attachment?.contentType?.startsWith("image/")
+            )
+            .map((attachment, index) => (
+              <Image
+                key={`${props.message.id}-${index}`}
+                src={attachment.url}
+                width={450}
+                height={450}
+                alt={attachment?.name ?? ""}
+              />
+            ))}
 
-					{/* Input audio preview */}
-					{/* {props.message?.experimental_attachments?.filter(
+          {/* Input audio preview */}
+          {/* {props.message?.experimental_attachments?.filter(
 						attachment => attachment?.contentType?.startsWith('audio/'),
 					)
 					.map((attachment, index) => (
@@ -74,47 +77,49 @@ export function ChatMessageBubble(props: {
 						/>
 					))
 					} */}
-				</div>
+        </div>
 
-				{props.sources && props.sources.length ? (
-					<>
-						<code className="mt-4 mr-auto bg-slate-300 px-2 py-1 rounded">
-							<h2>🔍 Sources:</h2>
-						</code>
-						<code className="mt-1 mr-2 bg-slate-300 px-2 py-1 rounded text-xs">
-							{props.sources?.map((source, i) => (
-								<div className="mt-2" key={"source:" + i}>
-									{i + 1}. &quot;{source.pageContent}&quot;
-									{source.metadata?.loc?.lines !== undefined ? (
-										<div>
-											<br />
-											Lines {source.metadata?.loc?.lines?.from} to{" "}
-											{source.metadata?.loc?.lines?.to}
-										</div>
-									) : (
-										""
-									)}
-								</div>
-							))}
-						</code>
-					</>
-				) : (
-					""
-				)}
-			</div>
-			<Tooltip content="Copy to clipboard" className="inline-flex bg-black">
-				<button 
-					className="ml-2 mb-auto" 
-					type="button" 
-					onClick={() => {
-						copy(props.message.content)
-						setCopyIcon(<i className="bi bi-check2-square"></i>)
-						setTimeout(() => {setCopyIcon(<i className="bi bi-copy"></i>)},400)
-					}}
-				>
-					{copyIcon}
-				</button>
-			</Tooltip>
-		</div>
-	);
+        {props.sources && props.sources.length ? (
+          <>
+            <code className="mt-4 mr-auto bg-slate-300 px-2 py-1 rounded">
+              <h2>🔍 Sources:</h2>
+            </code>
+            <code className="mt-1 mr-2 bg-slate-300 px-2 py-1 rounded text-xs">
+              {props.sources?.map((source, i) => (
+                <div className="mt-2" key={"source:" + i}>
+                  {i + 1}. &quot;{source.pageContent}&quot;
+                  {source.metadata?.loc?.lines !== undefined ? (
+                    <div>
+                      <br />
+                      Lines {source.metadata?.loc?.lines?.from} to{" "}
+                      {source.metadata?.loc?.lines?.to}
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              ))}
+            </code>
+          </>
+        ) : (
+          ""
+        )}
+      </div>
+      <Tooltip content="Copy to clipboard" className="inline-flex bg-black">
+        <button
+          className="ml-2 mb-auto"
+          type="button"
+          onClick={() => {
+            copy(props.message.content);
+            setCopyIcon(<i className="bi bi-check2-square"></i>);
+            setTimeout(() => {
+              setCopyIcon(<i className="bi bi-copy"></i>);
+            }, 400);
+          }}
+        >
+          {copyIcon}
+        </button>
+      </Tooltip>
+    </div>
+  );
 }

@@ -8,15 +8,11 @@ const inter = Inter({ subsets: ['latin'], weight: '300', })
 
 export const metadata = {
 	title: 'Knaitsys - Knowledge-work AI Tools System',
-	description: 'Your AI tools kit',
+	description: 'AI tools kit for your knowledge work',
 }
 
-export default function RootPageLayout({children}: {children: React.ReactNode}) {
+export default function RootLayout({children}: {children: React.ReactNode}) {
 	return (
-		<html lang="en">
-			<body className={`${inter.className} bg-teal-100 bg-cover bg-center`}>
-				<NextAuthProvider>{children}</NextAuthProvider>
-			</body>
-		</html>
+		<NextAuthProvider>{children}</NextAuthProvider>
 	);
 }

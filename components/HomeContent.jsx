@@ -1,6 +1,6 @@
 import Link from "next/link"
 // import HomeBgImg from "../public/d5-render-0NSnrDBogYg-unsplash.jpg"
-import HomeBgImg from "@/public/understand_innovate_build_domain_bg_photo_6.jpg"
+import HomeBgImg from "@/public/understand_innovate_build_domain_bg_photo_14.jpg"
 
 export const HomeContent = () => {
     return (

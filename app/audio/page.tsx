@@ -23,7 +23,7 @@ const audioTools: ToolList[] = [
 
 const pageStyles = {
 	container: "flex flex-col min-h-screen",
-	main: "flex-grow bg-teal-100 bg-cover bg-center",
+	main: "flex-grow bg-cover bg-center",
 	content: "container mx-auto px-4 py-8",
 	heading: "text-3xl font-bold text-gray-800 mb-6",
 	description: "text-lg text-gray-600 mb-8"

@@ -30,12 +30,12 @@ const CodebotPage = () => {
 
 	// use OpenAI chat completion
 	const {
-			messages,
-			setMessages,
-			input,
-			handleInputChange,
-			handleSubmit,
-			isLoading: chatEndpointIsLoading,
+		messages,
+		setMessages,
+		input,
+		handleInputChange,
+		handleSubmit,
+		isLoading: chatEndpointIsLoading,
 	} = useChat({
 		api: llmApiRoute,
 		onResponse(response) {

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function STTLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-teal-100 bg-cover bg-center`}>
+      <body className={`${inter.className} bg-white bg-cover bg-center`}>
         <Header menu={[]} />
         {children}
         <Footer />

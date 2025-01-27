@@ -16,10 +16,10 @@ export function withAuth<T extends object>(WrappedComponent: ComponentType<T>) {
 
         if (status === 'loading') {
             return (
-                <div className="flex min-h-screen items-center justify-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-kaito-brand-ash-green"></div>
-                </div>
-            )
+              <div className="flex min-h-screen items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-r-2 border-kaito-brand-ash-green"></div>
+              </div>
+            );
         }
 
         if (status === 'authenticated') {

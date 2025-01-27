@@ -5,7 +5,7 @@ import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css'
 import { withAuth } from "@/components/HOC/withAuth"
 
 const styles = {
-	container: "flex flex-col bg-teal-100 min-h-screen justify-center",
+	container: "flex flex-col min-h-screen justify-center",
 	header: "font-mono text-3xl text-gray-700 max-w-2xl pb-5 mx-auto mt-4 sm:px-4",
 	description: "mt-2 text-xl text-black text-center",
 	linkBase: "border-hidden border-8 hover:border-solid border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green transition-all"

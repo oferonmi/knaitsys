@@ -7,21 +7,21 @@ const inter = Inter({ subsets: ["latin"], weight: "300", });
 
 export const metadata: Metadata = {
   title: "Knaitsys - Text",
-  description: "Process text documents using NLP",
+  description: "Process text documents using NLI",
 };
 
 export default function textProcessorLayout({
-  children,
+  	children,
 }: {
-  children: React.ReactNode;
+  	children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body className={`${inter.className} bg-teal-100 bg-cover bg-center`}>
-        <Header menu={[]} />
-        {children}
-        <Footer />
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<body className={`${inter.className} bg-white bg-cover bg-center`}>
+				<Header menu={[]} />
+				{children}
+				<Footer />
+			</body>
+		</html>
+	);
 }
