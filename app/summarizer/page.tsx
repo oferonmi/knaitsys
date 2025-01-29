@@ -517,126 +517,126 @@ const SummarizerPage = () => {
 
 	// search indices page form
 	const searchInputForm = (
-    <>
-      <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
-        Enter your search query, send and recieve summary of the search result
-        pages.
-      </h1>
+		<>
+			<h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+				Enter your search query, send and recieve summary of the search result
+				pages.
+			</h1>
 
-      <form
-        className="flex w-full space-x-2"
-        id="search-form"
-        onSubmit={summarizeSearchResult}
-      >
-        <input
-			type="text"
-			autoComplete="off"
-			autoFocus={false}
-			name="url_input_bar"
-			className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
-			placeholder="  Search"
-			required={true}
-			onChange={(e) => setSearchQuery(e.target.value)}
-        />
-			<button
-				className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4" type="submit" 
+			<form
+				className="flex w-full space-x-2"
+				id="search-form"
+				onSubmit={summarizeSearchResult}
 			>
-				<div role="status" className={`${loading ? "" : "hidden"} flex justify-center`}>
-					{/* Loading wheel animation  */}
-					<span className="flex items-center gap-2">
-						<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-							<circle
-								className="opacity-25"
-								cx="12"
-								cy="12"
-								r="10"
-								stroke="currentColor"
-								strokeWidth="4"
-								fill="none"
-							/>
-							<path
-								className="opacity-75"
-								fill="currentColor"
-								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-							/>
-						</svg>
-					</span>
-					<span className="sr-only">Loading...</span>
-				</div>
-				<span className={loading ? "hidden" : ""}>
-					<i className="bi bi-send-fill"></i>
-					<span className="sr-only">Send</span>
-				</span>
-			</button>
-      </form>
-    </>
-  );
+				<input
+					type="text"
+					autoComplete="off"
+					autoFocus={false}
+					name="url_input_bar"
+					className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
+					placeholder="  Search"
+					required={true}
+					onChange={(e) => setSearchQuery(e.target.value)}
+				/>
+					<button
+						className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4" type="submit" 
+					>
+						<div role="status" className={`${loading ? "" : "hidden"} flex justify-center`}>
+							{/* Loading wheel animation  */}
+							<span className="flex items-center gap-2">
+								<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+									<circle
+										className="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										strokeWidth="4"
+										fill="none"
+									/>
+									<path
+										className="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+									/>
+								</svg>
+							</span>
+							<span className="sr-only">Loading...</span>
+						</div>
+						<span className={loading ? "hidden" : ""}>
+							<i className="bi bi-send-fill"></i>
+							<span className="sr-only">Send</span>
+						</span>
+					</button>
+			</form>
+		</>
+	);
 
 	const SideNavBar = (
 		<>
-		<div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
-			<ul>
-				<li className="p-3">
-					<Tooltip content="Upload Text" className={toolTipsStyle}>
-					<button
-						type="button"
-						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-						onClick={() => {
-						setInputType("text");
-						}}
-					>
-						<i className="bi bi-body-text"></i>
-						<span className="sr-only">Paste text</span>
-					</button>
-					</Tooltip>
-				</li>
+			<div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
+				<ul>
+					<li className="p-3">
+						<Tooltip content="Upload Text" className={toolTipsStyle}>
+							<button
+								type="button"
+								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								onClick={() => {
+								setInputType("text");
+								}}
+							>
+								<i className="bi bi-body-text"></i>
+								<span className="sr-only">Paste text</span>
+							</button>
+						</Tooltip>
+					</li>
 
-				<li className="p-3">
-					<Tooltip content="Upload PDF" className={toolTipsStyle}>
-					<button
-						type="button"
-						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-						onClick={() => {
-						setInputType("file");
-						}}
-					>
-						<i className="bi bi bi-file-earmark-arrow-up"></i>
-						<span className="sr-only">Upload PDF</span>
-					</button>
-					</Tooltip>
-				</li>
+					<li className="p-3">
+						<Tooltip content="Upload PDF" className={toolTipsStyle}>
+							<button
+								type="button"
+								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								onClick={() => {
+								setInputType("file");
+								}}
+							>
+								<i className="bi bi bi-file-earmark-arrow-up"></i>
+								<span className="sr-only">Upload PDF</span>
+							</button>
+						</Tooltip>
+					</li>
 
-				<li className="p-3">
-					<Tooltip content="Enter Webpage Address" className={toolTipsStyle}>
-					<button
-						type="button"
-						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-						onClick={() => {
-						setInputType("url");
-						}}
-					>
-						<i className="bi bi-globe2"></i>
-						<span className="sr-only">Paste webpage URL</span>
-					</button>
-					</Tooltip>
-				</li>
+					<li className="p-3">
+						<Tooltip content="Enter Webpage Address" className={toolTipsStyle}>
+							<button
+								type="button"
+								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								onClick={() => {
+								setInputType("url");
+								}}
+							>
+								<i className="bi bi-globe2"></i>
+								<span className="sr-only">Paste webpage URL</span>
+							</button>
+						</Tooltip>
+					</li>
 
-				<li className="p-3">
-					<Tooltip content="Enter Search Query" className={toolTipsStyle}>
-					<button
-						type="button"
-						className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
-						onClick={() => {
-						setInputType("search");
-						}}
-					>
-						<i className="bi bi-search"></i>
-						<span className="sr-only">Type in your search query</span>
-					</button>
-					</Tooltip>
-				</li>
-			</ul>
-		</div>
+					<li className="p-3">
+						<Tooltip content="Enter Search Query" className={toolTipsStyle}>
+							<button
+								type="button"
+								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								onClick={() => {
+								setInputType("search");
+								}}
+							>
+								<i className="bi bi-search"></i>
+								<span className="sr-only">Type in your search query</span>
+							</button>
+						</Tooltip>
+					</li>
+				</ul>
+			</div>
 		</>
   	);
 
