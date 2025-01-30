@@ -15,7 +15,20 @@ import { WebpageUploadForm } from "@/components/WebpageUploadForm";
 import { SearchIndexUploadForm } from "@/components/SearchIndexUploadForm";
 import { Footer } from "@/components/Footer";
 
+interface styleList {
+	sideBar: string;
+	toolTips: string;
+	button: string;
+}
+
+const sideNavStyle : styleList = {
+	sideBar: "flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen",
+  	toolTips: 'inline-flex bg-black',
+	button: "inline-flex border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green bg-white items-center font-medium hover:text-gray-200 text-kaito-brand-ash-green text-lg rounded-full px-4 py-3",
+} as const
+
 const toolTipsStyle = 'inline-flex bg-black'
+
 
 export function RetrievalChatWindow(props: {
 	endPoint: string;
@@ -117,12 +130,12 @@ export function RetrievalChatWindow(props: {
 	);
 
 	const navSideBar = (
-		<div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
+		<div className={sideNavStyle.sideBar}>
 			<ul>
 				<li className="p-3">
-					<Tooltip content="Upload Text" className={toolTipsStyle}>
+					<Tooltip content="Upload Text" className={sideNavStyle.toolTips}>
 						<button
-							className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
+							className={sideNavStyle.button}
 							type="button"
 							onClick={() => {
 								setShowIngestForm(true);
@@ -138,9 +151,9 @@ export function RetrievalChatWindow(props: {
 				</li>
 
 				<li className="p-3">
-					<Tooltip content="Upload PDF File" className={toolTipsStyle}>
+					<Tooltip content="Upload PDF File" className={sideNavStyle.toolTips}>
 						<button
-							className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
+							className={sideNavStyle.button}
 							type="button"
 							onClick={() => {
 								setShowDocEmbedForm(true);
@@ -156,9 +169,9 @@ export function RetrievalChatWindow(props: {
 				</li>
 
 				<li className="p-3">
-					<Tooltip content="Upload a Webpage Content" className={toolTipsStyle}>
+					<Tooltip content="Upload a Webpage Content" className={sideNavStyle.toolTips}>
 						<button
-							className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
+							className={sideNavStyle.button}
 							type="button"
 							onClick={() => {
 								setShowUrlEntryForm(true);
@@ -174,9 +187,9 @@ export function RetrievalChatWindow(props: {
 				</li>
 
 				<li className="p-3">
-					<Tooltip content="Upload Web Search Result" className={toolTipsStyle}>
+					<Tooltip content="Upload Web Search Result" className={sideNavStyle.toolTips}>
 						<button
-							className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
+							className={sideNavStyle.button}
 							type="button"
 							onClick={() => {
 								setShowSearchForm(true);
@@ -192,9 +205,9 @@ export function RetrievalChatWindow(props: {
 				</li>
 
 				<li className="p-3">
-					<Tooltip content="Chat to Corpus" className={toolTipsStyle}>
+					<Tooltip content="Chat to Corpus" className={sideNavStyle.toolTips}>
 						<button
-							className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
+							className={sideNavStyle.button}
 							type="button"
 							onClick={() => {
 								setReadyToChat(true);

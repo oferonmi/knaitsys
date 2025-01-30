@@ -12,6 +12,19 @@ import { useDropzone } from "react-dropzone";
 import copy from 'copy-to-clipboard';
 import { withAuth } from "@/components/HOC/withAuth";
 
+interface styleList {
+  sideBar: string;
+  toolTips: string;
+  button: string;
+}
+
+const sideNavStyle: styleList = {
+  sideBar: "flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen",
+  toolTips: "inline-flex bg-black",
+  button:
+    "inline-flex border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green bg-white items-center font-medium hover:text-gray-200 text-kaito-brand-ash-green text-lg rounded-full px-4 py-3",
+} as const;
+
 const toolTipsStyle = "inline-flex bg-black";
 
 const SummarizerPage = () => {
@@ -574,13 +587,13 @@ const SummarizerPage = () => {
 
 	const SideNavBar = (
 		<>
-			<div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
+			<div className={sideNavStyle.sideBar}>
 				<ul>
 					<li className="p-3">
-						<Tooltip content="Upload Text" className={toolTipsStyle}>
+						<Tooltip content="Upload Text" className={sideNavStyle.toolTips}>
 							<button
 								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								className={sideNavStyle.button}
 								onClick={() => {
 								setInputType("text");
 								}}
@@ -592,10 +605,10 @@ const SummarizerPage = () => {
 					</li>
 
 					<li className="p-3">
-						<Tooltip content="Upload PDF" className={toolTipsStyle}>
+						<Tooltip content="Upload PDF" className={sideNavStyle.toolTips}>
 							<button
 								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								className={sideNavStyle.button}
 								onClick={() => {
 								setInputType("file");
 								}}
@@ -607,10 +620,10 @@ const SummarizerPage = () => {
 					</li>
 
 					<li className="p-3">
-						<Tooltip content="Enter Webpage Address" className={toolTipsStyle}>
+						<Tooltip content="Enter Webpage Address" className={sideNavStyle.toolTips}>
 							<button
 								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								className={sideNavStyle.button}
 								onClick={() => {
 								setInputType("url");
 								}}
@@ -622,10 +635,10 @@ const SummarizerPage = () => {
 					</li>
 
 					<li className="p-3">
-						<Tooltip content="Enter Search Query" className={toolTipsStyle}>
+						<Tooltip content="Enter Search Query" className={sideNavStyle.toolTips}>
 							<button
 								type="button"
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 "
+								className={sideNavStyle.button}
 								onClick={() => {
 								setInputType("search");
 								}}
