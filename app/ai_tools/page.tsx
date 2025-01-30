@@ -9,13 +9,13 @@ const styles = {
 	header: "font-mono text-3xl text-gray-700 max-w-2xl pb-5 mx-auto mt-4 sm:px-4",
 	description: "mt-2 text-xl text-black text-center",
 	linkBase: "border-hidden border-8 hover:border-solid border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green transition-all text-kaito-brand-ash-green p-4",
-	textBase: "text-center text-lg text-gray-600",
+	textBase: "text-center text-lg ",
 }
 
 function AiToolsPage() {
 	return (
 		<main className={styles.container}>
-			<h1 className={styles.header}>AI Tools Kit</h1>
+			<h1 className={styles.header}>AI Toolkit</h1>
 
 			<p className={styles.description}>
 				Choose your preferred Natural Language Interface (NLI) mode for your
