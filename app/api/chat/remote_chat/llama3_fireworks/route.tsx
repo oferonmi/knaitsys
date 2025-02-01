@@ -1,10 +1,15 @@
-import { createOpenAI } from '@ai-sdk/openai'
+// import { createOpenAI } from '@ai-sdk/openai'
 import { convertToCoreMessages, generateText, streamText } from 'ai'
+import { createFireworks } from "@ai-sdk/fireworks";
 
-const fireworks = createOpenAI({
-  apiKey: process.env.FIREWORKS_API_KEY ?? '',
-  baseURL: 'https://api.fireworks.ai/inference/v1'
-})
+const fireworks = createFireworks({
+  apiKey: process.env.FIREWORKS_API_KEY ?? "",
+});
+
+// const fireworks = createOpenAI({
+//   apiKey: process.env.FIREWORKS_API_KEY ?? '',
+//   baseURL: 'https://api.fireworks.ai/inference/v1'
+// })
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";

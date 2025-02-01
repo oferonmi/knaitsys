@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { loadSummarizationChain } from "langchain/chains";
 
-import { SerpAPILoader } from "langchain/document_loaders/web/serpapi";
-import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+import { SerpAPILoader } from "@langchain/community/document_loaders/web/serpapi";
+import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio";
 
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";

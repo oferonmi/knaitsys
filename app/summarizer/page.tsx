@@ -696,47 +696,46 @@ const SummarizerPage = () => {
 	// console.log(cardColorHex);
 
 	const FlashCard = (
-    <div className="flex flex-col h-screen">
-      {/* Summarization Flashcard component */}
-      <h2 className="text-black text-2xl flex justify-center mt-2">
-        Summary Flash Card
-      </h2>
+		<div className="flex flex-col h-screen">
+			{/* Summarization Flashcard component */}
+			<h2 className="text-black text-2xl flex justify-center mt-2">
+				Summary Flash Card
+			</h2>
 
-      <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
-        {/* Summary Flash Card */}
-        {summarizedText.length > 0 ? (
-          <>
-            <div
-              className={`${cardColorHex}  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
-              // className="bg-[#c8a8d5] text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-300"
-            >
-              <span className="whitespace-pre-wrap flex flex-col">
-                {summarizedText}
-              </span>
-              <Tooltip content="Copy to clipboard" className={toolTipsStyle}>
-                <button
-                  className="ml-2 mb-auto"
-                  type="button"
-                  onClick={() => {
-                    copy(summarizedText);
-                    setCopyIcon(<i className="bi bi-check2-square"></i>);
-                    setTimeout(() => {
-                      setCopyIcon(<i className="bi bi-copy"></i>);
-                    }, 400);
-                  }}
-                >
-                  {copyIcon}
-                </button>
-              </Tooltip>
-            </div>
-          </>
-        ) : (
-          ""
-        )}
-        {/* <div ref={bottomRef} /> */}
-      </div>
-    </div>
-  );
+			<div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
+				{/* Summary Flash Card */}
+				{summarizedText.length > 0 ? (
+					<>
+						<div
+							className={`${cardColorHex}  text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
+						>
+							<span className="whitespace-pre-wrap flex flex-col">
+								{summarizedText}
+							</span>
+							<Tooltip content="Copy to clipboard" className={toolTipsStyle}>
+								<button
+									className="ml-2 mb-auto"
+									type="button"
+									onClick={() => {
+										copy(summarizedText);
+										setCopyIcon(<i className="bi bi-check2-square"></i>);
+										setTimeout(() => {
+										setCopyIcon(<i className="bi bi-copy"></i>);
+										}, 400);
+									}}
+								>
+									{copyIcon}
+								</button>
+							</Tooltip>
+						</div>
+					</>
+				) : (
+					""
+				)}
+				{/* <div ref={bottomRef} /> */}
+			</div>
+		</div>
+  	);
 
 	return (
 		<main>
@@ -767,7 +766,7 @@ const SummarizerPage = () => {
 								{inputType === "search" && searchInputForm}
 							</div>
 						</div>
-					<ToastContainer />
+						<ToastContainer />
 					</div>
 				)}
 

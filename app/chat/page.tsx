@@ -18,22 +18,34 @@ type LlmRoute = {
 };
 
 const LLM_OPTIONS: LlmRoute[] = [
-	{ value: 'chat/openai', label: 'GPT-3.5' },
-	{ value: 'multimodal/chat/openai', label: 'GPT-4o-mini', isMultimodal: true },
-	{ value: 'chat/llama3_fireworks', label: 'Llama-3-Fwks' },
-	{ value: 'chat/llama3_groq', label: 'Llama-3-Groq' },
-	{ value: 'multimodal/chat/llama3_groq', label: 'Llama-3.2-Groq', isMultimodal: true },
-	{ value: 'chat/anthropic', label: 'Claude-3.5-Haiku' },
-	{ value: 'chat/mixtral_MoE8x7B_Instruct_fireworks', label: 'Mixtral-MoE8x7B-Fwks' },
-	{ value: 'chat/xai', label: 'Grok-Beta' },
-	{ value: 'chat/gemini', label: 'Gemini-1.5-Pro', isMultimodal: true},
-	{ value: 'chat/deepseek', label: 'Deepseek-r1' },
-	{ value: 'chat/qwen2', label: 'Qwen-2.5' },
-	{ value: 'multimodal/chat/llava', label: 'Llava', isMultimodal: true },
-	{ value: 'multimodal/chat/phi3', label: 'Phi3'},
+	{ value: "chat/remote_chat/openai", label: "GPT-3.5" },
+	{ value: "multimodal/chat/openai", label: "GPT-4o-mini", isMultimodal: true },
+	{ value: "chat/remote_chat/llama3_fireworks", label: "Llama-3-Fwks" },
+	{
+		value: "multimodal/chat/llama3_groq",
+		label: "Llama-3.2-Groq",
+		isMultimodal: true,
+	},
+	{ value: "chat/remote_chat/anthropic", label: "Claude-3.5-Haiku" },
+	{
+		value: "chat/remote_chat/mixtral_MoE8x7B_Instruct_fireworks",
+		label: "Mixtral-MoE8x7B-Fwks",
+	},
+	{ value: "chat/remote_chat/xai", label: "Grok-Beta" },
+	{
+		value: "chat/remote_chat/gemini",
+		label: "Gemini-1.5-Pro",
+		isMultimodal: true,
+	},
+	{ value: "chat/local_chat/deepseek", label: "Deepseek-r1" },
+	{ value: "chat/remote_chat/deepseek_fireworks/r1", label: "Deepseek-r1-Fwks" },
+	{ value: "chat/remote_chat/deepseek_fireworks/v3", label: "Deepseek-v3-Fwks" },
+	{ value: "chat/local_chat/qwen2", label: "Qwen-2.5" },
+	{ value: "multimodal/chat/llava", label: "Llava", isMultimodal: true },
+	{ value: "multimodal/chat/phi3", label: "Phi3" },
 ];
 
-const DEFAULT_LLM_ROUTE = "/api/chat/llama3_groq";
+const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/llama3_groq";
 
 const ChatbotPage = () => {
 	//LLM engine API route

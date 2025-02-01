@@ -224,28 +224,30 @@ export function RetrievalChatWindow(props: {
 
 	const emptyStateComponent = (
 		<>
-			<div className="flex items-center top-0 bottom-0">
-				{/* side bar */}
-				{navSideBar}
+			<div className="flex flex-col h-screen">
+				{/* items-center top-0 bottom-0 */}
+				<div className="flex h-screen">
+					{/* side bar */}
+					{navSideBar}
+					{/* main section */}
+					<div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
+						<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 ">
+							Chat to your documents and the web.
+						</h1>
 
-				{/* main section */}
-				<div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
-					<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 ">
-						Chat to your documents and the web.
-					</h1>
+						<p className="text-black text-lg text-center">
+							Upload text corpuses using options on the left. A chat interface
+							appears on successfull upload, so you can ask questions about the
+							uploaded content.
+						</p>
 
-					<p className="text-black text-lg text-center">
-						Upload text corpuses using options on the left. A chat interface
-						appears on successfull upload, so you can ask questions about the
-						uploaded content.
-					</p>
+						<br></br>
 
-					<br></br>
-
-					{messages.length === 0 && embedForm}
-					{messages.length === 0 && ingestForm}
-					{messages.length === 0 && urlForm}
-					{messages.length === 0 && searchForm}
+						{messages.length === 0 && embedForm}
+						{messages.length === 0 && ingestForm}
+						{messages.length === 0 && urlForm}
+						{messages.length === 0 && searchForm}
+					</div>
 				</div>
 			</div>
 			{/* {!readyToChat && <Footer />} */}
@@ -264,12 +266,12 @@ export function RetrievalChatWindow(props: {
 					? [...messages].reverse().map((m, i) => {
 						const sourceKey = (messages.length - 1 - i).toString();
 						return (
-						<ChatMessageBubble
-							key={m.id}
-							message={m}
-							aiEmoji={emoji}
-							sources={sourcesForMessages[sourceKey]}
-						></ChatMessageBubble>
+							<ChatMessageBubble
+								key={m.id}
+								message={m}
+								aiEmoji={emoji}
+								sources={sourcesForMessages[sourceKey]}
+							></ChatMessageBubble>
 						);
 					})
 					: ""}
@@ -355,7 +357,11 @@ export function RetrievalChatWindow(props: {
 
 	return (
 		<main>
-			<div className={`w-full min-h-screen text-black ${readyToChat ? "border" : ""}`}>
+			<div
+				className={` text-black ${
+					readyToChat ? "border" : ""
+				}`}
+			>
 				<h2
 					className={`${
 						readyToChat ? "" : "hidden"
@@ -364,15 +370,13 @@ export function RetrievalChatWindow(props: {
 					{emoji} {titleText}
 				</h2>
 
-				{readyToChat ? (
-					chatInterfaceComponent 
-				) : (
-					emptyStateComponent
-				)}
+				{readyToChat ? chatInterfaceComponent : emptyStateComponent}
 
 				<ToastContainer />
 			</div>
-			<div className="w-full bottom-0"><Footer /></div>
+			<div className="w-full bottom-0">
+				<Footer />
+			</div>
 		</main>
 	);
 }
