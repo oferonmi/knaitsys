@@ -1,4 +1,5 @@
-A Next.js App.
+# Knaitsys - KNowledge-work AI Tool SYStem
+Knaitsys is focused on reimagining knowledge work tools using LLMs and other AI models.
 
 ## Getting Started
 First, Install required packages:
