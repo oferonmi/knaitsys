@@ -1,10 +1,13 @@
 # Knaitsys - KNowledge-work AI Tool SYStem
+
 <p align="center">
   ![knaitsys_logo](public/knaitsys.png)
 </p>
+
 <p align="center">
   Knaitsys is focused on reimagining knowledge work tools using LLMs and other AI models.
 </p>
+
 ## Getting Started
 First, Install required packages:
 ```bash
