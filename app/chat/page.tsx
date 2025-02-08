@@ -31,10 +31,10 @@ const LLM_OPTIONS: LlmRoute[] = [
 		value: "chat/remote_chat/mixtral_MoE8x7B_Instruct_fireworks",
 		label: "Mixtral-MoE8x7B-Fwks",
 	},
-	{ value: "chat/remote_chat/xai", label: "Grok-Beta" },
+	{ value: "chat/remote_chat/xai", label: "Grok-2" },
 	{
 		value: "chat/remote_chat/gemini",
-		label: "Gemini-1.5-Pro",
+		label: "Gemini-1.5-Flash",
 		isMultimodal: true,
 	},
 	{ value: "chat/local_chat/deepseek", label: "Deepseek-r1" },
