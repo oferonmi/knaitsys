@@ -230,7 +230,7 @@ export function RetrievalChatWindow(props: {
 					{/* side bar */}
 					{navSideBar}
 					{/* main section */}
-					<div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
+					<div className="flex flex-col p-4 md:p-8 overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
 						<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 ">
 							Chat to your documents and the web.
 						</h1>
@@ -318,7 +318,7 @@ export function RetrievalChatWindow(props: {
 							</Tooltip>
 
 							<input
-								className="grow px-4 py-1.5 rounded-full border border-kaito-brand-ash-green text-kaito-brand-ash-green focus:bg-white"
+								className="grow px-4 py-1.5 rounded-full border border-kaito-brand-ash-green text-kaito-brand-ash-green"
 								id="chat-textbox"
 								value={input}
 								placeholder={placeholder ?? "What is truth?"}
