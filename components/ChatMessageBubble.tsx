@@ -1,4 +1,5 @@
 import type { Message } from "ai/react";
+import MarkdownWithLatexRenderer from "@/components/MarkdownWithLaTeXRenderer";
 import Image from "next/image";
 import copy from 'copy-to-clipboard';
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
@@ -48,7 +49,8 @@ export function ChatMessageBubble(props: {
     >
       <div className="mr-2">{prefix}</div>
       <div className="whitespace-pre-wrap flex flex-col">
-        <span>{props.message.content}</span>
+        {/* <span>{props.message.content}</span> */}
+        <MarkdownWithLatexRenderer content={props.message.content} />
 
         <div>
           {/* Input image preview */}
