@@ -259,7 +259,7 @@ export function RetrievalChatWindow(props: {
 			<div className="flex flex-col w-full">
 				{/* Chat Thread */}
 				<div
-					className="flex flex-col-reverse w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black p-4 md:p-8"
+					className="flex flex-col-reverse w-full mb-4 grow overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black p-4 md:p-8"
 					ref={messageContainerRef}
 				>
 					{messages.length > 0
@@ -358,7 +358,7 @@ export function RetrievalChatWindow(props: {
 	return (
 		<main>
 			<div
-				className={` text-black ${
+				className={`flex flex-col w-full min-h-screen text-black ${
 					readyToChat ? "border" : ""
 				}`}
 			>

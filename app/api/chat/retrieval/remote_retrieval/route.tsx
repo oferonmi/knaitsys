@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {Message as VercelChatMessage, streamText, convertToCoreMessages, CoreTool, createDataStreamResponse, generateId} from "ai";
+import {Message as VercelChatMessage, LangChainAdapter} from "ai";
 
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -12,9 +12,6 @@ import {
   	BytesOutputParser,
   	StringOutputParser,
 } from "@langchain/core/output_parsers";
-import { openai } from '@ai-sdk/openai';
-
-// import { StreamingTextResponse } from "@/components/StreamingTextResponse";
 
 export const runtime = "edge";
 
@@ -66,9 +63,8 @@ Question: {question}`;
 const answerPrompt = PromptTemplate.fromTemplate(ANSWER_TEMPLATE);
 
 /**
- * This handler initializes and calls a retrieval chain. It composes the chain using
- * LangChain Expression Language. See the docs for more information:
- *
+ * This handler initializes and calls a retrieval chain using
+ * LangChain Expression Language. details at
  * https://js.langchain.com/docs/guides/expression_language/cookbook#conversational-retrieval-chain
  */
 export async function POST(req: NextRequest) {
@@ -146,7 +142,7 @@ export async function POST(req: NextRequest) {
 				chat_history: (input) => input.chat_history,
 			},
 			answerChain,
-			new BytesOutputParser(),
+			new StringOutputParser(), // initialy we use BytesOutputParser to get the raw bytes
 		]);
 
 		const stream = await conversationalRetrievalQAChain.stream({
@@ -166,62 +162,13 @@ export async function POST(req: NextRequest) {
 			),
 		).toString("base64");
 
-		// return new StreamingTextResponse(
-		// 	stream.pipeThrough(createStreamDataTransformer()),
-		// 	{
-		// 		headers: {
-		// 			"x-message-index": (previousMessages.length + 1).toString(),
-		// 			"x-sources": serializedSources,
-		// 		},
-		// 	}
-		// );
-
-		class StreamHandler {
-			private encoder = new TextEncoder();
-			private decoder = new TextDecoder();
-		
-			createStream() {
-				return new TransformStream({
-					transform: (chunk, controller) => {
-						try {
-							const text = typeof chunk === 'string' ? chunk : this.decoder.decode(chunk);
-							
-							if (!text.trim()) return;
-		
-							const messageData = {
-								type: 'message',
-								role: 'assistant',
-								content: text.trim()
-							};
-		
-							// Simple SSE format
-							const sseMessage = `data: ${JSON.stringify(messageData)}\n\n`;
-							controller.enqueue(this.encoder.encode(sseMessage));
-						} catch (error: any) {
-							const errorEvent = {
-								type: 'error',
-								error: error.message
-							};
-							controller.enqueue(this.encoder.encode(`data: ${JSON.stringify(errorEvent)}\n\n`));
-						}
-					}
-				});
+		const response = LangChainAdapter.toDataStreamResponse(stream, {
+			init: {
+				headers: {
+					"x-message-index": (previousMessages.length + 1).toString(),
+					"x-sources": serializedSources,
+				}
 			}
-		}
-		
-		// Usage in route handler
-		const streamHandler = new StreamHandler();
-		const transformStream = streamHandler.createStream();
-		const streamResponse = stream.pipeThrough(transformStream);
-
-		const response = new NextResponse(streamResponse, {
-			headers: {
-				"Content-Type": "text/event-stream",
-				"Cache-Control": "no-cache",
-				"Connection": "keep-alive",
-				"x-message-index": (previousMessages.length + 1).toString(),
-				"x-sources": serializedSources,
-			},
 		});
 
 		return response;
