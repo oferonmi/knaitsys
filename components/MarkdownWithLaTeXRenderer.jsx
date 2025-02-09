@@ -30,9 +30,12 @@ import {unified} from 'unified'
 const renderers = {
     inlineMath: ({ value }) => <InlineMath math={value} />,
     math: ({ value }) => <BlockMath math={value} />,
-    think: ({ children }) => (
-        <blockquote className="font-mono">{children}</blockquote>
-    ),
+    // think: ({ children }) => (
+    //     <blockquote className="font-mono">{children}</blockquote>
+    // ),
+    think: ({node, ...props}) => {
+        return <i style={{color: 'red'}} {...props} />
+    },
     code: ({node, inline, className, children, ...props}) => {
         const match = /language-(\w+)/.exec(className || '')
         return !inline && match ? (
@@ -45,7 +48,7 @@ const renderers = {
 
 const preprocessContent = (content) => {
     // Example preprocessing to wrap LaTeX expressions in $...$ or $$...$$
-    return content.replace(/\$\$(.*?)\$\$/g, '$$ $1 $$').replace(/\$(.*?)\$/g, '$ $1 $').replace(/\[(.*?)\]/g, '$ $1 $');
+    return content.replace(/\$\$(.*?)\$\$/g, '$$ $1 $$').replace(/\$(.*?)\$/g, '$ $1 $');
     // return content;
     // const file = await processor.process(content);
     // return String(file.value);
