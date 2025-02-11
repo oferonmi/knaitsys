@@ -4,7 +4,6 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
 import { InlineMath, BlockMath } from 'react-katex';
-import { Heading1 } from 'lucide-react';
 import rehypeParse from 'rehype-parse'
 import rehypeMathjax from 'rehype-mathjax'
 import rehypeSanitize from 'rehype-sanitize'
@@ -71,6 +70,39 @@ const renderers = {
     em: ({ children }) => (
         <em>{children}</em>
     ),
+    pre: ({ children }) => {
+        return (
+            <div className="...">
+                <pre className="...">{children}</pre>
+            </div>
+        );
+    },
+    ul: ({ children }) => (
+        <ul className="...">{children}</ul>
+    ),
+    ol: ({ children }) => (
+        <ol className="...">{children}</ol>
+    ),
+    li: ({ children }) => (
+        <li className="...">{children}</li>
+    ),
+    table: ({ children }) => (
+        <div className="...">
+        <table className="...">{children}</table>
+        </div>
+    ),
+    thead: ({ children }) => (
+        <thead className="...">{children}</thead>
+    ),
+    th: ({ children }) => (
+        <th className="...">{children}</th>
+    ),
+    td: ({ children }) => (
+        <td className="...">{children}</td>
+    ),
+    blockquote: ({ children }) => (
+        <blockquote className="...">{children}</blockquote>
+    ),
     inlineMath: ({ value }) => <InlineMath math={value} />,
     math: ({ value }) => <BlockMath math={value} />,
     // think: ({ children }) => (
@@ -91,17 +123,17 @@ const renderers = {
 
 const preprocessContent = (content) => {
     // Example preprocessing to wrap LaTeX expressions in $...$ or $$...$$
-    return content
-        .replace(/^\[\n\s*([\s\S]*?)\s*\n\]$/, '$$\n$1\n$$') // for block math
-        .replace(/^\s*\[\s*([\s\S]*?)\s*\]\s*$/gm, '$$\n$1\n$$') // for block math
-        .replace(/<code>\s*\[\s*([\s\S]*?)\s*\]\s*<\/code>/g, '<code>\($1\)</code>') // for inline math
-        .replace(/<pre>\s*\[\s*([\s\S]*?)\s*\]\s*<\/pre>/g, '<pre>$$\n$1\n$$</pre>') // for block math
-        // .replace(/\[\s*([\s\S]*?)\s*\]/g, '\($1\)') // for inline math
-        .replace(/```math\s*\[\s*([\s\S]*?)\s*\]\s*```/g, '```math\n$$\n$1\n$$\n```') // for block math
-        // .replace(/\[(?:[^][]|\[[^][]*\])*\]/g, '\($1\)'); // for inline math
-        .replace(/\$\$(.*?)\$\$/g, '$$\n$1\n$$') // for block math
-        .replace(/\$(.*?)\$/g, '$$1$'); // for inline math
-    // return content;
+    // return content
+    //     .replace(/^\[\n\s*([\s\S]*?)\s*\n\]$/, '<BlockMath>$$\n$1\n$$</BlockMath>') // for block math
+    //     .replace(/^\s*\[\s*([\s\S]*?)\s*\]\s*$/gm, '<BlockMath>$$\n$1\n$$</BlockMath>') // for block math $$\n$1\n$$
+    //     .replace(/<code>\s*\[\s*([\s\S]*?)\s*\]\s*<\/code>/g, '<code>\($1\)</code>') // for inline math
+    //     .replace(/<pre>\s*\[\s*([\s\S]*?)\s*\]\s*<\/pre>/g, '<pre>$$\n$1\n$$</pre>') // for block math
+    //     .replace(/\[\s*([\s\S]*?)\s*\]/g, '```math <InlineMath>$\($1\)$<\/InlineMath>```') // for inline math
+    //     .replace(/```math\s*\[\s*([\s\S]*?)\s*\]\s*```/g, '```math\n$$\n$1\n$$\n```') // for block math
+    //     .replace(/\[(?:[^][]|\[[^][]*\])*\]/g, '```math\n<InlineMath>\n$$1$<\/InlineMath>\n```') // for inline math
+    //     .replace(/\$\$(.*?)\$\$/g, '$$\n$1\n$$') // for block math
+    //     .replace(/\$(.*?)\$/g, '$$1$'); // for inline math
+    return content;
     // const file = await processor.process(content);
     // return String(file.value);
 }
@@ -113,8 +145,8 @@ const MarkdownWithLaTeXRenderer = ({ content }) => {
         <ReactMarkdown
             components={renderers}
             children={processedContent}
-            remarkPlugins={[remarkParse, remarkFrontmatter, remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeKatex, rehypeStringify]}
+            remarkPlugins={[remarkParse, remarkFrontmatter, remarkGfm, remarkMath, [remarkRehype, { allowDangerousHtml: true }]]}
+            rehypePlugins={[rehypeMathjax,rehypeKatex, rehypeSanitize, rehypeStringify]}
             //  [[rehypeParse, { fragment: true }], rehypeParse, rehypeKatex, rehypeHighlight,{style: dark, detect: true}], rehypeRaw, rehypeKatex]
         />
     //     <Markdown components={renderers}>

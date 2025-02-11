@@ -85,10 +85,10 @@ export function ChatMessageBubble(props: {
 
         {props.sources && props.sources.length ? (
           <>
-            <code className="mt-4 mr-auto bg-sky-50 px-2 py-1 rounded">
+            <code className="mt-4 mr-auto bg-indigo-50 px-2 py-1 rounded">
               <h2>🔍 Sources:</h2>
             </code>
-            <code className="mt-1 mr-2 bg-sky-50 px-2 py-1 rounded text-xs">
+            <code className="mt-1 mr-2 bg-indigo-50 px-2 py-1 rounded text-xs">
               {props.sources?.map((source, i) => (
                 <div className="mt-2" key={"source:" + i}>
                   {i + 1}. &quot;{source.pageContent}&quot;
