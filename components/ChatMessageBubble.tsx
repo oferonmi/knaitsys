@@ -1,5 +1,5 @@
 import type { Message } from "ai/react";
-import MarkdownWithLatexRenderer from "@/components/MarkdownWithLaTeXRenderer";
+import MarkdownWithLatexRenderer from "@/components/markdown/MarkdownWithLaTeXRenderer";
 import Image from "next/image";
 import copy from 'copy-to-clipboard';
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';

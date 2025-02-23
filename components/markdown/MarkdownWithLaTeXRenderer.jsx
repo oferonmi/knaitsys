@@ -20,6 +20,7 @@ import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
 import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import {unified} from 'unified'
+import {LatexMathToHtmlRenderer} from '@/components/maths/LatexMathToHtmlRenderer'
 
 // const processor = unified()
 //   .use(remarkParse)
@@ -31,88 +32,85 @@ import {unified} from 'unified'
 
 
 const renderers = {
-    h1: ({ children, id }) => (
-        <h1 className="..." id={id}>
+    h1: ({ children}) => (
+        <h1 className="font-bold">
             {children}
         </h1>
     ),
-    h2: ({ children, id }) => (
-        <h2 className="..." id={id}>
-        {children}
+    h2: ({ children }) => (
+        <h2 className="font-bold">
+            {children}
         </h2>
     ),
-    h3: ({ children, id }) => (
-        <h3 className="..." id={id}>
+    h3: ({ children}) => (
+        <h3 className="font-bold">
             {children}
         </h3>
     ),
-    h4: ({ children, id }) => (
-        <h4 className="..." id={id}>
+    h4: ({ children}) => (
+        <h4 className="font-bold">
             {children}
         </h4>
     ),
-    h5: ({ children, id }) => (
-        <h5 className="..." id={id}>
+    h5: ({ children}) => (
+        <h5 className="font-bold">
             {children}
         </h5>
     ),
-    h6: ({ children, id }) => (
-        <h6 className="..." id={id}>
+    h6: ({ children}) => (
+        <h6 className="font-bold">
             {children}
         </h6>
     ),
     p: ({ children }) => {
-        return <p className="...">{children}</p>;
+        return <p className="">{children}</p>;
     },
     strong: ({ children }) => (
-        <strong className="...">{children}</strong>
+        <strong className="">{children}</strong>
     ),
     em: ({ children }) => (
         <em>{children}</em>
     ),
     pre: ({ children }) => {
         return (
-            <div className="...">
-                <pre className="...">{children}</pre>
+            <div className="">
+                <pre className="">{children}</pre>
             </div>
         );
     },
     ul: ({ children }) => (
-        <ul className="...">{children}</ul>
+        <ul>{children}</ul>
     ),
     ol: ({ children }) => (
-        <ol className="...">{children}</ol>
+        <ol className="">{children}</ol>
     ),
     li: ({ children }) => (
-        <li className="...">{children}</li>
+        <li className="">{children}</li>
     ),
     table: ({ children }) => (
-        <div className="...">
-        <table className="...">{children}</table>
+        <div className="">
+            <table className="">{children}</table>
         </div>
     ),
     thead: ({ children }) => (
-        <thead className="...">{children}</thead>
+        <thead className="">{children}</thead>
     ),
     th: ({ children }) => (
-        <th className="...">{children}</th>
+        <th className="">{children}</th>
     ),
     td: ({ children }) => (
-        <td className="...">{children}</td>
+        <td className="">{children}</td>
     ),
     blockquote: ({ children }) => (
-        <blockquote className="...">{children}</blockquote>
+        <blockquote className="">{children}</blockquote>
     ),
-    inlineMath: ({ value }) => <InlineMath math={value} />,
-    math: ({ value }) => <BlockMath math={value} />,
-    // think: ({ children }) => (
-    //     <blockquote className="font-mono">{children}</blockquote>
-    // ),
-    think: ({node, ...props}) => {
-        return <i style={{color: 'teal'}} children={String(node.children)} {...props} />
+    inlineMath: ({ value }) => { return <InlineMath math={value} />},
+    math: ({ value }) => { return <BlockMath math={value} />},
+    think: ({children, ...props}) => {
+        return <i className='italic' children={String(children)} {...props} />
     },
     // code: ({node, inline, className, children, ...props}) => {
-    //     const match = /language-(\w+)/.exec(className || '')
+    //     const match = /language-(\w+)/.exec(className || 'text-wrap')
     //     return !inline && match ? (
     //         <SyntaxHighlighter style={docco} language={match[1]} PreTag="div" children={String(children).replace(/\n$/, '')} {...props} />
     //     ) : (
@@ -124,8 +122,9 @@ const renderers = {
 const preprocessContent = (content) => {
     // Example preprocessing to wrap LaTeX expressions in $...$ or $$...$$
     // return content
-    //     .replace(/^\[\n\s*([\s\S]*?)\s*\n\]$/, '<BlockMath>$$\n$1\n$$</BlockMath>') // for block math
-    //     .replace(/^\s*\[\s*([\s\S]*?)\s*\]\s*$/gm, '<BlockMath>$$\n$1\n$$</BlockMath>') // for block math $$\n$1\n$$
+        // .replace(/^\[\n\s*([\s\S]*?)\s*\n\]$/, '$$ \n $1 \n $$') // for block math
+        // .replace(/^\s*\[\s*([\s\S]*?)\s*\]\s*$/gm, '$$ \n $1 \n $$') // for block math $$\n$1\n$$
+        // .replace(/\[\s*([\s\S]*?)\s*\]/g, '\( $1 \)'); // for inline math
     //     .replace(/<code>\s*\[\s*([\s\S]*?)\s*\]\s*<\/code>/g, '<code>\($1\)</code>') // for inline math
     //     .replace(/<pre>\s*\[\s*([\s\S]*?)\s*\]\s*<\/pre>/g, '<pre>$$\n$1\n$$</pre>') // for block math
     //     .replace(/\[\s*([\s\S]*?)\s*\]/g, '```math <InlineMath>$\($1\)$<\/InlineMath>```') // for inline math
@@ -145,9 +144,9 @@ const MarkdownWithLaTeXRenderer = ({ content }) => {
         <ReactMarkdown
             components={renderers}
             children={processedContent}
-            remarkPlugins={[remarkParse, remarkFrontmatter, remarkGfm, remarkMath, [remarkRehype, { allowDangerousHtml: true }]]}
-            rehypePlugins={[rehypeMathjax,rehypeKatex, rehypeSanitize, rehypeStringify]}
-            //  [[rehypeParse, { fragment: true }], rehypeParse, rehypeKatex, rehypeHighlight,{style: dark, detect: true}], rehypeRaw, rehypeKatex]
+            remarkPlugins={[remarkParse, [remarkRehype, remarkGfm, remarkMath, { allowDangerousHtml: true }], remarkMath]}
+            rehypePlugins={[rehypeSanitize, rehypeStringify]}
+            //  remarkFrontmatter, remarkGfm, remarkMath, rehypeHighlight,{style: dark, detect: true}], rehypeRaw, rehypeMathjax,]
         />
     //     <Markdown components={renderers}>
     //         {processedContent}

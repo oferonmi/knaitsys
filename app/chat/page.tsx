@@ -2,7 +2,7 @@
 import ChatForm from "@/components/ChatForm";
 import ChatThread from "@/components/ChatThread";
 import { Footer } from "@/components/Footer";
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
