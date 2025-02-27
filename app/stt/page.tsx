@@ -91,7 +91,7 @@ export default function STTPage() {
 
 	return (
 		<div className="container mx-auto px-4 py-8  h-screen">
-			<h1 className="text-3xl md:text-3xl mb-6 text-gray-700 text-center">
+			<h1 className="text-3xl md:text-3xl mb-6 text-gray-700 text-center pt-36">
 				Speech to Text
 			</h1>
 

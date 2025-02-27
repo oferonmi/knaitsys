@@ -38,7 +38,7 @@ export default function TTSPage() {
 
 	return (
 		<div className="container mx-auto p-4 max-w-2xl h-screen">
-			<h1 className="text-3xl md:text-3xl mb-6 text-gray-700 text-center">
+			<h1 className="text-3xl md:text-3xl mb-6 text-gray-700 text-center pt-36">
 				Convert Text to Speech
 			</h1>
 
@@ -52,7 +52,7 @@ export default function TTSPage() {
 					placeholder="Enter text to convert to speech..."
 					value={text}
 					onChange={(e) => setText(e.target.value)}
-					className="min-h-[400px] m-0 mb-4 bg-white border  border-t-kaito-brand-ash-green"
+					className="min-h-[250px] m-0 mb-4 bg-white border  border-t-kaito-brand-ash-green"
 				/>
 
 				<div className="flex justify-end gap-4 ">
