@@ -16,11 +16,11 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
-import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import {unified} from 'unified'
-import {LatexMathToHtmlRenderer} from '@/components/maths/LatexMathToHtmlRenderer'
+// import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
+// import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
+// import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+// import {unified} from 'unified'
+// import {LatexMathToHtmlRenderer} from '@/components/maths/LatexMathToHtmlRenderer'
 
 // const processor = unified()
 //   .use(remarkParse)

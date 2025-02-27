@@ -739,7 +739,7 @@ const SummarizerPage = () => {
 
 	return (
 		<main>
-			<div className="flex flex-col">
+			<div className="flex flex-col pt-32">
 				{/* landing page section */}
 				{summarizedText.length == 0 && (
 					<div className="flex h-screen">

@@ -31,7 +31,7 @@ const Login = () => {
 
     return (
 		<>
-			<div className="px-7 py-4 shadow bg-transparent flex flex-col justify-center items-center h-screen bg-gradient-to-br gap-1 bg-white bg-cover bg-center w-full">
+			<div className="px-7 py-4 shadow bg-transparent flex flex-col justify-center items-center h-screen bg-gradient-to-br gap-1 bg-white bg-cover bg-center w-full pt-48 pb-14">
 				<h1 className="font-mono text-5xl text-black mt-30">Log in</h1>
 
 				<div className="border-t-0 border-y-0 border-b-2 border-b-kaito-brand-ash-green">

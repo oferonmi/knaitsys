@@ -230,14 +230,13 @@ export function RetrievalChatWindow(props: {
 					{/* side bar */}
 					{navSideBar}
 					{/* main section */}
-					<div className="flex flex-col p-4 md:p-8 overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
+					<div className="flex flex-col p-4 md:p-8 overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto pb-10">
 						<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 ">
 							Chat to your documents and the web.
 						</h1>
 
 						<p className="text-black text-lg text-center">
-							Upload text corpuses using options on the left. A chat interface
-							appears on successfull upload, so you can ask questions about the
+							Upload text corpuses using options on the left, then ask questions about the
 							uploaded content.
 						</p>
 
@@ -358,7 +357,7 @@ export function RetrievalChatWindow(props: {
 	return (
 		<main>
 			<div
-				className={`flex flex-col w-full min-h-screen text-black ${
+				className={`flex flex-col w-full min-h-screen text-black pt-32 ${
 					readyToChat ? "border" : ""
 				}`}
 			>

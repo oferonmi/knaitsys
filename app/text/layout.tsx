@@ -1,6 +1,6 @@
 import { Inter } from "next/font/google";
 import { Metadata } from "next";
-import { Header } from "@/components/Header";
+import { HeaderWrapper } from "@/components/HeaderWrapper";
 import { Footer } from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], weight: "300", });
@@ -18,7 +18,7 @@ export default function textProcessorLayout({
 	return (
 		<html lang="en">
 			<body className={`${inter.className} bg-white bg-cover bg-center`}>
-				<Header menu={[]} />
+				<HeaderWrapper menu={[]} />
 				{children}
 				<Footer />
 			</body>

@@ -13,7 +13,7 @@ const ChatThread = ({messages, sysEmoji, sources}) => {
 
     return(
         <div 
-            className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black"
+            className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pt-32 pb-40 text-black"
         >
             {messages.length > 0
                 ? [...messages].map((m, i) => {

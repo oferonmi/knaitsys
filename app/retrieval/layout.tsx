@@ -1,5 +1,5 @@
 import { Inter } from "next/font/google";
-import { Header } from "@/components/Header";
+import { HeaderWrapper } from "@/components/HeaderWrapper";
 import { Footer } from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], weight: "300" });
@@ -13,7 +13,7 @@ export default function RetrievalPageLayout({ children }: { children: React.Reac
   return (
     <html lang="en">
       <body className={`${inter.className} bg-white bg-cover bg-center`}>
-        <Header
+        <HeaderWrapper
           menu={[
             { id: 1, value: "Text", url: "/text" },
             { id: 2, value: "Audio", url: "/audio" },

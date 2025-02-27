@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Header } from "@/components/Header";
+import { HeaderWrapper } from "@/components/HeaderWrapper";
 import { Footer } from "@/components/Footer";
 import { Inter } from "next/font/google";
 
@@ -18,7 +18,7 @@ export default function TTSLayout({
   return (
     <html lang="en">
         <body className={`${inter.className} bg-white bg-cover bg-center`}>
-            <Header menu={[]} />
+            <HeaderWrapper menu={[]} />
             {children}
             <Footer />
         </body>

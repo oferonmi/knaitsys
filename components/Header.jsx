@@ -1,33 +1,75 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
-import { authOptions } from "../app/api/auth/[...nextauth]/options";
-import { getServerSession } from "next-auth/next";
 import { AuthHeader } from "./AuthHeader";
 import { UnAuthHeader } from "./UnAuthHeader";
 import { MenuItems } from "./MenuItems";
+import { useState, useEffect } from "react";
 
-export const Header = async ({ menu }) => {
-    const session = await getServerSession(authOptions);
+const BrandLogo = ({ session }) => (
+    <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto">
+        <div className="flex items-center ml-3.5">
+            <Image 
+                src="/knaitsys.png" 
+                priority
+                alt="Knaitsys logo" 
+                width={330} 
+                height={115}
+            />
+        </div>
+    </Link>
+);
 
-    const BrandLogo = () => (
-        <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto">
-            <div className="flex items-center ml-3.5">
-                <Image 
-                    src="/knaitsys.png" 
-                    priority
-                    alt="App logo" 
-                    width={330} 
-                    height={115}
-                />
-            </div>
-        </Link>
-    );
+export const Header = ({ menu, session }) => {
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
+    
+    useEffect(() => {
+        const controlHeader = () => {
+            const currentScrollY = window.scrollY;
+            
+            // Show header immediately when scrolling up or at top
+            if (currentScrollY < lastScrollY || currentScrollY < 10) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
+            
+            setLastScrollY(currentScrollY);
+        };
+
+        // Add scroll event with debounce for performance
+        let timeoutId;
+        const onScroll = () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(controlHeader, 50);
+        };
+
+        window.addEventListener('scroll', onScroll);
+        
+        // Cleanup
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+        };
+    }, [lastScrollY]);
 
     return (
-        <div className="flex flex-col border-b border-gray-200">
-            <header className="bg-gray-100 w-full items-center space-x-6 sticky top-0 z-10">
-                <nav className="md:flex md:items-center md:justify-between">
-                    <BrandLogo />
+        <div className="fixed w-full top-0 z-50">
+            <header 
+                className={`
+                    bg-gray-100 w-full border-b border-gray-200
+                    transform transition-all duration-200
+                    ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
+                `}
+            >
+                <nav className="container mx-auto px-4 py-2 md:flex md:items-center md:justify-between">
+                    <BrandLogo session={session} />
                     <MenuItems items={menu} /> 
                     {session ? <AuthHeader /> : <UnAuthHeader />}
                 </nav>
