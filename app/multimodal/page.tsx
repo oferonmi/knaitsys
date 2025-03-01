@@ -1,6 +1,6 @@
 'use client';
 
-import {  useChat } from 'ai/react';
+import {  useChat } from '@ai-sdk/react';
 import { useRef, useState, useEffect, type FormEvent } from 'react';
 import Image from "next/image";
 import { AudioRecorder } from "@/components/AudioRecorder";
@@ -305,12 +305,12 @@ function MultiModalChat() {
     );
 
     return (
-        <main>
+        <>
             {messages.length > 0 ? (
-                <>
+                <main className="pt-36">
                     {/* Chat thread section */}
                     <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
-                        <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40  text-black">
+                        <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
                             {messages.length > 0
                             ? [...messages].map((m, i) => {
                                 const sourceKey = (messages.length -1 -i).toString();
@@ -340,17 +340,17 @@ function MultiModalChat() {
                             <Footer />
                         </div>
                     ) : ("")}
-                </>
+                </main>
             ) : (
-                <>
+                <main>
                     {/* Landing section */}
                     {landingSectionUI}
                     <div className="  bottom-0">
                         <Footer />
                     </div>
-                </>
+                </main>
             )}
-        </main>
+        </>
     );
 }
 

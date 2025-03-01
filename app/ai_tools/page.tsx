@@ -58,7 +58,7 @@ function AiToolsPage() {
 					</div>
 				</Link>
 
-				<Link href="/#">
+				<Link href="/simulator">
 					<div className={styles.linkBase}>
 						<i
 							className="bi bi-globe-europe-africa"
