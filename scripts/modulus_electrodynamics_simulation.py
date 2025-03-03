@@ -3,6 +3,7 @@ import json
 import numpy as np
 import pandas as pd
 from io import StringIO
+import torch
 from modulus.sym.geometry.primitives_2d import Rectangle
 from modulus.sym.domain import Domain
 from modulus.sym.domain.constraint import PointwiseBoundaryConstraint, PointwiseInteriorConstraint
@@ -10,6 +11,10 @@ from modulus.sym.eq.pdes.electromagnetics import MaxwellEquations2D
 from modulus.sym.models.fully_connected import FullyConnectedArch
 from modulus.sym.solver import Solver
 from modulus.sym.key import Key
+
+# Check for GPU availability and set device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Running on device: {device}")
 
 # Parse input from Next.js (now a JSON string from FormData)
 input_data = json.loads(sys.argv[1])
@@ -51,7 +56,7 @@ network = FullyConnectedArch(
     input_keys=[Key("x"), Key("y"), Key("t")],
     output_keys=[Key("E"), Key("H")],
     layer_size=[4, 64, 64, 2]
-)
+).to(device)
 
 # Step 4: Discretize (Sample points)
 nr_points = 10000
@@ -95,12 +100,15 @@ x = np.linspace(x_range[0], x_range[1], 100)
 y = np.linspace(y_range[0], y_range[1], 100)
 t = np.linspace(t_range[0], t_range[1], 10)
 X, Y, T = np.meshgrid(x, y, t)
-inputs = np.stack([X.flatten(), Y.flatten(), T.flatten()], axis=-1)
+inputs = torch.tensor(np.stack([X.flatten(), Y.flatten(), T.flatten()], axis=-1)).to(device)
 fields = network.predict(inputs)
+
+# Convert fields back to CPU for serialization
+fields_cpu = {key: value.cpu().numpy().tolist() for key, value in fields.items()}
 
 # Output results as JSON
 result = {
-    "fields": {"E": fields["E"].tolist(), "H": fields["H"].tolist()},
+    "fields": {"E": fields_cpu["E"], "H": fields_cpu["H"]},
     "computationTime": 123.45,  # Placeholder
 }
 print(json.dumps(result))
