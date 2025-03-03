@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { AuthHeader } from "./AuthHeader";
-import { UnAuthHeader } from "./UnAuthHeader";
-import { MenuItems } from "./MenuItems";
+import { AuthHeader } from "@/components/AuthHeader";
+import { UnAuthHeader } from "@/components/UnAuthHeader";
+import { MenuItems } from "@/components/Menuitems";
 import { useState, useEffect } from "react";
 
 const BrandLogo = ({ session }) => (
