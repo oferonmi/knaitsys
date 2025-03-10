@@ -8,4 +8,6 @@ _openmp_mutex=5.1=1_gnu
 numpy=1.26.4=py312hc5e2394_0
 pandas=2.2.2=py312h526ad5a_0
 torch=2.6.0=pypi_0
+deepxde==1.13.2
+tensorflow==2.18.0
 

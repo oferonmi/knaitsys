@@ -63,16 +63,21 @@ interface ResponseData {
 // Helper function to run Python script (Modulus simulation)
 const runModulusSimulation = (
   	params: SimulationParams
-): Promise<SimulationResult> => {
+): Promise<SimulationResult> => { 
 	return new Promise((resolve, reject) => {
 		const scriptPath = path.join(
 			process.cwd(),
 			"scripts",
-			"modulus_electrodynamics_simulation.py"
+			"deepxde_electrodynamics_sim.py"
 		);
-		const command = `python3 ${scriptPath} ${JSON.stringify(params)}`;
+		const jsonString = JSON.stringify(params); // Convert params to JSON string
+   		const escapedJsonString = jsonString.replace(/"/g, '\\"'); // Escape quotes for shell
+		const command = `python3 ${scriptPath} ${escapedJsonString}`;
 
+		// console.log(`Executing command: ${command}`); // Debug
 		exec(command, (error, stdout, stderr) => {
+			console.log(`Stdout: ${stdout}`);
+			console.error(`Stderr: ${stderr}`);
 			if (error) {
 				console.error(`Error: ${stderr}`);
 				reject(new Error("Simulation failed"));
@@ -88,6 +93,12 @@ export async function POST(
   	request: Request
 ): Promise<NextResponse<ResponseData>> {
 	try {
+		// console.log(path.join(
+		// 	process.cwd(),
+		// 	"scripts",
+		// 	"modulus_electrodynamics_simulation.py"
+		// )); // debug line
+
 		// Parse FormData from the request
 		const formData = await request.formData();
 		const domainSize = parseFloat(formData.get("domainSize") as string);
@@ -167,9 +178,8 @@ export async function POST(
 		};
 
 		// Step 11: Validate and Refine (Simplified here, assumed in Python script)
-
 		return NextResponse.json({
-			success: true,
+			success: true,	
 			data: processedResult,
 		});
 	} catch (error: any) {
