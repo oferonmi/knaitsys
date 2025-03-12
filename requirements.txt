@@ -1,13 +1,6 @@
-# This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
-# platform: linux-64
-# created-by: conda 24.9.2
-_anaconda_depends=2024.10=py312_mkl_0
-_libgcc_mutex=0.1=main
-_openmp_mutex=5.1=1_gnu
-numpy=1.26.4=py312hc5e2394_0
-pandas=2.2.2=py312h526ad5a_0
-torch=2.6.0=pypi_0
-deepxde==1.13.2
-tensorflow==2.18.0
+pandas
+torch
+numpy
+deepxde
+tensorflow
 

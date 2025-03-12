@@ -6,12 +6,12 @@ export const HomeContent = () => {
     return (
         <div className="bg-cover bg-center flex flex-col items-center justify-center text-white h-screen relative" style={{ backgroundImage: `url(${HomeBgImg.src})` }}>
 
-            <h1 className="font-mono text-5xl text-white mt-30">
+            <h1 className="font-mono text-6xl font-bold text-white mt-30">
                 {/* Craft your own AI Research Assistant. */}
                 Use AI to understand, innovate and build.
             </h1>
 
-            <p className="mt-2 text-3xl text-white">
+            <p className="mt-2 text-4xl font-mono text-white">
                 Adopt Natural Language Interface (NLI) and AI models for your knowledge work.
             </p>
 
