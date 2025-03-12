@@ -45,7 +45,7 @@ const LLM_OPTIONS: LlmRoute[] = [
 	{ value: "multimodal/chat/phi3", label: "Phi3" },
 ];
 
-const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/llama3_groq";
+const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/anthropic";
 
 const ChatbotPage = () => {
 	//LLM engine API route
@@ -91,7 +91,7 @@ const ChatbotPage = () => {
 	const LlmSelector = () => (
 		<select
 			onChange={handleLlmApiChange}
-			value={llmApiRoute.replace('/api/', '')}
+			value={llmApiRoute.replace("/api/", "")}
 			className="inline-flex items-center py-5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2"
 			id="llm-selector"
 			required
