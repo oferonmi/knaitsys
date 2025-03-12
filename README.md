@@ -1,6 +1,6 @@
 # Knaitsys - KNowledge-work AI Tool SYStem
 
-![knaitsys_logo](public/knaitsys.png)
+![knaitsys_logo](public/knaitsys_v2.png)
 
 <p align="left">
   Knaitsys is focused on reimagining knowledge work tools using LLMs and other AI models.
