@@ -1,33 +1,34 @@
 import sys
 import json
+import base64
+from io import StringIO
 import time
 import numpy as np
 import pandas as pd
-from io import StringIO
 import torch
 import torch.nn as nn
 
-# Parse input from Next.js page
+# Parse base64 encoded input from Next.js
 try:
-    input_data = json.loads(sys.argv[1])
+    encoded_data = sys.argv[1]
+    json_str = base64.b64decode(encoded_data).decode('utf-8')
+    input_data = json.loads(json_str)
+except IndexError:
+    print("Error: No input data provided", file=sys.stderr)
+    sys.exit(1)
+except base64.binascii.Error:
+    print("Error: Invalid base64 encoding", file=sys.stderr)
+    sys.exit(1)
 except json.JSONDecodeError as e:
     print(f"JSON parsing error: {e}", file=sys.stderr)
     sys.exit(1)
 
-# domain_size = float(input_data["domainSize"])
-# frequency = float(input_data["frequency"])
-# epochs = int(input_data["epochs"])
-
-# # Handle CSV file if provided
-# material_props = {"epsilon": 1.0, "mu": 1.0, "sigma": 0.0}
-
-# Extract parameters from the nested structure
-domain_size = float(input_data["domain"]["xRange"][1])  # Use xRange upper bound as domain_size
-frequency = float(input_data["source"]["frequency"])
-epochs = int(input_data["nnConfig"]["epochs"])
+domain_size = float(input_data["domainSize"])
+frequency = float(input_data["frequency"])
+epochs = int(input_data["epochs"])
 
 # Handle CSV file if provided
-material_props = input_data.get("materialProps", {"epsilon": 1.0, "mu": 1.0, "sigma": 0.0})
+material_props = {"epsilon": 1.0, "mu": 1.0, "sigma": 0.0}
 if "csvFile" in input_data:
     csv_content = input_data["csvFile"]
     df = pd.read_csv(StringIO(csv_content))
@@ -63,10 +64,10 @@ def physics_loss(model, x, epsilon, mu, frequency):
     E, H = u[:, 0:1], u[:, 1:2]
 
     # Compute derivatives
-    grads = torch.autograd.grad(E, x, grad_outputs=torch.ones_like(E), create_graph=True)[0]
-    dE_dx, dE_dy, dE_dt = grads[:, 0:1], grads[:, 1:2], grads[:, 2:3]
-    grads = torch.autograd.grad(H, x, grad_outputs=torch.ones_like(H), create_graph=True)[0]
-    dH_dx, dH_dy, dH_dt = grads[:, 0:1], grads[:, 1:2], grads[:, 2:3]
+    grads_E = torch.autograd.grad(E, x, grad_outputs=torch.ones_like(E), create_graph=True)[0]
+    dE_dx, dE_dy, dE_dt = grads_E[:, 0:1], grads_E[:, 1:2], grads_E[:, 2:3]
+    grads_H = torch.autograd.grad(H, x, grad_outputs=torch.ones_like(H), create_graph=True)[0]
+    dH_dx, dH_dy, dH_dt = grads_H[:, 0:1], grads_H[:, 1:2], grads_H[:, 2:3]
 
     # Maxwell’s equations (simplified 1D wave propagation along x)
     pde_E = dE_dt + (1/mu) * dH_dx
@@ -82,28 +83,35 @@ def physics_loss(model, x, epsilon, mu, frequency):
     return loss_pde + loss_bc + loss_ic
 
 # Generate Training Data
-n_points = 10000
-x = torch.rand(n_points, 1) * domain_size
-y = torch.rand(n_points, 1) * domain_size
-t = torch.rand(n_points, 1) * 1.0
-X_train = torch.cat([x, y, t], dim=1).to(device)
+n_points = int(input_data["numPoints"])  # Number of training / sampling points for PINN
+
+x = torch.rand(n_points, 1, device=device) * domain_size
+y = torch.rand(n_points, 1, device=device) * domain_size
+t = torch.rand(n_points, 1, device=device) * 1.0
+X_train = torch.cat([x, y, t], dim=1)
 
 # Boundary and Initial Points
-x_bc = torch.cat([torch.zeros(n_points//10, 1), torch.ones(n_points//10, 1) * domain_size], dim=0)
-y_bc = torch.rand(n_points//5, 1) * domain_size
-t_bc = torch.rand(n_points//5, 1) * 1.0
-X_bc = torch.cat([x_bc, y_bc, t_bc], dim=1).to(device)
+x_bc = torch.cat([torch.zeros(n_points//10, 1, device=device), 
+                  torch.ones(n_points//10, 1, device=device) * domain_size], dim=0)
+y_bc = torch.rand(n_points//5, 1, device=device) * domain_size
+t_bc = torch.rand(n_points//5, 1, device=device) * 1.0
+X_bc = torch.cat([x_bc, y_bc, t_bc], dim=1)
 
-x_ic = torch.rand(n_points//5, 1) * domain_size
-y_ic = torch.rand(n_points//5, 1) * domain_size
-t_ic = torch.zeros(n_points//5, 1)
-X_ic = torch.cat([x_ic, y_ic, t_ic], dim=1).to(device)
+x_ic = torch.rand(n_points//5, 1, device=device) * domain_size
+y_ic = torch.rand(n_points//5, 1, device=device) * domain_size
+t_ic = torch.zeros(n_points//5, 1, device=device)
+X_ic = torch.cat([x_ic, y_ic, t_ic], dim=1)
 
 X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
 
 # Training
 model = PINN().to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+# Enable CUDA optimizations if on GPU
+if torch.cuda.is_available():
+    torch.cuda.empty_cache()  # Clear GPU memory
+    torch.backends.cudnn.benchmark = True  # Optimize for GPU
 
 start_time = time.time()
 for epoch in range(epochs):
@@ -117,16 +125,19 @@ for epoch in range(epochs):
 computation_time = time.time() - start_time
 
 # Post-Process Results
-x_eval = torch.linspace(0, domain_size, 100)  # Remove reshape
-y_eval = torch.linspace(0, domain_size, 100)  # Remove reshape
-t_eval = torch.linspace(0, 1.0, 10)          # Remove reshape
+# x_eval = torch.linspace(0, domain_size, 100, device=device).reshape(-1, 1)
+# y_eval = torch.linspace(0, domain_size, 100, device=device).reshape(-1, 1)
+# t_eval = torch.linspace(0, 1.0, 10, device=device).reshape(-1, 1)
 
-# Create meshgrid with proper tensor inputs
+x_eval = torch.linspace(0, domain_size, 100, device=device)  # Remove reshape
+y_eval = torch.linspace(0, domain_size, 100, device=device)  # Remove reshape
+t_eval = torch.linspace(0, 1.0, 10, device=device) 
+
+# Generate meshgrid  with proper tensor input for evaluation
 X, Y, T = torch.meshgrid(x_eval, y_eval, t_eval, indexing="ij")
-
-# Prepare points for model evaluation
-points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1).to(device)
-fields = model(points).detach().cpu().numpy()
+# points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
+points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
+fields = model(points).detach().cpu().numpy()  # Move to CPU for serialization
 
 # Output results as JSON
 result = {

@@ -3,37 +3,46 @@ import { exec } from "child_process";
 import path from "path";
 
 interface SimulationParams {
-	domain: {
-		xRange: [number, number];
-		yRange: [number, number];
-		tRange: [number, number];
-	};
-	materialProps: {
-		epsilon: number;
-		mu: number;
-		sigma: number;
-	};
-	numPoints: number;
-	boundaryConditions: {
-		type: string;
-		value: number;
-	};
-	initialConditions: {
-		E: number;
-		H: number;
-	};
-	source: {
-		type: string;
-		frequency: number;
-		amplitude: number;
-	};
-	nnConfig: {
-		// layers: number[];
-		epochs: number;
-	};
-	csvFile?: string; // CSV content as string (optional)
-	cadFile?: string; // CAD file content as string (optional)
-}
+  domainSize: number;
+  frequency: number;
+  numPoints: number;
+  epochs: number;
+  csvFile?: string; // CSV content as string (optional)
+  cadFile?: string; // CAD file content as string (optional)
+};
+
+// interface SimulationParams {
+// 	domain: {
+// 		xRange: [number, number];
+// 		yRange: [number, number];
+// 		tRange: [number, number];
+// 	};
+// 	materialProps: {
+// 		epsilon: number;
+// 		mu: number;
+// 		sigma: number;
+// 	};
+// 	numPoints: number;
+// 	boundaryConditions: {
+// 		type: string;
+// 		value: number;
+// 	};
+// 	initialConditions: {
+// 		E: number;
+// 		H: number;
+// 	};
+// 	source: {
+// 		type: string;
+// 		frequency: number;
+// 		amplitude: number;
+// 	};
+// 	nnConfig: {
+// 		// layers: number[];
+// 		epochs: number;
+// 	};
+// 	csvFile?: string; // CSV content as string (optional)
+// 	cadFile?: string; // CAD file content as string (optional)
+// }
 
 interface SimulationResult {
     fields: { E: number[]; H: number[] };
@@ -64,19 +73,32 @@ const runPinnSimulation = (
     );
 
     const jsonString = JSON.stringify(params);
-    // Wrap the JSON string in single quotes and escape any existing single quotes
-    const escapedJsonString = `'${jsonString.replace(/'/g, "'\\''")}'`;
+    // Base64 encode and decode test to verify encoding
+    const encodedJson = Buffer.from(jsonString).toString('base64');
+    console.log('Encoded params:', encodedJson);
+    
+    const command = `/opt/anaconda3/bin/python "${scriptPath}" "${encodedJson}"`;
+    console.log('Executing command:', command);
 
-    const command = `/opt/anaconda3/bin/python ${scriptPath} ${escapedJsonString}`;
+    exec(command, { maxBuffer: 1024 * 1024 * 100 }, (error, stdout, stderr) => {
+      if (stderr) {
+        console.error('Python stderr:', stderr);
+      }
 
-    console.log(`Executing command: ${command}`);
-    exec(command, (error, stdout, stderr) => {
-      console.log(`Stdout: ${stdout}`);
-      console.error(`Stderr: ${stderr}`);
       if (error) {
-        reject(new Error(`Simulation failed: ${stderr}`));
-      } else {
-        resolve(JSON.parse(stdout) as SimulationResult);
+        console.error('Execution error:', error);
+        reject(new Error(`Simulation failed: ${stderr || error.message}`));
+        return;
+      }
+
+      try {
+        const result = JSON.parse(stdout);
+        console.log('Simulation completed successfully');
+        resolve(result);
+      } catch (parseError) {
+        console.error('Failed to parse simulation output:', parseError);
+        console.error('Raw output:', stdout);
+        reject(new Error('Failed to parse simulation results'));
       }
     });
   });
@@ -87,11 +109,16 @@ export async function POST(
 ): Promise<NextResponse<ResponseData>> {
     try {
       const formData = await request.formData();
+      // Validate and extract form data
       const domainSize = parseFloat(formData.get("domainSize") as string);
       const frequency = parseFloat(formData.get("frequency") as string);
       const epochs = parseInt(formData.get("epochs") as string);
       const csvFile = formData.get("csvFile") as File | null;
       const cadFile = formData.get("cadFile") as File | null;
+
+      if (isNaN(domainSize) || isNaN(frequency) || isNaN(epochs)) {
+        throw new Error("Invalid input parameters");
+      }
 
       // Step 1: Define the Problem Domain
       const domain = {
@@ -138,28 +165,35 @@ export async function POST(
       // Step 8: Time Stepping (Implicit in PINN, handled by time input)
 
       // Step 9: Solve the System (Run Modulus simulation)
-      const simulationParams: SimulationParams = {
-        domain,
-        materialProps,
-        numPoints,
-        boundaryConditions,
-        initialConditions,
-        source,
-        nnConfig,
-        // Include file contents if uploaded
+      // const simulationParams: SimulationParams = {
+      //   domain,
+      //   materialProps,
+      //   numPoints,
+      //   boundaryConditions,
+      //   initialConditions,
+      //   source,
+      //   nnConfig,
+      //   // Include file contents if uploaded
+      //   csvFile: csvFile ? await csvFile.text() : undefined,
+      //   cadFile: cadFile ? await cadFile.text() : undefined,
+      // };
+
+      const simulationParams = {
+        domainSize: domainSize || 1.0,
+        frequency: frequency || 1.0,
+        numPoints: numPoints || 10000,
+        epochs: epochs || 5000,
         csvFile: csvFile ? await csvFile.text() : undefined,
         cadFile: cadFile ? await cadFile.text() : undefined,
       };
 
-      // const simulationParams = {
-      //     domainSize: domainSize || 1.0,
-      //     frequency: frequency || 1.0,
-      //     epochs: epochs || 5000,
-      //     csvFile: csvFile ? await csvFile.text() : undefined,
-      //     cadFile: cadFile ? await cadFile.text() : undefined,
-      // };
-
+      console.log("Starting simulation with params:", simulationParams);
       const result = await runPinnSimulation(simulationParams);
+
+      // Validate result
+      if (!result?.fields?.E || !result?.fields?.H) {
+        throw new Error("Invalid simulation results");
+      }
 
       const processedResult = {
         fields: result.fields,
@@ -173,8 +207,8 @@ export async function POST(
       return NextResponse.json({ success: true, data: processedResult });
     } catch (error: any) {
         return NextResponse.json(
-            { success: false, error: error.message },
-            { status: 500 }
+          { success: false, error: error.message || "Unknown error occurred" },
+          { status: 500 }
         );
     }
 }
