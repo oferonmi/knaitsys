@@ -2,8 +2,7 @@
 
 import { useState, useRef, type FormEvent, useCallback, useEffect } from "react";
 import { Footer } from "@/components/Footer";
-// import { useSession } from "next-auth/react";
-// import { redirect } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,7 +18,7 @@ interface styleList {
 }
 
 const sideNavStyle: styleList = {
-  sideBar: "flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen",
+  sideBar: "flex grow-0 gap-2 ml-2.5 mt-4 border-r border-slate-300 h-screen",
   toolTips: "inline-flex bg-black",
   button:
     "inline-flex border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green bg-white items-center font-medium hover:text-gray-200 text-kaito-brand-ash-green text-lg rounded-full px-4 py-3",
@@ -302,36 +301,10 @@ const SummarizerPage = () => {
 	// input section form specifications
 	const summarizerCtrlButtons = (
 		<div className="flex flex-row">
-			{/*className="flex flex-row"*/}
-			{/* <div className="flex mt-2 mr-auto">
-								<select
-								onChange={handleApiEndpointChange}
-								className="inline-flex items-center py-1.5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2 "
-								id="llm-selector"
-								required
-								>
-								<option value="">--Select LLM--</option>
-								<option value="openai">GPT-3.5</option>
-								<option value="fireworksai">Llama-2-Fwks</option>
-								<option value="cohere">Co:here</option>
-								<option value="huggingface">OpenAssistant-HF</option>
-								</select>
-							</div> */}
-
 			<div className="flex ml-auto space-x-3">
-				{/* <div>
-								<button
-									className=" bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-4"
-									type="button"
-									// onClick={stop}
-								>
-									<StopIcon />
-								</button>
-								</div> */}
-
 				<div>
 					<button
-						className="items-center py-4 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
+						className="items-center py-3 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
 						type="submit"
 					>
 						<div
@@ -339,24 +312,7 @@ const SummarizerPage = () => {
 							className={`${loading ? "" : "hidden"} flex justify-center`}
 						>
 							{/* Loading wheel animation  */}
-							<span className="flex items-center gap-2">
-								<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-									<circle
-										className="opacity-25"
-										cx="12"
-										cy="12"
-										r="10"
-										stroke="currentColor"
-										strokeWidth="4"
-										fill="none"
-									/>
-									<path
-										className="opacity-75"
-										fill="currentColor"
-										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-									/>
-								</svg>
-							</span>
+							<Loader2 className="animate-spin w-4 h-6" />
 							<span className="sr-only">Loading...</span>
 						</div>
 
@@ -498,24 +454,7 @@ const SummarizerPage = () => {
 					className={`${loading ? "" : "hidden"} flex justify-center`}
 				>
 					{/* Loading wheel animation  */}
-					<span className="flex items-center gap-2">
-						<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-						<circle
-							className="opacity-25"
-							cx="12"
-							cy="12"
-							r="10"
-							stroke="currentColor"
-							strokeWidth="4"
-							fill="none"
-						/>
-						<path
-							className="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-						/>
-						</svg>
-					</span>
+					<Loader2 className="animate-spin w-5 h-6" />
 					<span className="sr-only">Loading...</span>
 				</div>
 
@@ -551,36 +490,22 @@ const SummarizerPage = () => {
 					required={true}
 					onChange={(e) => setSearchQuery(e.target.value)}
 				/>
-					<button
-						className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4" type="submit" 
+				<button
+					className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
+					type="submit"
+				>
+					<div
+						role="status" className={`${loading ? "" : "hidden"} flex justify-center`}
 					>
-						<div role="status" className={`${loading ? "" : "hidden"} flex justify-center`}>
-							{/* Loading wheel animation  */}
-							<span className="flex items-center gap-2">
-								<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-									<circle
-										className="opacity-25"
-										cx="12"
-										cy="12"
-										r="10"
-										stroke="currentColor"
-										strokeWidth="4"
-										fill="none"
-									/>
-									<path
-										className="opacity-75"
-										fill="currentColor"
-										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-									/>
-								</svg>
-							</span>
-							<span className="sr-only">Loading...</span>
-						</div>
-						<span className={loading ? "hidden" : ""}>
-							<i className="bi bi-send-fill"></i>
-							<span className="sr-only">Send</span>
-						</span>
-					</button>
+						{/* Loading wheel animation  */}
+						<Loader2 className="animate-spin w-5 h-6" />
+						<span className="sr-only">Loading...</span>
+					</div>
+					<span className={loading ? "hidden" : ""}>
+						<i className="bi bi-send-fill"></i>
+						<span className="sr-only">Send</span>
+					</span>
+				</button>
 			</form>
 		</>
 	);
@@ -656,7 +581,7 @@ const SummarizerPage = () => {
 	// Display section for orignal input text
 	const origTextDisplay = (
 		<form className="w-full flex flex-col " onSubmit={summarizeRawText}>
-			<div className="w-full h-dvh border-r border-kaito-brand-ash-green bg-gray-50">
+			<div className="w-full h-dvh border-r border-gray-100 bg-gray-50">
 				<textarea
 					id="textInput"
 					// rows={40}
@@ -739,7 +664,7 @@ const SummarizerPage = () => {
 
 	return (
 		<main>
-			<div className="flex flex-col pt-32">
+			<div className="flex flex-col pt-28">
 				{/* landing page section */}
 				{summarizedText.length == 0 && (
 					<div className="flex h-screen">

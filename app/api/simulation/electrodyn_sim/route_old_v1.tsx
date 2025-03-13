@@ -72,7 +72,7 @@ const runModulusSimulation = (
     const scriptPath = path.join(
       process.cwd(),
       "scripts",
-      "modulus_simulation.py"
+      "modulus_electrodyn_sim.py"
     );
     const command = `python3 ${scriptPath} ${JSON.stringify(params)}`;
 
