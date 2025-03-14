@@ -38,7 +38,7 @@ export default function SimulationPage() {
 		if (cadFile) formData.append("cadFile", cadFile);
 
 		try {
-			const response = await fetch("/api/simulation/electrodyn_sim", {
+			const response = await fetch("/api/simulation/electromagnetics", {
 				method: "POST",
 				body: formData, // Send as FormData instead of JSON
 			});

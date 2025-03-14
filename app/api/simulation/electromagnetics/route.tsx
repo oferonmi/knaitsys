@@ -69,7 +69,7 @@ const runPinnSimulation = (
     const scriptPath = path.join(
       process.cwd(),
       "scripts",
-      "custom_pinn_electrodyn_sim.py"
+      "custom_pinn_electromag_sim.py"
     );
 
     const jsonString = JSON.stringify(params);
