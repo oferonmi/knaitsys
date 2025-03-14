@@ -77,7 +77,7 @@ const runPinnSimulation = (
     const encodedJson = Buffer.from(jsonString).toString('base64');
     console.log('Encoded params:', encodedJson);
     
-    const command = `/opt/anaconda3/bin/python "${scriptPath}" "${encodedJson}"`;
+    const command = `/opt/anaconda3/bin/python "${scriptPath}" "${encodedJson}"`; // TODO: Update to automatically find local Python path
     console.log('Executing command:', command);
 
     exec(command, { maxBuffer: 1024 * 1024 * 100 }, (error, stdout, stderr) => {
