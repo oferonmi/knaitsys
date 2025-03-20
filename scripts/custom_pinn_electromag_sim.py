@@ -24,10 +24,11 @@ except json.JSONDecodeError as e:
     print(f"JSON parsing error: {e}", file=sys.stderr)
     sys.exit(1)
 
-domain_size = float(input_data["domainSize"])
+domain_size_input = float(input_data["domainSize"])
 frequency = float(input_data["frequency"])
 epochs = int(input_data["epochs"])
 cad_file_content = input_data.get("cadFile")  # Optional CAD file content
+print(f"CAD file content: {cad_file_content}", file=sys.stderr)
 
 # Handle CSV file if provided
 material_props = {"epsilon": 1.0, "mu": 1.0, "sigma": 0.0}
@@ -59,7 +60,7 @@ class PINN(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-# Physics Loss Function
+# Physics Loss Function (2D Maxwell’s Equations)
 def physics_loss(model, x, epsilon, mu, frequency, boundary_mask=None):
     x.requires_grad_(True)
     u = model(x)  # [E, H]
@@ -95,27 +96,33 @@ def physics_loss(model, x, epsilon, mu, frequency, boundary_mask=None):
     return loss_pde + loss_bc + loss_ic
 
 # Geometry Handling
-def sample_points_from_geometry(cad_file_content, domain_size, n_points):
+def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
     if cad_file_content:
         # Save CAD file content to a temporary file
         with open("temp.stl", "w") as f:
             f.write(cad_file_content)
         mesh = trimesh.load("temp.stl")
+
+        bounds = mesh.bounds[:, :2]  # 2D projection
+        domain_size = np.max(bounds[1] - bounds[0])  # Use max dimension as effective domain size
+       
         # Sample interior and boundary points
-        interior_points = trimesh.sample.volume_mesh(mesh, count=n_points//2)
-        boundary_points = mesh.sample(n_points//2)
+        # interior_points = trimesh.sample.volume_mesh(mesh, count=n_points//2)
+        interior_points = trimesh.sample.volume_mesh(mesh, count=n_points//2)[:, :2] # 2D projection
+        boundary_points = mesh.sample(n_points//2)[:, :2]  # 2D projection
         # Add time dimension
         t_interior = torch.rand(n_points//2, 1, device=device) * 1.0
         t_boundary = torch.rand(n_points//2, 1, device=device) * 1.0
-        X_interior = torch.tensor(interior_points[:, :2], dtype=torch.float32, device=device)
-        X_boundary = torch.tensor(boundary_points[:, :2], dtype=torch.float32, device=device)
+        X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
+        X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
         X_train = torch.cat([torch.cat([X_interior, t_interior], dim=1), 
                              torch.cat([X_boundary, t_boundary], dim=1)], dim=0)
         boundary_mask = torch.cat([torch.zeros(n_points//2, dtype=torch.bool, device=device), 
                                    torch.ones(n_points//2, dtype=torch.bool, device=device)])
-        return X_train, boundary_mask
+        return X_train, boundary_mask, bounds, domain_size
     else:
         # Default rectangular domain
+        domain_size = domain_size_input
         n_points_total = n_points * 3 // 5  # Interior points
         n_bc_points = n_points // 5        # Boundary points per edge
         n_ic_points = n_points // 5        # Initial points
@@ -133,7 +140,8 @@ def sample_points_from_geometry(cad_file_content, domain_size, n_points):
         t_ic = torch.zeros(n_ic_points, 1, device=device)
         X_ic = torch.cat([x_ic, y_ic, t_ic], dim=1)
         X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
-        return X_all, None
+        bounds = np.array([[0, 0], [domain_size, domain_size]])
+        return X_all, None, bounds, domain_size
 
 # Generate Training Data
 n_points = int(input_data["numPoints"])  # Number of training / sampling points for PINN
@@ -157,7 +165,7 @@ n_points = int(input_data["numPoints"])  # Number of training / sampling points 
 
 # X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
 
-X_all, boundary_mask = sample_points_from_geometry(cad_file_content, domain_size, n_points)
+X_all, boundary_mask, bounds, effective_domain_size = sample_points_from_geometry(cad_file_content, domain_size_input, n_points)
 
 # Training
 model = PINN().to(device)
@@ -193,30 +201,52 @@ computation_time = time.time() - start_time
 # points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
 # fields = model(points).detach().cpu().numpy()  # Move to CPU for serialization
 
-def evaluate_fields(model, domain_size, cad_file_content):
+def evaluate_fields(model, cad_file_content, bounds):
     if cad_file_content:
         mesh = trimesh.load("temp.stl")
-        bounds = mesh.bounds
-        x_min, y_min = bounds[0][:2]
-        x_max, y_max = bounds[1][:2]
+        # bounds = mesh.bounds
+        # x_min, y_min = bounds[0][:2]
+        # x_max, y_max = bounds[1][:2]
+        # x_eval = torch.linspace(x_min, x_max, 100, device=device)
+        # y_eval = torch.linspace(y_min, y_max, 100, device=device)
+        eval_points = mesh.sample(1000)[:, :2]  # 2D projection
+        t_eval = torch.linspace(0, 1.0, 10, device=device).reshape(-1, 1)
+        points = []
+        for t in t_eval:
+            points.append(torch.cat([torch.tensor(eval_points, dtype=torch.float32, device=device), t.repeat(eval_points.shape[0], 1)], dim=1))
+        points = torch.cat(points, dim=0)
+    else:
+        x_min, y_min = bounds[0]
+        x_max, y_max = bounds[1]
         x_eval = torch.linspace(x_min, x_max, 100, device=device)
         y_eval = torch.linspace(y_min, y_max, 100, device=device)
-    else:
-        x_eval = torch.linspace(0, domain_size, 100, device=device)
-        y_eval = torch.linspace(0, domain_size, 100, device=device)
-    t_eval = torch.linspace(0, 1.0, 10, device=device)
-    # Generate meshgrid  with proper tensor input for evaluation
-    X, Y, T = torch.meshgrid(x_eval, y_eval, t_eval, indexing="ij")
-    points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
-    fields = model(points).detach().cpu().numpy()
-    return fields
+        t_eval = torch.linspace(0, 1.0, 5, device=device)
 
-fields = evaluate_fields(model, domain_size, cad_file_content)
+        # x_eval = torch.linspace(0, domain_size, 100, device=device)
+        # y_eval = torch.linspace(0, domain_size, 100, device=device)
+        # t_eval = torch.linspace(0, 1.0, 10, device=device)
+        # Generate meshgrid  with proper tensor input for evaluation
+        X, Y, T = torch.meshgrid(x_eval, y_eval, t_eval, indexing="ij")
+        points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
+    fields = model(points).detach().cpu().numpy()
+    points_np = points[:, :2].detach().cpu().numpy()  # x, y only
+    return fields, points_np
+
+fields, eval_points = evaluate_fields(model, cad_file_content, bounds)
 
 # Output results as JSON
 result = {
-    "fields": {"E": fields[:, 0].tolist(), "H": fields[:, 1].tolist()},
-    "computationTime": computation_time
+    "fields": {
+        "E": fields[:, 0].tolist(), 
+        "H": fields[:, 1].tolist()
+    },
+    "points": {
+        "x": eval_points[:, 0].tolist(),
+        "y": eval_points[:, 1].tolist()
+    },
+    "computationTime": computation_time,
+    "cadFilePresent": bool(cad_file_content),
+    "effectiveDomainSize": float(effective_domain_size)  # Pass effective domain size
 }
 print(json.dumps(result))
 

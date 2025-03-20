@@ -54,7 +54,7 @@ function AiToolsPage() {
 				<Link href="/#">
 					<div className={styles.linkBase}>
 						<i className="bi bi-robot" style={{ fontSize: 64 }}></i>
-						<p className={styles.textBase}>Agent</p>
+						<p className={styles.textBase}>Assistants</p>
 					</div>
 				</Link>
 

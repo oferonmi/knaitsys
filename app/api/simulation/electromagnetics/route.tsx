@@ -45,21 +45,27 @@ interface SimulationParams {
 // }
 
 interface SimulationResult {
-    fields: { E: number[]; H: number[] };
-    computationTime: number;
+  fields: { E: number[]; H: number[] };
+  points?: { x: number[]; y: number[] };
+  computationTime: number;
+  cadFilePresent?: boolean;
+  effectiveDomainSize: number;
 }
 
 interface ResponseData {
-    success: boolean;
-    data?: {
-        fields: { E: number[]; H: number[] };
-        metadata: {
-            domainSize: number;
-            frequency: number;
-            computationTime: number;
-        };
+  success: boolean;
+  data?: {
+    fields: { E: number[]; H: number[] };
+    points?: { x: number[]; y: number[] };
+    metadata: {
+      domainSize: number;
+      frequency: number;
+      computationTime: number;
+      cadFilePresent?: boolean;
+      effectiveDomainSize: number;
     };
-    error?: string;
+  };
+  error?: string;
 }
 
 const runPinnSimulation = (
@@ -121,18 +127,18 @@ export async function POST(
       }
 
       // Step 1: Define the Problem Domain
-      const domain = {
-        xRange: [0, domainSize || 1.0] as [number, number],
-        yRange: [0, domainSize || 1.0] as [number, number],
-        tRange: [0, 1.0] as [number, number],
-      };
+      // const domain = {
+      //   xRange: [0, domainSize || 1.0] as [number, number],
+      //   yRange: [0, domainSize || 1.0] as [number, number],
+      //   tRange: [0, 1.0] as [number, number],
+      // };
 
       // Step 2: Set Material Properties (default values, overridden by CSV if provided)
-      const materialProps = {
-        epsilon: 1.0,
-        mu: 1.0,
-        sigma: 0.0,
-      };
+      // const materialProps = {
+      //   epsilon: 1.0,
+      //   mu: 1.0,
+      //   sigma: 0.0,
+      // };
 
       // Step 3: Formulate Governing Equations (handled in Python script)
 
@@ -140,27 +146,27 @@ export async function POST(
       const numPoints = 10000;
 
       // Step 5: Apply Initial and Boundary Conditions
-      const boundaryConditions = {
-        type: "Dirichlet",
-        value: 0,
-      };
-      const initialConditions = {
-        E: 0,
-        H: 0,
-      };
+      // const boundaryConditions = {
+      //   type: "Dirichlet",
+      //   value: 0,
+      // };
+      // const initialConditions = {
+      //   E: 0,
+      //   H: 0,
+      // };
 
       // Step 6: Specify Sources
-      const source = {
-        type: "planeWave",
-        frequency: frequency || 1.0,
-        amplitude: 1.0,
-      };
+      // const source = {
+      //   type: "planeWave",
+      //   frequency: frequency || 1.0,
+      //   amplitude: 1.0,
+      // };
 
       // Step 7: Choose Numerical Method (PINN in Modulus)
-      const nnConfig = {
-        // layers: [4, 64, 64, 2],
-        epochs: epochs || 5000,
-      };
+      // const nnConfig = {
+      //   // layers: [4, 64, 64, 2],
+      //   epochs: epochs || 5000,
+      // };
 
       // Step 8: Time Stepping (Implicit in PINN, handled by time input)
 
@@ -197,10 +203,13 @@ export async function POST(
 
       const processedResult = {
         fields: result.fields,
+        points: result.points,
         metadata: {
           domainSize: domainSize || 1.0,
           frequency: frequency || 1.0,
           computationTime: result.computationTime,
+          cadFilePresent: result.cadFilePresent || !!cadFile,
+          effectiveDomainSize: result.effectiveDomainSize,
         },
       };
 

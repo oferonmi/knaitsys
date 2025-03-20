@@ -10,8 +10,6 @@ import {
 	Tooltip,
 	Legend,
 	ResponsiveContainer,
-	ScatterChart,
-	Scatter,
 } from "recharts";
 
 export default function SimulationPage() {
@@ -60,108 +58,24 @@ export default function SimulationPage() {
 	};
 
 	// Prepare chart data from result
-	// const preparePlotData = () => {
-	// 	if (!result?.fields) return []; //null;
-	// 	const { E, H } = result.fields;
-	  
-	// 	if (result.points && result.cadFilePresent) {
-	// 	  // Format data for 2D scatter plot
-	// 	  return result.points.x.map((x: number, i: number) => ({
-	// 			x,
-	// 			y: result.points.y[i],
-	// 			E: result.fields.E[i],
-	// 			H: result.fields.H[i],
-	// 	  }));
-	// 	} 
-	  
-	// 	// Format data for 1D line plot
-	// 	const numPoints = E.length;
-	// 	// const step = result.metadata.domainSize / (Math.sqrt(numPoints / 5) - 1);
-	// 	const step = result.metadata.domainSize / (numPoints - 1);
-	// 	return E.map((eValue: number, index: number) => ({
-	// 		x: index * step, //(index % 100) * step,
-	// 		E: eValue,
-	// 		H: H[index],
-	// 	}));
-	// };
-	const preparePlotData = () => {
-		if (!result || !result.fields) return null;
-		const { E, H } = result.fields;
+	const prepareChartData = () => {
+		if (!result || !result.fields || !result.fields.E || !result.fields.H)
+			return [];
 
-		if (result.points && result.metadata.cadFilePresent) {
-			// const { x, y } = result.points;
-			// return {
-			// 	type: "scatter",
-			// 	mode: "markers",
-			// 	x,
-			// 	y,
-			// 	marker: {
-			// 		size: 5,
-			// 		color: E,
-			// 		colorscale: "Viridis",
-			// 		opacity: 0.8,
-			// 		colorbar: { title: "E Field" },
-			// 	},
-			// };
-			// Format data for 2D scatter plot
-			return result.points.x.map((x: number, i: number) => ({
-					x,
-					y: result.points.y[i],
-					E: result.fields.E[i],
-					H: result.fields.H[i],
-			}));
-    	} else {
-        const numPoints = E.length;
-        // const step =
-        //   result.metadata.effectiveDomainSize / (Math.sqrt(numPoints / 5) - 1);
-
-        const step = result.metadata.domainSize / (numPoints - 1);
-        // const chartData = E.map((eValue: number, index: number) => ({
-        //   x: (index % 100) * step,
-        //   E: eValue,
-        //   H: H[index],
-        // }));
-        // interface ChartDataPoint {
-        // 	x: number;
-        // 	E: number;
-        // 	H: number;
-        // }
-
-        // interface PlotData {
-        // 	type: 'scatter';
-        // 	mode: 'lines';
-        // 	x: number[];
-        // 	y: number[];
-        // 	name: string;
-        // 	line: {
-        // 		color: string;
-        // 	};
-        // }
-
-        // return {
-        // 		type: "scatter" as const,
-        // 		mode: "lines" as const,
-        // 		x: chartData.map((d: ChartDataPoint) => d.x),
-        // 		y: chartData.map((d: ChartDataPoint) => d.E),
-        // 		name: "E",
-        // 		line: { color: "#8884d8" },
-        // } satisfies PlotData;
-
-        return E.map((eValue: number, index: number) => ({
-          x: index * step, //(index % 100) * step,
-          E: eValue,
-          H: H[index],
-        }));
-      }
+		const numPoints = result.fields.E.length;
+		const step = result.metadata.domainSize / (numPoints - 1);
+		return result.fields.E.map((eValue: number, index: number) => ({
+			x: index * step,
+			E: eValue,
+			H: result.fields.H[index],
+		}));
 	};
 
-	const plotData = preparePlotData();
+	const chartData = prepareChartData();
 
 	return (
 		<div className="min-h-screen p-4 bg-white pt-36">
-			<h1 className="text-3xl font-bold mb-6 text-center">
-				Electromagnetics Simulation
-			</h1>
+			<h1 className="text-3xl font-bold mb-6 text-center">Electromagnetics Simulation</h1>
 
 			<div className="flex flex-row gap-8 justify-between max-w-7xl mx-auto">
 				{/* Left Column - Form */}
@@ -173,7 +87,7 @@ export default function SimulationPage() {
 					>
 						<div className="mb-4">
 							<label className="block text-sm font-medium text-gray-700">
-								Domain Size (units, ignored if CAD file is provided)
+								Domain Size (units)
 							</label>
 							<input
 								type="number"
@@ -274,94 +188,63 @@ export default function SimulationPage() {
 							{/* Metadata */}
 							<div className="mb-4 grid grid-cols-3 gap-4">
 								<div className="p-3 bg-gray-50 rounded-md">
-									<p>
-										<strong>Effective Domain Size:</strong>
-									</p>
-									<p>{result.metadata.effectiveDomainSize} units</p>
+									<p><strong>Domain Size:</strong></p>
+									<p>{result.metadata.domainSize} units</p>
 								</div>
 								<div className="p-3 bg-gray-50 rounded-md">
-									<p>
-										<strong>Frequency:</strong>
-									</p>
+									<p><strong>Frequency:</strong></p>
 									<p>{result.metadata.frequency} Hz</p>
 								</div>
 								<div className="p-3 bg-gray-50 rounded-md">
-									<p>
-										<strong>Computation Time:</strong>
-									</p>
+									<p><strong>Computation Time:</strong></p>
 									<p>{result.metadata.computationTime} s</p>
 								</div>
 							</div>
 
 							{/* Chart */}
-							{plotData && (
+							{chartData.length > 0 && (
 								<div className="mt-6">
-									<h3 className="font-medium mb-4">
-										{result.cadFilePresent
-										? "2D Field Distribution"
-										: "Field Distribution (X-slice)"}
-									</h3>
+									<h3 className="font-medium mb-4">Field Distribution</h3>
 									<div className="h-[400px]">
-										{result.cadFilePresent ? (
-											<ResponsiveContainer width="100%" height="100%">
-												<ScatterChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-													<CartesianGrid strokeDasharray="3 3" />
-													<XAxis
-														dataKey="x"
-														name="X"
-														label={{ value: "X (units)", position: "bottom" }}
-													/>
-													<YAxis
-														dataKey="y"
-														name="Y"
-														label={{ value: "Y (units)", angle: -90, position: "left" }}
-													/>
-													<Tooltip cursor={{ strokeDasharray: "3 3" }} />
-													<Legend />
-													<Scatter
-														name="Electric Field (E)"
-														data={plotData}
-														fill="#8884d8"
-														dataKey="E"
-													/>
-													<Scatter
-														name="Magnetic Field (H)"
-														data={plotData}
-														fill="#82ca9d"
-														dataKey="H"
-													/>
-												</ScatterChart>
-											</ResponsiveContainer>
-										) : (
-											<ResponsiveContainer width="100%" height="100%">
-												<LineChart data={plotData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-													<CartesianGrid strokeDasharray="3 3" />
-													<XAxis
-														dataKey="x"
-														label={{ value: "X Positions (units)", position: "insideBottom", offset: -7 }}
-													/>
-													<YAxis
-														label={{ value: "Field Amplitude", angle: -90, position: "insideLeft", offset: -9 }}
-													/>
-													<Tooltip />
-													<Legend />
-													<Line
-														type="monotone"
-														dataKey="E"
-														stroke="#8884d8"
-														name="Electric Field (E)"
-														dot={false}
-													/>
-													<Line
-														type="monotone"
-														dataKey="H"
-														stroke="#82ca9d"
-														name="Magnetic Field (H)"
-														dot={false}
-													/>
-												</LineChart>
-											</ResponsiveContainer>
-										)}
+										<ResponsiveContainer width="100%" height="100%">
+											<LineChart
+												data={chartData}
+												margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+											>
+												<CartesianGrid strokeDasharray="3 3" />
+												<XAxis
+													dataKey="x"
+													label={{
+														value: "Position (units)",
+														position: "insideBottom",
+														offset: -5,
+													}}
+												/>
+												<YAxis
+													label={{
+														value: "Field Amplitude",
+														angle: -90,
+														position: "insideLeft",
+													}}
+												/>
+												<Tooltip />
+												<Legend />
+												<Line
+													type="monotone"
+													dataKey="E"
+													stroke="#8884d8"
+													name="Electric Field (E)"
+													dot={false}
+												/>
+												<Line
+													type="monotone"
+													dataKey="H"
+													stroke="#82ca9d"
+													name="Magnetic Field (H)"
+													dot={false}
+												/>
+											</LineChart>
+										</ResponsiveContainer>
 									</div>
 								</div>
 							)}
