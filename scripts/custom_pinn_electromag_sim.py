@@ -27,8 +27,27 @@ except json.JSONDecodeError as e:
 domain_size_input = float(input_data["domainSize"])
 frequency = float(input_data["frequency"])
 epochs = int(input_data["epochs"])
-cad_file_content = input_data.get("cadFile")  # Optional CAD file content
-print(f"CAD file content: {cad_file_content}", file=sys.stderr)
+
+# Generate Training Data
+num_points = int(input_data["numPoints"])  # Number of training / sampling points for PINN
+
+# cad_file_content = input_data.get("cadFile")  # Optional CAD file content
+# print(f"CAD file content: {cad_file_content}", file=sys.stderr)
+cad_file_path = input_data.get("cadFilePath")  # Now a path, not content
+print(f"Uploaded CAD file path: {cad_file_path}", file=sys.stderr)
+
+# Read CAD file content if path is provided
+cad_file_content = None
+if cad_file_path:
+    try:
+        # Load mesh to verify it's valid
+        test_mesh = trimesh.load_mesh(cad_file_path, file_type='stl', force='mesh')
+        if test_mesh is not None and isinstance(test_mesh, trimesh.Trimesh):
+            cad_file_content = True  # Just use as a flag, we'll use path directly
+        else:
+            print("Invalid STL file detected", file=sys.stderr)
+    except Exception as e:
+        print(f"Error loading STL file: {e}", file=sys.stderr)
 
 # Handle CSV file if provided
 material_props = {"epsilon": 1.0, "mu": 1.0, "sigma": 0.0}
@@ -43,7 +62,7 @@ if "csvFile" in input_data:
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}", file=sys.stderr)
 
-# Define the Neural Network
+# Define the Physics-Informed Neural Network (PINN) for 2D scaler fields
 class PINN(nn.Module):
     def __init__(self):
         super(PINN, self).__init__()
@@ -66,11 +85,21 @@ def physics_loss(model, x, epsilon, mu, frequency, boundary_mask=None):
     u = model(x)  # [E, H]
     E, H = u[:, 0:1], u[:, 1:2]
 
+    # Check for NaN in model output
+    if torch.isnan(u).any() or torch.isinf(u).any():
+        print("NaN or Inf detected in model output", file=sys.stderr)
+        return torch.tensor(float('nan'), device=device)
+
     # Compute derivatives
     grads_E = torch.autograd.grad(E, x, grad_outputs=torch.ones_like(E), create_graph=True)[0]
     dE_dx, dE_dy, dE_dt = grads_E[:, 0:1], grads_E[:, 1:2], grads_E[:, 2:3]
     grads_H = torch.autograd.grad(H, x, grad_outputs=torch.ones_like(H), create_graph=True)[0]
     dH_dx, dH_dy, dH_dt = grads_H[:, 0:1], grads_H[:, 1:2], grads_H[:, 2:3]
+
+    # Check for NaN in gradients
+    if torch.isnan(grads_E).any() or torch.isinf(grads_E).any() or torch.isnan(grads_H).any() or torch.isinf(grads_H).any():
+        print("NaN or Inf detected in gradients", file=sys.stderr)
+        return torch.tensor(float('nan'), device=device)
 
     # Maxwell’s equations (simplified 1D wave propagation along x)
     pde_E = dE_dt + (1/mu) * dH_dx
@@ -86,40 +115,95 @@ def physics_loss(model, x, epsilon, mu, frequency, boundary_mask=None):
     # loss_ic = torch.mean((E - source)**2 + (H - 0)**2)  # Initial condition with source
 
     if boundary_mask is not None:
+        if boundary_mask.sum() == 0 or (~boundary_mask).sum() == 0:
+            print("Boundary or interior mask is empty", file=sys.stderr)
+            return torch.tensor(float('nan'), device=device)
+        
         loss_bc = torch.mean((E[boundary_mask] - 0)**2 + (H[boundary_mask] - 0)**2)
-        loss_ic = torch.mean((E[~boundary_mask & (x[:, 2] == 0)] - source[~boundary_mask & (x[:, 2] == 0)])**2 + 
-                             (H[~boundary_mask & (x[:, 2] == 0)] - 0)**2)
+
+        ic_mask = ~boundary_mask & (x[:, 2] == 0)
+        if ic_mask.sum() == 0:
+            print("No points satisfy initial condition", file=sys.stderr)
+            loss_ic = torch.tensor(0.0, device=device)  # Default to zero if no IC points
+        else:
+            loss_ic = torch.mean((E[ic_mask] - source[ic_mask])**2 + (H[ic_mask] - 0)**2)
+
     else:
-        loss_bc = torch.mean((E - 0)**2 + (H - 0)**2)  # Fallback for rectangular domain
-        loss_ic = torch.mean((E[x[:, 2] == 0] - source[x[:, 2] == 0])**2 + (H[x[:, 2] == 0] - 0)**2)
+        loss_bc = torch.mean((E - 0)**2 + (H - 0)**2) # Fallback for reectangular domain
+        ic_mask = (x[:, 2] == 0)
+        if ic_mask.sum() == 0:
+            print("No points satisfy initial condition (no CAD)", file=sys.stderr)
+            loss_ic = torch.tensor(0.0, device=device)
+        else:
+            loss_ic = torch.mean((E[ic_mask] - source[ic_mask])**2 + (H[ic_mask] - 0)**2)
+
+    # Check for NaN in loss components
+    if torch.isnan(loss_pde).any() or torch.isnan(loss_bc).any() or torch.isnan(loss_ic).any():
+        print(f"NaN detected in loss: pde={loss_pde.item()}, bc={loss_bc.item()}, ic={loss_ic.item()}", file=sys.stderr)
+        return torch.tensor(float('nan'), device=device)
 
     return loss_pde + loss_bc + loss_ic
 
 # Geometry Handling
 def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
     if cad_file_content:
-        # Save CAD file content to a temporary file
-        with open("temp.stl", "w") as f:
-            f.write(cad_file_content)
-        mesh = trimesh.load("temp.stl")
+        try:
+            # Load mesh directly from file path
+            mesh = trimesh.load_mesh(cad_file_path, file_type='stl')
+            
+            if mesh is None or not isinstance(mesh, trimesh.Trimesh):
+                print("Failed to load STL file, falling back to default geometry", file=sys.stderr)
+                return sample_points_from_geometry(None, domain_size_input, n_points)
 
-        bounds = mesh.bounds[:, :2]  # 2D projection
-        domain_size = np.max(bounds[1] - bounds[0])  # Use max dimension as effective domain size
-       
-        # Sample interior and boundary points
-        # interior_points = trimesh.sample.volume_mesh(mesh, count=n_points//2)
-        interior_points = trimesh.sample.volume_mesh(mesh, count=n_points//2)[:, :2] # 2D projection
-        boundary_points = mesh.sample(n_points//2)[:, :2]  # 2D projection
-        # Add time dimension
-        t_interior = torch.rand(n_points//2, 1, device=device) * 1.0
-        t_boundary = torch.rand(n_points//2, 1, device=device) * 1.0
-        X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
-        X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
-        X_train = torch.cat([torch.cat([X_interior, t_interior], dim=1), 
-                             torch.cat([X_boundary, t_boundary], dim=1)], dim=0)
-        boundary_mask = torch.cat([torch.zeros(n_points//2, dtype=torch.bool, device=device), 
-                                   torch.ones(n_points//2, dtype=torch.bool, device=device)])
-        return X_train, boundary_mask, bounds, domain_size
+            # Continue with valid mesh
+            bounds = mesh.bounds[:, :2]  # 2D projection
+            domain_size = np.max(bounds[1] - bounds[0])
+            
+            # Ensure equal number of points for both interior and boundary
+            n_each = n_points // 2
+            
+            try:
+                # Sample exact number of points
+                interior_points = trimesh.sample.volume_mesh(mesh, count=n_each)[:, :2]
+                boundary_points = mesh.sample(n_each)[:, :2]
+                
+                # Verify point counts
+                if len(interior_points) != n_each or len(boundary_points) != n_each:
+                    print(f"Incorrect point sampling: interior={len(interior_points)}, boundary={len(boundary_points)}", file=sys.stderr)
+                    return sample_points_from_geometry(None, domain_size_input, n_points)
+                
+                # Add time dimension with matching sizes
+                t_interior = torch.rand(n_each, 1, device=device) * 1.0
+                t_boundary = torch.rand(n_each, 1, device=device) * 1.0
+                
+                # Convert to tensors with explicit sizes
+                X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
+                X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
+                
+            except (ValueError, AttributeError) as e:
+                print(f"Error sampling points: {e}", file=sys.stderr)
+                return sample_points_from_geometry(None, domain_size_input, n_points)
+                
+            # Add time dimension
+            # t_interior = torch.rand(n_points//2, 1, device=device) * 1.0
+            # t_boundary = torch.rand(n_points//2, 1, device=device) * 1.0
+            # X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
+            # X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
+            X_train = torch.cat([torch.cat([X_interior, t_interior], dim=1), 
+                                 torch.cat([X_boundary, t_boundary], dim=1)], dim=0)
+            boundary_mask = torch.cat([torch.zeros(n_points//2, dtype=torch.bool, device=device), 
+                                       torch.ones(n_points//2, dtype=torch.bool, device=device)])
+            
+            # Check for NaN in sampled points
+            if torch.isnan(X_train).any() or torch.isinf(X_train).any():
+                print("NaN or Inf detected in sampled points", file=sys.stderr)
+                sys.exit(1)
+
+            return X_train, boundary_mask, bounds, domain_size
+            
+        except Exception as e:
+            print(f"Error processing STL file: {e}", file=sys.stderr)
+            return sample_points_from_geometry(None, domain_size_input, n_points)
     else:
         # Default rectangular domain
         domain_size = domain_size_input
@@ -143,8 +227,8 @@ def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
         bounds = np.array([[0, 0], [domain_size, domain_size]])
         return X_all, None, bounds, domain_size
 
-# Generate Training Data
-n_points = int(input_data["numPoints"])  # Number of training / sampling points for PINN
+# # Generate Training Data
+# num_points = int(input_data["numPoints"])  # Number of training / sampling points for PINN
 
 # x = torch.rand(n_points, 1, device=device) * domain_size
 # y = torch.rand(n_points, 1, device=device) * domain_size
@@ -165,7 +249,7 @@ n_points = int(input_data["numPoints"])  # Number of training / sampling points 
 
 # X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
 
-X_all, boundary_mask, bounds, effective_domain_size = sample_points_from_geometry(cad_file_content, domain_size_input, n_points)
+X_all, boundary_mask, bounds, effective_domain_size = sample_points_from_geometry(cad_file_content, domain_size_input, num_points)
 
 # Training
 model = PINN().to(device)
@@ -180,6 +264,9 @@ start_time = time.time()
 for epoch in range(epochs):
     optimizer.zero_grad()
     loss = physics_loss(model, X_all, material_props["epsilon"], material_props["mu"], frequency, boundary_mask)
+    if torch.isnan(loss):
+        print(f"Epoch {epoch}: Loss is NaN, stopping training", file=sys.stderr)
+        break
     loss.backward()
     optimizer.step()
     if epoch % 1000 == 0:
@@ -203,31 +290,43 @@ computation_time = time.time() - start_time
 
 def evaluate_fields(model, cad_file_content, bounds):
     if cad_file_content:
-        mesh = trimesh.load("temp.stl")
-        # bounds = mesh.bounds
-        # x_min, y_min = bounds[0][:2]
-        # x_max, y_max = bounds[1][:2]
-        # x_eval = torch.linspace(x_min, x_max, 100, device=device)
-        # y_eval = torch.linspace(y_min, y_max, 100, device=device)
-        eval_points = mesh.sample(1000)[:, :2]  # 2D projection
-        t_eval = torch.linspace(0, 1.0, 10, device=device).reshape(-1, 1)
-        points = []
-        for t in t_eval:
-            points.append(torch.cat([torch.tensor(eval_points, dtype=torch.float32, device=device), t.repeat(eval_points.shape[0], 1)], dim=1))
-        points = torch.cat(points, dim=0)
+        try:
+            # Load mesh directly from file path instead of temporary file
+            mesh = trimesh.load_mesh(cad_file_path, file_type='stl', force='mesh')
+            
+            if mesh is None or not isinstance(mesh, trimesh.Trimesh):
+                print("Failed to load STL for evaluation, using default grid", file=sys.stderr)
+                return evaluate_fields(None, bounds)
+            
+            # Sample points from the mesh
+            eval_points = mesh.sample(1000)[:, :2]  # 2D projection
+            if eval_points.size == 0:
+                print("Failed to sample evaluation points", file=sys.stderr)
+                return evaluate_fields(None, bounds)
+
+            # Create time points
+            t_eval = torch.linspace(0, 1.0, 10, device=device)
+            points = []
+            for t in t_eval:
+                points.append(torch.cat([
+                    torch.tensor(eval_points, dtype=torch.float32, device=device),
+                    t.repeat(eval_points.shape[0], 1)
+                ], dim=1))
+            points = torch.cat(points, dim=0)
+            
+        except Exception as e:
+            print(f"Error evaluating fields with STL: {e}", file=sys.stderr)
+            return evaluate_fields(None, bounds)
     else:
+        # Default grid evaluation
         x_min, y_min = bounds[0]
         x_max, y_max = bounds[1]
         x_eval = torch.linspace(x_min, x_max, 100, device=device)
         y_eval = torch.linspace(y_min, y_max, 100, device=device)
         t_eval = torch.linspace(0, 1.0, 5, device=device)
-
-        # x_eval = torch.linspace(0, domain_size, 100, device=device)
-        # y_eval = torch.linspace(0, domain_size, 100, device=device)
-        # t_eval = torch.linspace(0, 1.0, 10, device=device)
-        # Generate meshgrid  with proper tensor input for evaluation
         X, Y, T = torch.meshgrid(x_eval, y_eval, t_eval, indexing="ij")
         points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
+
     fields = model(points).detach().cpu().numpy()
     points_np = points[:, :2].detach().cpu().numpy()  # x, y only
     return fields, points_np
@@ -246,11 +345,6 @@ result = {
     },
     "computationTime": computation_time,
     "cadFilePresent": bool(cad_file_content),
-    "effectiveDomainSize": float(effective_domain_size)  # Pass effective domain size
+    "effectiveDomainSize": float(effective_domain_size)
 }
 print(json.dumps(result))
-
-# Clean up temporary file
-if cad_file_content:
-    import os
-    os.remove("temp.stl")
