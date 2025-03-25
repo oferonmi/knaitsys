@@ -3,52 +3,7 @@ import { exec } from "child_process";
 import path from "path";
 import fs from "fs/promises"; // Use Node.js fs for file operations
 
-// interface SimulationParams {
-// 	domain: {
-// 		xRange: [number, number];
-// 		yRange: [number, number];
-// 		tRange: [number, number];
-// 	};
-// 	materialProps: {
-// 		epsilon: number;
-// 		mu: number;
-// 		sigma: number;
-// 	};
-// 	numPoints: number;
-// 	boundaryConditions: {
-// 		type: string;
-// 		value: number;
-// 	};
-// 	initialConditions: {
-// 		E: number;
-// 		H: number;
-// 	};
-// 	source: {
-// 		type: string;
-// 		frequency: number;
-// 		amplitude: number;
-// 	};
-// 	nnConfig: {
-// 		// layers: number[];
-// 		epochs: number;
-// 	};
-// 	csvFile?: string; // CSV content as string (optional)
-// 	cadFile?: string; // CAD file content as string (optional)
-// }
-
 const TEMP_DIR = path.resolve("./tmp");
-
-// interface SimulationParams {
-//   domainSize: number;
-//   frequency: number;
-//   numPoints: number;
-//   epochs: number;
-//   csvFile?: string; // CSV content as string (optional)
-//   // cadFile?: string; // Pass the file path instead of content if present
-//   cadFilePath? : string; // Pass the file path instead of content
-// };
-
-
 interface SimulationResult {
   fields: { E: number[]; H: number[] };
   points?: { x: number[]; y: number[] };

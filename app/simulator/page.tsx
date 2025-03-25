@@ -243,37 +243,37 @@ function SimulationResults({
 	};
 
 	return (
-		<div className="mt-6 w-full min-h-screen  max-w-4xl bg-white p-6 rounded-lg shadow-md space-y-8">
+		<div className="mt-6 w-full min-h-screen  max-w-4xl bg-white p-6 rounded-lg shadow-md space-y-8 ">
 		{/* Metadata display */}
 		<div>
 			<h2 className="text-xl font-semibold mb-4">Simulation Results</h2>
 			<div className="mb-4 grid grid-cols-3 gap-4">
-				<div className="p-3 bg-gray-50 rounded-md">
-					<p>
-					<strong>Effective Domain Size:</strong>
-					</p>
-					<p>{result.metadata.effectiveDomainSize} units</p>
-				</div>
-				<div className="p-3 bg-gray-50 rounded-md">
-					<p>
-					<strong>Frequency:</strong>
-					</p>
-					<p>{result.metadata.frequency} Hz</p>
-				</div>
-				<div className="p-3 bg-gray-50 rounded-md">
-					<p>
-					<strong>Computation Time:</strong>
-					</p>
-					<p>{result.metadata.computationTime} s</p>
-				</div>
+			<div className="p-3 bg-gray-50 rounded-md">
+				<p>
+				<strong>Effective Domain Size:</strong>
+				</p>
+				<p>{result.metadata.effectiveDomainSize} units</p>
+			</div>
+			<div className="p-3 bg-gray-50 rounded-md">
+				<p>
+				<strong>Frequency:</strong>
+				</p>
+				<p>{result.metadata.frequency} Hz</p>
+			</div>
+			<div className="p-3 bg-gray-50 rounded-md">
+				<p>
+				<strong>Computation Time:</strong>
+				</p>
+				<p>{result.metadata.computationTime} s</p>
+			</div>
 			</div>
 		</div>
 
 		{/* Stacked Plots */}
-		<div className="space-y-8">
+		<div className="space-y-8 ">
 			{/* E Field Plot */}
 			{eFieldPlotData && domainPlotData && (
-			<div className="w-full">
+			<div className="size-full">
 				<h3 className="font-medium mb-2">
 				{result.metadata.cadFilePresent
 					? "2D Electric Field (E) Distribution"
@@ -286,12 +286,19 @@ function SimulationResults({
 					autosize: true,
 					height: undefined,
 					title: undefined,
-					xaxis: { title: "X (units)", automargin: true },
+					xaxis: {
+					title: "X (units)",
+					automargin: true,
+					scaleanchor: "x",
+					scaleratio: 1,
+					},
 					yaxis: {
 					title: result?.metadata.cadFilePresent
 						? "Y (units)"
 						: "Field Amplitude",
 					automargin: true,
+					scaleanchor: "x",
+					scaleratio: 1,
 					},
 				}}
 				config={{
@@ -311,7 +318,7 @@ function SimulationResults({
 
 			{/* H Field Plot */}
 			{hFieldPlotData && domainPlotData && (
-			<div className="w-full">
+			<div className="size-full">
 				<h3 className="font-medium mb-2">
 				{result.metadata.cadFilePresent
 					? "2D Magnetic Field (H) Distribution"
@@ -324,12 +331,14 @@ function SimulationResults({
 					autosize: true,
 					height: undefined,
 					title: undefined,
-					xaxis: { title: "X (units)", automargin: true },
+					xaxis: { title: "X (units)", automargin: true, scaleanchor: "x", scaleratio: 1 },
 					yaxis: {
 					title: result?.metadata.cadFilePresent
 						? "Y (units)"
 						: "Field Amplitude",
-					automargin: true,
+					automargin: true, 
+					scaleanchor: "x", 
+					scaleratio: 1,
 					},
 				}}
 				config={{
