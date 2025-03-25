@@ -146,6 +146,7 @@ def physics_loss(model, x, epsilon, mu, frequency, boundary_mask=None):
 
 # Geometry Handling
 def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
+    domain_boundary = {"x": [], "y": []}  # To store boundary points for visualization
     if cad_file_content:
         try:
             # Load mesh directly from file path
@@ -155,51 +156,57 @@ def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
                 print("Failed to load STL file, falling back to default geometry", file=sys.stderr)
                 return sample_points_from_geometry(None, domain_size_input, n_points)
 
-            # Continue with valid mesh
-            bounds = mesh.bounds[:, :2]  # 2D projection
+            bounds = mesh.bounds[:, :2]
             domain_size = np.max(bounds[1] - bounds[0])
             
-            # Ensure equal number of points for both interior and boundary
+            # Ensure equal number of points by sampling in batches
             n_each = n_points // 2
+            max_attempts = 5
             
-            try:
-                # Sample exact number of points
-                interior_points = trimesh.sample.volume_mesh(mesh, count=n_each)[:, :2]
-                boundary_points = mesh.sample(n_each)[:, :2]
-                
-                # Verify point counts
-                if len(interior_points) != n_each or len(boundary_points) != n_each:
-                    print(f"Incorrect point sampling: interior={len(interior_points)}, boundary={len(boundary_points)}", file=sys.stderr)
-                    return sample_points_from_geometry(None, domain_size_input, n_points)
-                
-                # Add time dimension with matching sizes
-                t_interior = torch.rand(n_each, 1, device=device) * 1.0
-                t_boundary = torch.rand(n_each, 1, device=device) * 1.0
-                
-                # Convert to tensors with explicit sizes
-                X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
-                X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
-                
-            except (ValueError, AttributeError) as e:
-                print(f"Error sampling points: {e}", file=sys.stderr)
-                return sample_points_from_geometry(None, domain_size_input, n_points)
-                
-            # Add time dimension
-            # t_interior = torch.rand(n_points//2, 1, device=device) * 1.0
-            # t_boundary = torch.rand(n_points//2, 1, device=device) * 1.0
-            # X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
-            # X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
-            X_train = torch.cat([torch.cat([X_interior, t_interior], dim=1), 
-                                 torch.cat([X_boundary, t_boundary], dim=1)], dim=0)
-            boundary_mask = torch.cat([torch.zeros(n_points//2, dtype=torch.bool, device=device), 
-                                       torch.ones(n_points//2, dtype=torch.bool, device=device)])
-            
-            # Check for NaN in sampled points
-            if torch.isnan(X_train).any() or torch.isinf(X_train).any():
-                print("NaN or Inf detected in sampled points", file=sys.stderr)
-                sys.exit(1)
+            for attempt in range(max_attempts):
+                try:
+                    # Oversample to ensure we get enough points
+                    interior_points = trimesh.sample.volume_mesh(mesh, count=n_each * 2)[:, :2]
+                    boundary_points = mesh.sample(n_each * 2)[:, :2]
+                    
+                    # Trim to exact size needed
+                    interior_points = interior_points[:n_each]
+                    boundary_points = boundary_points[:n_each]
+                    
+                    if len(interior_points) == n_each and len(boundary_points) == n_each:
+                        # Convert to tensors
+                        X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
+                        X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
+                        
+                        # Add time dimension
+                        t_interior = torch.rand(n_each, 1, device=device) * 1.0
+                        t_boundary = torch.rand(n_each, 1, device=device) * 1.0
+                        
+                        # Combine points
+                        X_train = torch.cat([
+                            torch.cat([X_interior, t_interior], dim=1),
+                            torch.cat([X_boundary, t_boundary], dim=1)
+                        ], dim=0)
+                        
+                        boundary_mask = torch.cat([
+                            torch.zeros(n_each, dtype=torch.bool, device=device),
+                            torch.ones(n_each, dtype=torch.bool, device=device)
+                        ])
 
-            return X_train, boundary_mask, bounds, domain_size
+                        # Store boundary points for visualization
+                        domain_boundary["x"] = boundary_points[:, 0].tolist()
+                        domain_boundary["y"] = boundary_points[:, 1].tolist()
+                        
+                        return X_train, boundary_mask, bounds, domain_size, domain_boundary
+                        
+                    print(f"Attempt {attempt + 1}: Resampling due to incorrect point count", file=sys.stderr)
+                    
+                except (ValueError, AttributeError) as e:
+                    print(f"Attempt {attempt + 1} failed: {e}", file=sys.stderr)
+                    continue
+            
+            print("Failed to sample correct number of points after all attempts", file=sys.stderr)
+            return sample_points_from_geometry(None, domain_size_input, n_points)
             
         except Exception as e:
             print(f"Error processing STL file: {e}", file=sys.stderr)
@@ -225,7 +232,10 @@ def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
         X_ic = torch.cat([x_ic, y_ic, t_ic], dim=1)
         X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
         bounds = np.array([[0, 0], [domain_size, domain_size]])
-        return X_all, None, bounds, domain_size
+        # Define square domain boundary
+        domain_boundary["x"] = [0, domain_size, domain_size, 0, 0]
+        domain_boundary["y"] = [0, 0, domain_size, domain_size, 0]
+        return X_all, None, bounds, domain_size, domain_boundary
 
 # # Generate Training Data
 # num_points = int(input_data["numPoints"])  # Number of training / sampling points for PINN
@@ -249,7 +259,7 @@ def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
 
 # X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
 
-X_all, boundary_mask, bounds, effective_domain_size = sample_points_from_geometry(cad_file_content, domain_size_input, num_points)
+X_all, boundary_mask, bounds, effective_domain_size, domain_boundary = sample_points_from_geometry(cad_file_content, domain_size_input, num_points)
 
 # Training
 model = PINN().to(device)
@@ -345,6 +355,7 @@ result = {
     },
     "computationTime": computation_time,
     "cadFilePresent": bool(cad_file_content),
-    "effectiveDomainSize": float(effective_domain_size)
+    "effectiveDomainSize": float(effective_domain_size),
+    "domainBoundary": domain_boundary
 }
 print(json.dumps(result))

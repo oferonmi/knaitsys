@@ -36,6 +36,25 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Fix for Plotly responsive sizing */
+.js-plotly-plot, .plot-container {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Plotly responsive container fixes */
+.js-plotly-plot {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.plotly-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

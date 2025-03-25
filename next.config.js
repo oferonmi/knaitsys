@@ -74,6 +74,8 @@ const nextConfig = {
       // disable webpack caching
       config.cache = false;
 
+      config.externals = [...(config.externals || []), { canvas: 'canvas' }];
+
       return config;
   },
 };

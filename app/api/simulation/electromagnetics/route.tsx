@@ -55,6 +55,7 @@ interface SimulationResult {
   computationTime: number;
   cadFilePresent?: boolean;
   effectiveDomainSize: number;
+  domainBoundary: { x: number[]; y: number[] }; // Added
 }
 
 interface ResponseData {
@@ -69,6 +70,7 @@ interface ResponseData {
       cadFilePresent?: boolean;
       effectiveDomainSize: number;
     };
+    domainBoundary: { x: number[]; y: number[] }; 
   };
   error?: string;
 }
@@ -184,6 +186,7 @@ export async function POST(request: Request): Promise<NextResponse<ResponseData>
           cadFilePresent: result.cadFilePresent || !!cadFile,
           effectiveDomainSize: result.effectiveDomainSize,
         },
+        domainBoundary: result.domainBoundary,
       };
 
       return NextResponse.json({ success: true, data: processedResult });
