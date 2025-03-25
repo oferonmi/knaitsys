@@ -160,9 +160,10 @@ function SimulationResults({
 	error: string | null;
 }) {
 	// Update return type to PlotData
-	const prepareFieldPlotData = (): Partial<PlotData> | null => {
+	const prepareFieldPlotData = (field: "E" | "H"): Partial<PlotData> | null => {
 		if (!result?.fields) return null;
-		const { E } = result.fields;
+		const { E, H } = result.fields;
+		const fieldData = field === "E" ? E : H;
 
 		if (result.points && result.metadata.cadFilePresent) {
 			const { x, y } = result.points;
@@ -173,25 +174,25 @@ function SimulationResults({
 				y,
 				marker: {
 					size: 5,
-					color: E,
-					colorscale: "Viridis",
+					color: fieldData,
+					colorscale: field === "E" ? "Viridis" : "Plasma", // Different colorscales for E and H,
 					opacity: 0.8,
-					colorbar: { title: "E Field" },
+					colorbar: { title: `${field} Field` },
 				},
-				name: "E Field",
+				name: `${field} Field`,
 			};
 		}
 
-		const numPoints = E.length;
+		const numPoints = fieldData.length;
 		const step = result.metadata.effectiveDomainSize / (numPoints - 1);
 		return {
 			type: "scatter",
 			mode: "lines" as const, // Using as const to ensure correct type
 			x: Array.from({ length: numPoints }, (_, i) => i * step),
-			y: E,
-			name: "Electric Field (E)",
-			line: { color: "#8884d8", width: 2 },
-			hovertemplate: "X: %{x:.2f}<br>E: %{y:.2f}<extra></extra>",
+			y: fieldData,
+			name: `${field} Field`,
+			line: { color: field === "E" ? "#8884d8" : "#ff7300", width: 2 },
+			hovertemplate: `X: %{x:.2f}<br>${field}: %{y:.2f}<extra></extra>`,
 		};
 	};
 
@@ -228,78 +229,124 @@ function SimulationResults({
 
 	if (!result) return null;
 
-	const fieldPlotData = prepareFieldPlotData();
+	// const fieldPlotData = prepareFieldPlotData();
+	const eFieldPlotData = prepareFieldPlotData("E");
+  	const hFieldPlotData = prepareFieldPlotData("H");
 	const domainPlotData = prepareDomainPlotData();
 
 	const plotLayout: Partial<Layout> = {
 		width: undefined, // Let it be responsive
 		height: undefined, // Let it be responsive
-		title: result?.metadata.cadFilePresent
-			? "E Field and Domain (STL Geometry)"
-			: "E Field Slice and Square Domain",
-		xaxis: { title: "X (units)", automargin: true },
-		yaxis: {
-			title: result?.metadata.cadFilePresent
-				? "Y (units)"
-				: "Field Amplitude",
-			automargin: true,
-		},
 		showlegend: true,
 		margin: { l: 60, r: 30, t: 50, b: 50 },
 		autosize: true,
 	};
 
 	return (
-		<div className="bg-white p-6 rounded-lg shadow-md">
+		<div className="mt-6 w-full min-h-screen  max-w-4xl bg-white p-6 rounded-lg shadow-md space-y-8">
 		{/* Metadata display */}
-		<h2 className="text-xl font-semibold mb-4">Simulation Results</h2>
-		<div className="mb-4 grid grid-cols-3 gap-4">
-			<div className="p-3 bg-gray-50 rounded-md">
-			<p>
-				<strong>Effective Domain Size:</strong>
-			</p>
-			<p>{result.metadata.effectiveDomainSize} units</p>
-			</div>
-			<div className="p-3 bg-gray-50 rounded-md">
-			<p>
-				<strong>Frequency:</strong>
-			</p>
-			<p>{result.metadata.frequency} Hz</p>
-			</div>
-			<div className="p-3 bg-gray-50 rounded-md">
-			<p>
-				<strong>Computation Time:</strong>
-			</p>
-			<p>{result.metadata.computationTime} s</p>
+		<div>
+			<h2 className="text-xl font-semibold mb-4">Simulation Results</h2>
+			<div className="mb-4 grid grid-cols-3 gap-4">
+				<div className="p-3 bg-gray-50 rounded-md">
+					<p>
+					<strong>Effective Domain Size:</strong>
+					</p>
+					<p>{result.metadata.effectiveDomainSize} units</p>
+				</div>
+				<div className="p-3 bg-gray-50 rounded-md">
+					<p>
+					<strong>Frequency:</strong>
+					</p>
+					<p>{result.metadata.frequency} Hz</p>
+				</div>
+				<div className="p-3 bg-gray-50 rounded-md">
+					<p>
+					<strong>Computation Time:</strong>
+					</p>
+					<p>{result.metadata.computationTime} s</p>
+				</div>
 			</div>
 		</div>
 
-		{/* Plot */}
-		{fieldPlotData && domainPlotData && (
-			<div className="w-full h-[600px] relative">
+		{/* Stacked Plots */}
+		<div className="space-y-8">
+			{/* E Field Plot */}
+			{eFieldPlotData && domainPlotData && (
+			<div className="w-full">
+				<h3 className="font-medium mb-2">
+				{result.metadata.cadFilePresent
+					? "2D Electric Field (E) Distribution"
+					: "Electric Field (E) X-slice"}
+				</h3>
 				<Plot
-					data={[fieldPlotData, domainPlotData]}
-					layout={{
-						...plotLayout,
-						autosize: true,
-						width: undefined,
-						height: undefined,
-					}}
-					config={{
-						responsive: true,
-						displayModeBar: true,
-						scrollZoom: true,
-						displaylogo: false,
-					}}
-					style={{
-						width: "100%",
-						height: "100%",
-						position: "absolute",
-					}}
-					useResizeHandler={true}
+				data={[eFieldPlotData, domainPlotData]}
+				layout={{
+					...plotLayout,
+					autosize: true,
+					height: undefined,
+					title: undefined,
+					xaxis: { title: "X (units)", automargin: true },
+					yaxis: {
+					title: result?.metadata.cadFilePresent
+						? "Y (units)"
+						: "Field Amplitude",
+					automargin: true,
+					},
+				}}
+				config={{
+					responsive: true,
+					displayModeBar: true,
+					scrollZoom: true,
+					displaylogo: false,
+				}}
+				style={{
+					width: "100%",
+					height: "100%",
+				}}
+				useResizeHandler={true}
 				/>
 			</div>
-		)}
+			)}
+
+			{/* H Field Plot */}
+			{hFieldPlotData && domainPlotData && (
+			<div className="w-full">
+				<h3 className="font-medium mb-2">
+				{result.metadata.cadFilePresent
+					? "2D Magnetic Field (H) Distribution"
+					: "Magnetic Field (H) X-slice"}
+				</h3>
+				<Plot
+				data={[hFieldPlotData, domainPlotData]}
+				layout={{
+					...plotLayout,
+					autosize: true,
+					height: undefined,
+					title: undefined,
+					xaxis: { title: "X (units)", automargin: true },
+					yaxis: {
+					title: result?.metadata.cadFilePresent
+						? "Y (units)"
+						: "Field Amplitude",
+					automargin: true,
+					},
+				}}
+				config={{
+					responsive: true,
+					displayModeBar: true,
+					scrollZoom: true,
+					displaylogo: false,
+				}}
+				style={{
+					width: "100%",
+					height: "100%",
+				}}
+				useResizeHandler={true}
+				/>
+			</div>
+			)}
+		</div>
 		</div>
 	);
 }
