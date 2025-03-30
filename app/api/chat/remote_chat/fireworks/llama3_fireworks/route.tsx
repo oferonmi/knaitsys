@@ -4,12 +4,8 @@ import { createFireworks } from "@ai-sdk/fireworks";
 
 const fireworks = createFireworks({
   apiKey: process.env.FIREWORKS_API_KEY ?? "",
+  baseURL: "https://api.fireworks.ai/inference/v1",
 });
-
-// const fireworks = createOpenAI({
-//   apiKey: process.env.FIREWORKS_API_KEY ?? '',
-//   baseURL: 'https://api.fireworks.ai/inference/v1'
-// })
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";
@@ -22,7 +18,7 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     //Model URl
-    const llm = fireworks('accounts/fireworks/models/llama-v3-8b-instruct');
+    const llm = fireworks("accounts/fireworks/models/llama-v3p3-70b-instruct");
 
     const result = await streamText({
         model: llm,

@@ -8,6 +8,19 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import trimesh
+from OCC.Core.STEPControl import STEPControl_Reader
+from OCC.Core.BRep import BRep_Tool
+from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
+from OCC.Core.TopExp import TopExp_Explorer
+from OCC.Core.TopoDS import topods_Face, topods
+from OCC.Core.TopAbs import TopAbs_FACE
+from OCC.Core.BRepTools import breptools_Triangulation
+from OCC.Core.Bnd import Bnd_Box
+from OCC.Core.BRepBndLib import brepbndlib
+from OCC.Core.gp import gp_Pnt
+from OCC.Core.IFSelect import IFSelect_RetDone
+from OCC.Core.TopoDS import TopoDS_Shape
+from OCC.Core.TopLoc import TopLoc_Location
 
 # Parse base64 encoded input from Next.js
 try:
@@ -40,14 +53,48 @@ print(f"Uploaded CAD file path: {cad_file_path}", file=sys.stderr)
 cad_file_content = None
 if cad_file_path:
     try:
-        # Load mesh to verify it's valid
-        test_mesh = trimesh.load_mesh(cad_file_path, file_type='stl', force='mesh')
-        if test_mesh is not None and isinstance(test_mesh, trimesh.Trimesh):
-            cad_file_content = True  # Just use as a flag, we'll use path directly
+        file_ext = cad_file_path.split('.')[-1].lower()
+        if file_ext == 'stl':
+            try:
+                # Explicitly force mesh loading with better error handling
+                mesh = trimesh.load_mesh(cad_file_path, file_type='stl', force='mesh', process=False)
+                
+                if mesh is None or not isinstance(mesh, trimesh.Trimesh):
+                    print("Failed to load STL file, falling back to default geometry", file=sys.stderr)
+                    cad_file_content = None
+                else:
+                    # Validate mesh integrity
+                    if not mesh.is_watertight or len(mesh.faces) == 0:
+                        print("STL mesh is not watertight or empty", file=sys.stderr)
+                        cad_file_content = None
+                    else:
+                        cad_file_content = True  # Just use as a flag, we'll use path directly
+            except Exception as e:
+                print(f"Critical error processing STL file: {e}", file=sys.stderr)
+                cad_file_content = None
+        elif file_ext == 'step':
+            # Load STEP file to verify it's valid
+            step_reader = STEPControl_Reader()
+            status = step_reader.ReadFile(cad_file_path)
+            if status == IFSelect_RetDone:
+                step_reader.TransferRoots()
+                shape = step_reader.OneShape()
+                if shape is not None:
+                    # Try to mesh the shape to verify it's valid
+                    mesh = BRepMesh_IncrementalMesh(shape, 0.1)
+                    mesh.Perform()
+                    if mesh.IsDone():
+                        cad_file_content = True  # Valid STEP file
+                    else:
+                        print("Invalid STEP file geometry", file=sys.stderr)
+                else:
+                    print("No valid shape found in STEP file", file=sys.stderr)
+            else:
+                print("Invalid STEP file detected", file=sys.stderr)
         else:
-            print("Invalid STL file detected", file=sys.stderr)
+            print(f"Unsupported file format: {file_ext}", file=sys.stderr)
     except Exception as e:
-        print(f"Error loading STL file: {e}", file=sys.stderr)
+        print(f"Error loading CAD file: {e}", file=sys.stderr)
 
 # Handle CSV file if provided
 material_props = {"epsilon": 1.0, "mu": 1.0, "sigma": 0.0}
@@ -146,118 +193,191 @@ def physics_loss(model, x, epsilon, mu, frequency, boundary_mask=None):
 
 # Geometry Handling
 def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
-    domain_boundary = {"x": [], "y": []}  # To store boundary points for visualization
-    if cad_file_content:
-        try:
-            # Load mesh directly from file path
-            mesh = trimesh.load_mesh(cad_file_path, file_type='stl')
-            
-            if mesh is None or not isinstance(mesh, trimesh.Trimesh):
-                print("Failed to load STL file, falling back to default geometry", file=sys.stderr)
-                return sample_points_from_geometry(None, domain_size_input, n_points)
+    """Sample training points from geometry or create default rectangular domain.
+    
+    Args:
+        cad_file_content: Flag indicating if CAD file is present
+        domain_size_input: Size for default rectangular domain
+        n_points: Total number of points to sample
+    """
+    domain_boundary = {"x": [], "y": []}
 
-            bounds = mesh.bounds[:, :2]
-            domain_size = np.max(bounds[1] - bounds[0])
+    def handle_stl_file(file_path, n_points):
+        mesh = trimesh.load_mesh(file_path, file_type='stl', force='mesh', process=False)
+        if not validate_mesh(mesh):
+            return None
+        
+        bounds = mesh.bounds[:, :2]
+        domain_size = float(np.max(bounds[1] - bounds[0]))
+        
+        interior_points, boundary_points = sample_mesh_points(mesh, n_points // 2)
+        if interior_points is None or boundary_points is None:
+            return None
             
-            # Ensure equal number of points by sampling in batches
-            n_each = n_points // 2
-            max_attempts = 5
-            
-            for attempt in range(max_attempts):
-                try:
-                    # Oversample to ensure we get enough points
-                    interior_points = trimesh.sample.volume_mesh(mesh, count=n_each * 2)[:, :2]
-                    boundary_points = mesh.sample(n_each * 2)[:, :2]
-                    
-                    # Trim to exact size needed
-                    interior_points = interior_points[:n_each]
-                    boundary_points = boundary_points[:n_each]
-                    
-                    if len(interior_points) == n_each and len(boundary_points) == n_each:
-                        # Convert to tensors
-                        X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
-                        X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
-                        
-                        # Add time dimension
-                        t_interior = torch.rand(n_each, 1, device=device) * 1.0
-                        t_boundary = torch.rand(n_each, 1, device=device) * 1.0
-                        
-                        # Combine points
-                        X_train = torch.cat([
-                            torch.cat([X_interior, t_interior], dim=1),
-                            torch.cat([X_boundary, t_boundary], dim=1)
-                        ], dim=0)
-                        
-                        boundary_mask = torch.cat([
-                            torch.zeros(n_each, dtype=torch.bool, device=device),
-                            torch.ones(n_each, dtype=torch.bool, device=device)
-                        ])
+        return create_training_tensors(interior_points, boundary_points, bounds, domain_size)
 
-                        # Store boundary points for visualization
-                        domain_boundary["x"] = boundary_points[:, 0].tolist()
-                        domain_boundary["y"] = boundary_points[:, 1].tolist()
-                        
-                        return X_train, boundary_mask, bounds, domain_size, domain_boundary
-                        
-                    print(f"Attempt {attempt + 1}: Resampling due to incorrect point count", file=sys.stderr)
-                    
-                except (ValueError, AttributeError) as e:
-                    print(f"Attempt {attempt + 1} failed: {e}", file=sys.stderr)
-                    continue
+    def handle_step_file(file_path, n_points):
+        shape = read_step_file(file_path)
+        if shape is None:
+            return None
             
-            print("Failed to sample correct number of points after all attempts", file=sys.stderr)
-            return sample_points_from_geometry(None, domain_size_input, n_points)
+        boundary_points = extract_step_boundary(shape)
+        if not boundary_points:
+            return None
             
-        except Exception as e:
-            print(f"Error processing STL file: {e}", file=sys.stderr)
-            return sample_points_from_geometry(None, domain_size_input, n_points)
-    else:
-        # Default rectangular domain
-        domain_size = domain_size_input
-        n_points_total = n_points * 3 // 5  # Interior points
-        n_bc_points = n_points // 5        # Boundary points per edge
-        n_ic_points = n_points // 5        # Initial points
-        x = torch.rand(n_points_total, 1, device=device) * domain_size
-        y = torch.rand(n_points_total, 1, device=device) * domain_size
-        t = torch.rand(n_points_total, 1, device=device) * 1.0
-        X_train = torch.cat([x, y, t], dim=1)
-        x_bc = torch.cat([torch.zeros(n_bc_points, 1, device=device), 
-                          torch.ones(n_bc_points, 1, device=device) * domain_size], dim=0)
-        y_bc = torch.rand(n_bc_points * 2, 1, device=device) * domain_size
-        t_bc = torch.rand(n_bc_points * 2, 1, device=device) * 1.0
+        bounds, domain_size = get_step_bounds(shape)
+        interior_points = sample_step_interior(bounds, n_points // 2)
+        
+        return create_training_tensors(interior_points, boundary_points, bounds, domain_size)
+
+    def validate_mesh(mesh):
+        if mesh is None or not isinstance(mesh, trimesh.Trimesh):
+            print("Invalid mesh object", file=sys.stderr)
+            return False
+        if not mesh.is_watertight or len(mesh.faces) == 0:
+            print("Mesh is not watertight or empty", file=sys.stderr)
+            return False
+        return True
+
+    def sample_mesh_points(mesh, n_points):
+        max_attempts = 5
+        for _ in range(max_attempts):
+            try:
+                interior = trimesh.sample.volume_mesh(mesh, count=n_points * 2)[:n_points, :2]
+                boundary = mesh.sample(n_points * 2)[:n_points, :2]
+                if len(interior) == n_points and len(boundary) == n_points:
+                    return interior, boundary
+            except Exception as e:
+                print(f"Sampling attempt failed: {e}", file=sys.stderr)
+                continue
+        return None, None
+
+    def read_step_file(file_path):
+        reader = STEPControl_Reader()
+        status = reader.ReadFile(str(file_path))
+        if status != IFSelect_RetDone:
+            print("Failed to read STEP file", file=sys.stderr)
+            return None
+        reader.TransferRoots()
+        return reader.OneShape()
+
+    def extract_step_boundary(shape):
+        mesh = BRepMesh_IncrementalMesh(shape, 0.01)
+        mesh.Perform()
+        if not mesh.IsDone():
+            return None
+            
+        points = []
+        explorer = TopExp_Explorer(shape, TopAbs_FACE)
+        while explorer.More():
+            face = topods.Face(explorer.Current())
+            loc = TopLoc_Location()
+            poly = BRep_Tool.Triangulation(face, loc)
+            if poly is not None:
+                transform = loc.Transformation() if not loc.IsIdentity() else None
+                nodes = poly.Node
+                for i in range(1, poly.NbNodes() + 1):
+                    pnt = nodes(i)
+                    if transform:
+                        pnt.Transform(transform)
+                    points.append([pnt.X(), pnt.Y()])
+            explorer.Next()
+        return np.array(points)
+
+    def get_step_bounds(shape):
+        bbox = Bnd_Box()
+        brepbndlib.Add(shape, bbox)
+        x_min, y_min, _, x_max, y_max, _ = bbox.Get()
+        bounds = np.array([[x_min, y_min], [x_max, y_max]])
+        domain_size = float(max(x_max - x_min, y_max - y_min))
+        return bounds, domain_size
+
+    def sample_step_interior(bounds, n_points):
+        return np.random.uniform(
+            bounds[0],
+            bounds[1],
+            (n_points, 2)
+        )
+
+    def create_training_tensors(interior_points, boundary_points, bounds, domain_size):
+        n_interior = len(interior_points)
+        n_boundary = len(boundary_points)
+        
+        X_interior = torch.tensor(interior_points, dtype=torch.float32, device=device)
+        X_boundary = torch.tensor(boundary_points, dtype=torch.float32, device=device)
+        
+        t_interior = torch.rand(n_interior, 1, device=device)
+        t_boundary = torch.rand(n_boundary, 1, device=device)
+        
+        X_train = torch.cat([
+            torch.cat([X_interior, t_interior], dim=1),
+            torch.cat([X_boundary, t_boundary], dim=1)
+        ], dim=0)
+        
+        boundary_mask = torch.cat([
+            torch.zeros(n_interior, dtype=torch.bool, device=device),
+            torch.ones(n_boundary, dtype=torch.bool, device=device)
+        ])
+        
+        domain_boundary["x"] = boundary_points[:, 0].tolist()
+        domain_boundary["y"] = boundary_points[:, 1].tolist()
+        
+        return X_train, boundary_mask, bounds, domain_size, domain_boundary
+
+    def create_rectangular_domain(domain_size_input, n_points):
+        domain_size = float(domain_size_input)
+        n_interior = n_points * 3 // 5
+        n_bc = n_points // 5
+        n_ic = n_points // 5
+        
+        # Interior points
+        x = torch.rand(n_interior, 1, device=device) * domain_size
+        y = torch.rand(n_interior, 1, device=device) * domain_size
+        t = torch.rand(n_interior, 1, device=device)
+        X_interior = torch.cat([x, y, t], dim=1)
+        
+        # Boundary points
+        x_bc = torch.cat([
+            torch.zeros(n_bc, 1, device=device),
+            torch.ones(n_bc, 1, device=device) * domain_size
+        ], dim=0)
+        y_bc = torch.rand(n_bc * 2, 1, device=device) * domain_size
+        t_bc = torch.rand(n_bc * 2, 1, device=device)
         X_bc = torch.cat([x_bc, y_bc, t_bc], dim=1)
-        x_ic = torch.rand(n_ic_points, 1, device=device) * domain_size
-        y_ic = torch.rand(n_ic_points, 1, device=device) * domain_size
-        t_ic = torch.zeros(n_ic_points, 1, device=device)
+        
+        # Initial condition points
+        x_ic = torch.rand(n_ic, 1, device=device) * domain_size
+        y_ic = torch.rand(n_ic, 1, device=device) * domain_size
+        t_ic = torch.zeros(n_ic, 1, device=device)
         X_ic = torch.cat([x_ic, y_ic, t_ic], dim=1)
-        X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
+        
+        X_all = torch.cat([X_interior, X_bc, X_ic], dim=0)
         bounds = np.array([[0, 0], [domain_size, domain_size]])
-        # Define square domain boundary
+        
         domain_boundary["x"] = [0, domain_size, domain_size, 0, 0]
         domain_boundary["y"] = [0, 0, domain_size, domain_size, 0]
+        
         return X_all, None, bounds, domain_size, domain_boundary
 
-# # Generate Training Data
-# num_points = int(input_data["numPoints"])  # Number of training / sampling points for PINN
-
-# x = torch.rand(n_points, 1, device=device) * domain_size
-# y = torch.rand(n_points, 1, device=device) * domain_size
-# t = torch.rand(n_points, 1, device=device) * 1.0
-# X_train = torch.cat([x, y, t], dim=1)
-
-# # Boundary and Initial Points
-# x_bc = torch.cat([torch.zeros(n_points//10, 1, device=device), 
-#                   torch.ones(n_points//10, 1, device=device) * domain_size], dim=0)
-# y_bc = torch.rand(n_points//5, 1, device=device) * domain_size
-# t_bc = torch.rand(n_points//5, 1, device=device) * 1.0
-# X_bc = torch.cat([x_bc, y_bc, t_bc], dim=1)
-
-# x_ic = torch.rand(n_points//5, 1, device=device) * domain_size
-# y_ic = torch.rand(n_points//5, 1, device=device) * domain_size
-# t_ic = torch.zeros(n_points//5, 1, device=device)
-# X_ic = torch.cat([x_ic, y_ic, t_ic], dim=1)
-
-# X_all = torch.cat([X_train, X_bc, X_ic], dim=0)
+    # Main function logic
+    if cad_file_content:
+        try:
+            file_ext = cad_file_path.split('.')[-1].lower()
+            if file_ext == 'stl':
+                result = handle_stl_file(cad_file_path, n_points)
+            elif file_ext == 'step':
+                result = handle_step_file(cad_file_path, n_points)
+            else:
+                print(f"Unsupported file format: {file_ext}", file=sys.stderr)
+                result = None
+                
+            if result is not None:
+                return result
+                
+        except Exception as e:
+            print(f"Error processing CAD file: {e}", file=sys.stderr)
+    
+    return create_rectangular_domain(domain_size_input, n_points)
 
 X_all, boundary_mask, bounds, effective_domain_size, domain_boundary = sample_points_from_geometry(cad_file_content, domain_size_input, num_points)
 
@@ -284,62 +404,128 @@ for epoch in range(epochs):
 
 computation_time = time.time() - start_time
 
-# Post-Process Results
-# x_eval = torch.linspace(0, domain_size, 100, device=device).reshape(-1, 1)
-# y_eval = torch.linspace(0, domain_size, 100, device=device).reshape(-1, 1)
-# t_eval = torch.linspace(0, 1.0, 10, device=device).reshape(-1, 1)
-
-# x_eval = torch.linspace(0, domain_size, 100, device=device)  # Remove reshape
-# y_eval = torch.linspace(0, domain_size, 100, device=device)  # Remove reshape
-# t_eval = torch.linspace(0, 1.0, 10, device=device) 
-
-# # Generate meshgrid  with proper tensor input for evaluation
-# X, Y, T = torch.meshgrid(x_eval, y_eval, t_eval, indexing="ij")
-# points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
-# fields = model(points).detach().cpu().numpy()  # Move to CPU for serialization
-
 def evaluate_fields(model, cad_file_content, bounds):
-    if cad_file_content:
-        try:
-            # Load mesh directly from file path instead of temporary file
-            mesh = trimesh.load_mesh(cad_file_path, file_type='stl', force='mesh')
-            
-            if mesh is None or not isinstance(mesh, trimesh.Trimesh):
-                print("Failed to load STL for evaluation, using default grid", file=sys.stderr)
-                return evaluate_fields(None, bounds)
-            
-            # Sample points from the mesh
-            eval_points = mesh.sample(1000)[:, :2]  # 2D projection
-            if eval_points.size == 0:
-                print("Failed to sample evaluation points", file=sys.stderr)
-                return evaluate_fields(None, bounds)
+    """Evaluate E and H fields across the domain.
+    
+    Args:
+        model: Trained PINN model
+        cad_file_content: Flag indicating if CAD file is present
+        bounds: Domain boundaries [[x_min, y_min], [x_max, y_max]]
+    """
+    def handle_stl_evaluation(file_path):
+        mesh = trimesh.load_mesh(file_path, file_type='stl', force='mesh')
+        if not validate_mesh_for_eval(mesh):
+            return None
+        return mesh.sample(1000)[:, :2]  # 2D projection
 
-            # Create time points
-            t_eval = torch.linspace(0, 1.0, 10, device=device)
-            points = []
-            for t in t_eval:
-                points.append(torch.cat([
-                    torch.tensor(eval_points, dtype=torch.float32, device=device),
-                    t.repeat(eval_points.shape[0], 1)
-                ], dim=1))
-            points = torch.cat(points, dim=0)
+    def handle_step_evaluation(file_path):
+        shape = read_step_file(file_path)
+        if shape is None:
+            return None
             
+        bbox = get_step_bounds(shape)
+        if bbox is None:
+            return None
+            
+        return generate_evaluation_points(bbox)
+
+    def validate_mesh_for_eval(mesh):
+        if mesh is None or not isinstance(mesh, trimesh.Trimesh):
+            print("Invalid mesh for evaluation", file=sys.stderr)
+            return False
+        return True
+
+    def read_step_file(file_path):
+        reader = STEPControl_Reader()
+        status = reader.ReadFile(str(file_path))
+        if status != IFSelect_RetDone:
+            print("Failed to read STEP file for evaluation", file=sys.stderr)
+            return None
+        reader.TransferRoots()
+        return reader.OneShape()
+
+    def get_step_bounds(shape):
+        try:
+            bbox = Bnd_Box()
+            brepbndlib.Add(shape, bbox)
+            return bbox.Get()
         except Exception as e:
-            print(f"Error evaluating fields with STL: {e}", file=sys.stderr)
-            return evaluate_fields(None, bounds)
-    else:
-        # Default grid evaluation
+            print(f"Error getting STEP bounds: {e}", file=sys.stderr)
+            return None
+
+    def generate_evaluation_points(bbox):
+        x_min, y_min, _, x_max, y_max, _ = bbox
+        
+        # Generate uniform grid
+        x_points = np.linspace(x_min, x_max, 32)
+        y_points = np.linspace(y_min, y_max, 32)
+        X, Y = np.meshgrid(x_points, y_points)
+        points = np.column_stack((X.flatten(), Y.flatten()))
+
+        # Ensure exactly 1000 points
+        if len(points) > 1000:
+            indices = np.random.choice(len(points), 1000, replace=False)
+            return points[indices]
+        elif len(points) < 1000:
+            additional = np.random.uniform(
+                [x_min, y_min],
+                [x_max, y_max],
+                (1000 - len(points), 2)
+            )
+            return np.vstack([points, additional])
+        return points
+
+    def create_evaluation_tensors(spatial_points):
+        points_tensor = torch.tensor(spatial_points, dtype=torch.float32, device=device)
+        t_eval = torch.linspace(0, 1.0, 10, device=device)
+        time_points = []
+        
+        for t in t_eval:
+            time_points.append(torch.cat([
+                points_tensor,
+                t.repeat(points_tensor.size(0), 1)
+            ], dim=1))
+            
+        return torch.cat(time_points, dim=0)
+
+    def create_default_grid(bounds):
         x_min, y_min = bounds[0]
         x_max, y_max = bounds[1]
         x_eval = torch.linspace(x_min, x_max, 100, device=device)
         y_eval = torch.linspace(y_min, y_max, 100, device=device)
         t_eval = torch.linspace(0, 1.0, 5, device=device)
         X, Y, T = torch.meshgrid(x_eval, y_eval, t_eval, indexing="ij")
-        points = torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
+        return torch.stack([X.flatten(), Y.flatten(), T.flatten()], dim=1)
 
-    fields = model(points).detach().cpu().numpy()
-    points_np = points[:, :2].detach().cpu().numpy()  # x, y only
-    return fields, points_np
+    try:
+        if cad_file_content:
+            file_ext = cad_file_path.split('.')[-1].lower()
+            eval_points = None
+
+            if file_ext == 'stl':
+                eval_points = handle_stl_evaluation(cad_file_path)
+            elif file_ext == 'step':
+                eval_points = handle_step_evaluation(cad_file_path)
+            else:
+                print(f"Unsupported file format: {file_ext}", file=sys.stderr)
+
+            if eval_points is None:
+                return evaluate_fields(model, None, bounds)
+
+            points = create_evaluation_tensors(eval_points)
+        else:
+            points = create_default_grid(bounds)
+
+        # Evaluate fields
+        with torch.no_grad():
+            fields = model(points).cpu().numpy()
+        points_np = points[:, :2].cpu().numpy()
+
+        return fields, points_np
+
+    except Exception as e:
+        print(f"Error in field evaluation: {e}", file=sys.stderr)
+        return evaluate_fields(model, None, bounds)
 
 fields, eval_points = evaluate_fields(model, cad_file_content, bounds)
 

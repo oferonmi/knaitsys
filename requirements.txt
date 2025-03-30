@@ -4,4 +4,4 @@ numpy
 deepxde
 tensorflow
 trimesh
-
+pythonocc-core
