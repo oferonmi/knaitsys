@@ -64,11 +64,12 @@ if cad_file_path:
                     cad_file_content = None
                 else:
                     # Validate mesh integrity
-                    if not mesh.is_watertight or len(mesh.faces) == 0:
-                        print("STL mesh is not watertight or empty", file=sys.stderr)
-                        cad_file_content = None
-                    else:
-                        cad_file_content = True  # Just use as a flag, we'll use path directly
+                    # if not mesh.is_watertight or len(mesh.faces) == 0:
+                    #     print("STL mesh is not watertight or empty", file=sys.stderr)
+                    #     cad_file_content = None
+                    # else:
+                    #     cad_file_content = True  # Just use as a flag, we'll use path directly
+                    cad_file_content = True  # Just use as a flag, we'll use path directly
             except Exception as e:
                 print(f"Critical error processing STL file: {e}", file=sys.stderr)
                 cad_file_content = None
@@ -222,7 +223,8 @@ def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
             return None
             
         boundary_points = extract_step_boundary(shape)
-        if not boundary_points:
+        if boundary_points is None or len(boundary_points) == 0:
+            print("No valid boundary points found in STEP file", file=sys.stderr)
             return None
             
         bounds, domain_size = get_step_bounds(shape)
@@ -234,9 +236,9 @@ def sample_points_from_geometry(cad_file_content, domain_size_input, n_points):
         if mesh is None or not isinstance(mesh, trimesh.Trimesh):
             print("Invalid mesh object", file=sys.stderr)
             return False
-        if not mesh.is_watertight or len(mesh.faces) == 0:
-            print("Mesh is not watertight or empty", file=sys.stderr)
-            return False
+        # if not mesh.is_watertight or len(mesh.faces) == 0:
+        #     print("Mesh is not watertight or empty", file=sys.stderr)
+        #     return False
         return True
 
     def sample_mesh_points(mesh, n_points):

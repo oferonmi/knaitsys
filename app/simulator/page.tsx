@@ -182,6 +182,7 @@ function SimulationResults({
 		}
 
 		const size = Math.sqrt(data.length);
+		// const size = data.length
 		return Array(size)
 		.fill(0)
 		.map((_, i) => data.slice(i * size, (i + 1) * size));
@@ -219,7 +220,7 @@ function SimulationResults({
 			//   mode: "lines" as const, // Using as const to ensure correct type
 			x: Array.from({ length: numPoints}, (_, i) => i * step),
 			y: Array.from({ length: numPoints}, (_, i) => i * step),
-			z: reshapeFieldData(fieldData, result.points?.x, result.points?.y),
+			z: reshapeFieldData(fieldData),
 			colorscale: field === "E" ? "Viridis" : "Plasma", // Different colorscales for E and H,
 			colorbar: { title: `${field} Field` },
 			name: `${field} Field`,
