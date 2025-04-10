@@ -9,9 +9,9 @@ import { useState, useEffect } from "react";
 
 const BrandLogo = ({ session }) => (
     <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto">
-        <div className="flex items-center ml-3.5">
+        <div className="flex items-center ml-1 ">
             <Image 
-                src="/knaitsys_v2.png" 
+                src="/knaitsys_v3.png" 
                 priority
                 alt="Knaitsys logo" 
                 width={330} 
