@@ -1,35 +1,32 @@
-// Note: Markdown renderer with LaTeX support
 import React from 'react';
-// import Markdown from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
-import rehypeParse from 'rehype-parse'
-import rehypeMathjax from 'rehype-mathjax'
-import rehypeSanitize from 'rehype-sanitize'
-import rehypeStringify from 'rehype-stringify'
-import rehypeRaw from 'rehype-raw'
-import rehypeKatex from 'rehype-katex'
-import rehypeHighlight from 'rehype-highlight'
-import remarkFrontmatter from 'remark-frontmatter'
-import remarkGfm from 'remark-gfm'
-import remarkMath from 'remark-math'
-import remarkParse from 'remark-parse'
-import remarkRehype from 'remark-rehype'
-// import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter'
-// import {dark} from 'react-syntax-highlighter/dist/esm/styles/prism'
-// import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-// import {unified} from 'unified'
-// import {LatexMathToHtmlRenderer} from '@/components/maths/LatexMathToHtmlRenderer'
+import Latex from 'react-latex-next';
+import remarkGfm from 'remark-gfm';
 
-// const processor = unified()
-//   .use(remarkParse)
-//   .use(remarkGfm)
-//   .use(remarkMath)
-//   .use(remarkRehype, {allowDangerousHtml: true})
-//   .use(rehypeSanitize)
-//   .use(rehypeStringify)
+// Create a wrapper component for LaTeX content that ensures string input
+const LaTeXWrapper = ({ children }) => {
+    // Convert children to string if needed
+    const content = React.Children.map(children, child => {
+        if (typeof child === 'string') {
+            // Handle both inline and block math expressions
+            return child
+                .replace(/`\$\$(.*?)\$\$`/g, '$$$$1$$') // Remove backticks from block math
+                .replace(/`\$(.*?)\$`/g, '$$1')         // Remove backticks from inline math
+                .replace(/`(.*?)`/g, (_, p1) => {       // Handle code blocks with math
+                    return p1.match(/[\\\[\]{}()+\-*/=<>~_%^&]|\\[a-zA-Z]+/) 
+                        ? `$${p1}$` 
+                        : `\`${p1}\``
+                });
+        }
+        if (React.isValidElement(child)) {
+            return child.props.children;
+        }
+        return '';
+    }).join('');
 
+    return content ? <Latex>{content}</Latex> : null;
+};
 
 const renderers = {
     h1: ({ children}) => (
@@ -63,7 +60,11 @@ const renderers = {
         </h6>
     ),
     p: ({ children }) => {
-        return <p className="">{children}</p>;
+        const hasLatex = React.Children.toArray(children).some(child => {
+            if (typeof child !== 'string') return false;
+            return child.match(/(\$.*?\$|\\\(.*?\\\)|\\\[.*?\\\]|`.*?`)/);
+        });
+        return hasLatex ? <LaTeXWrapper>{children}</LaTeXWrapper> : <p>{children}</p>;
     },
     strong: ({ children }) => (
         <strong className="">{children}</strong>
@@ -104,53 +105,70 @@ const renderers = {
     blockquote: ({ children }) => (
         <blockquote className="">{children}</blockquote>
     ),
-    inlineMath: ({ value }) => { return <InlineMath math={value} />},
-    math: ({ value }) => { return <BlockMath math={value} />},
-    think: ({children, ...props}) => {
-        return <i className='italic' children={String(children)} {...props} />
+    code: ({ children }) => {
+        if (typeof children === 'string') {
+            // Check if the code block contains math
+            const hasMath = children.match(/[\\\[\]{}()+\-*/=<>~_%^&]|\\[a-zA-Z]+/);
+            if (hasMath) {
+                return <LaTeXWrapper>{`$${children}$`}</LaTeXWrapper>;
+            }
+        }
+        return <code>{children}</code>;
     },
-    // code: ({node, inline, className, children, ...props}) => {
-    //     const match = /language-(\w+)/.exec(className || 'text-wrap')
-    //     return !inline && match ? (
-    //         <SyntaxHighlighter style={docco} language={match[1]} PreTag="div" children={String(children).replace(/\n$/, '')} {...props} />
-    //     ) : (
-    //         <code className={className} {...props} />
-    //     )
-    // }
+    inlineCode: ({ children }) => {
+        if (typeof children === 'string') {
+            // Check for LaTeX math expressions
+            if (children.match(/(\$.*?\$|\\\(.*?\\\)|\\\[.*?\\\])/)) {
+                return <LaTeXWrapper>{children.replace(/`/g, '')}</LaTeXWrapper>;
+            }
+            // Check if the content looks like math
+            if (children.match(/[\\\[\]{}()+\-*/=<>~_%^&]|\\[a-zA-Z]+/)) {
+                return <LaTeXWrapper>{`$${children}$`}</LaTeXWrapper>;
+            }
+        }
+        return <code>{children}</code>;
+    }
 };
 
 const preprocessContent = (content) => {
-    // Example preprocessing to wrap LaTeX expressions in $...$ or $$...$$
-    // return content
-        // .replace(/^\[\n\s*([\s\S]*?)\s*\n\]$/, '$$ \n $1 \n $$') // for block math
-        // .replace(/^\s*\[\s*([\s\S]*?)\s*\]\s*$/gm, '$$ \n $1 \n $$') // for block math $$\n$1\n$$
-        // .replace(/\[\s*([\s\S]*?)\s*\]/g, '\( $1 \)'); // for inline math
-    //     .replace(/<code>\s*\[\s*([\s\S]*?)\s*\]\s*<\/code>/g, '<code>\($1\)</code>') // for inline math
-    //     .replace(/<pre>\s*\[\s*([\s\S]*?)\s*\]\s*<\/pre>/g, '<pre>$$\n$1\n$$</pre>') // for block math
-    //     .replace(/\[\s*([\s\S]*?)\s*\]/g, '```math <InlineMath>$\($1\)$<\/InlineMath>```') // for inline math
-    //     .replace(/```math\s*\[\s*([\s\S]*?)\s*\]\s*```/g, '```math\n$$\n$1\n$$\n```') // for block math
-    //     .replace(/\[(?:[^][]|\[[^][]*\])*\]/g, '```math\n<InlineMath>\n$$1$<\/InlineMath>\n```') // for inline math
-    //     .replace(/\$\$(.*?)\$\$/g, '$$\n$1\n$$') // for block math
-    //     .replace(/\$(.*?)\$/g, '$$1$'); // for inline math
-    return content;
-    // const file = await processor.process(content);
-    // return String(file.value);
-}
+    if (!content) return '';
+    
+    return content
+        // Handle code blocks with math expressions
+        .replace(/`(\$\$.*?\$\$)`/g, '$1')
+        .replace(/`(\$.*?\$)`/g, '$1')
+        // Convert square bracket math to LaTeX delimiters
+        .replace(/\[([\s\S]*?)\]/g, (match, p1) => {
+            // Skip if it looks like a markdown link or image
+            if (p1.includes('](')) return match;
+            
+            const cleanedContent = p1.trim();
+            // Detect if content looks like math
+            const mathSymbols = /[\\\[\]{}()+\-*/=<>~_%^&]|\\[a-zA-Z]+/;
+            if (!mathSymbols.test(cleanedContent)) return match;
+            
+            // Convert to LaTeX format for display math
+            return cleanedContent.includes('\n') 
+                ? `$$${cleanedContent}$$`
+                : `$${cleanedContent}$`;
+        })
+        // Handle other LaTeX tags
+        .replace(/\[latex\]([\s\S]*?)\[\/latex\]/g, (_, p1) => `$$${p1.trim()}$$`)
+        .replace(/\[math\]([\s\S]*?)\[\/math\]/g, (_, p1) => `$$${p1.trim()}$$`)
+        .replace(/\[inline\]([\s\S]*?)\[\/inline\]/g, (_, p1) => `$${p1.trim()}$`)
+        .replace(/\[equation\]([\s\S]*?)\[\/equation\]/g, (_, p1) => `$$${p1.trim()}$$`);
+};
 
 const MarkdownWithLaTeXRenderer = ({ content }) => {
     const processedContent = preprocessContent(content);
+    
     return (
-        // <main>{processedContent}</main>
         <ReactMarkdown
             components={renderers}
-            children={processedContent}
-            remarkPlugins={[remarkParse, [remarkRehype, remarkGfm, remarkMath, { allowDangerousHtml: true }], remarkMath]}
-            rehypePlugins={[rehypeSanitize, rehypeStringify]}
-            //  remarkFrontmatter, remarkGfm, remarkMath, rehypeHighlight,{style: dark, detect: true}], rehypeRaw, rehypeMathjax,]
-        />
-    //     <Markdown components={renderers}>
-    //         {processedContent}
-    //     </Markdown>
+            remarkPlugins={[remarkGfm]}
+        >
+            {processedContent}
+        </ReactMarkdown>
     );
 };
 

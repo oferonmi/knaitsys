@@ -47,7 +47,7 @@ const LLM_OPTIONS: LlmRoute[] = [
 	{ value: "multimodal/local_chat/phi3", label: "Phi3" },
 ];
 
-const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/anthropic";
+const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/gemini";
 
 const ChatbotPage = () => {
 	//LLM engine API route
