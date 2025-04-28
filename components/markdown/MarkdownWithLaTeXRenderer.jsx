@@ -49,12 +49,12 @@ const renderers = {
             {children}
         </h4>
     ),
-    h5: ({ children}) => (
+    h5: ({ children }) => (
         <h5 className="font-bold">
             {children}
         </h5>
     ),
-    h6: ({ children}) => (
+    h6: ({ children }) => (
         <h6 className="font-bold">
             {children}
         </h6>
