@@ -21,8 +21,9 @@ const LLM_OPTIONS: LlmRoute[] = [
 	{ value: "chat/remote_chat/openai", label: "GPT-3.5" },
 	{ value: "multimodal/remote_chat/openai", label: "GPT-4o-mini", isMultimodal: true },
 	{ value: "chat/remote_chat/fireworks/llama3_fireworks", label: "Llama-3-Fwks" },
-	{value: "chat/remote_chat/fireworks/qwen2_fireworks", label: "Qwen-2-Fwks" },
-	{value: "chat/remote_chat/fireworks/qwq_fireworks", label: "QWQ-Fwks" },
+	{ value: "chat/remote_chat/fireworks/qwen2_fireworks", label: "Qwen-2-Fwks" },
+	{ value: "chat/remote_chat/fireworks/qwen3_fireworks", label: "Qwen-3-Fwks" },
+	{ value: "chat/remote_chat/fireworks/qwq_fireworks", label: "QWQ-Fwks" },
 	{
 		value: "multimodal/remote_chat/groq/llama3_groq",
 		label: "Llama-3.2-Groq",
