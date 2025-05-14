@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background: #1e1e1e;
+  color: #fff;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin: 0 0 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar li.active {
+  background: #007acc;
+}
+
+.sidebar button {
+  margin-bottom: 20px;
+  padding: 8px;
+  background: #007acc;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.editor {
+  flex: 1;
+}
