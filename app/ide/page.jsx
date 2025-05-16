@@ -1,54 +1,31 @@
+'use client';
+
 import { useState } from 'react';
-import Editor from '../components/Editor';
-import styles from '../styles/Ide.module.css';
+import FileExplorer from '@/components/FileExplorer';
+import MonacoEditor from '@/components/Editor';
+import Terminal from '@/components/Terminal';
 
-export default function IdePage() {
-	const [code, setCode] = useState('// Start coding here\n');
-	const [language, setLanguage] = useState('javascript');
-	const [files, setFiles] = useState([{ name: 'index.js', content: code }]);
-	const [currentFile, setCurrentFile] = useState('index.js');
-
-	const handleCodeChange = (newCode) => {
-		setCode(newCode);
-		setFiles((prev) =>
-			prev.map((file) =>
-				file.name === currentFile ? { ...file, content: newCode } : file
-			)
-		);
-	};
-
-	const handleFileChange = (fileName) => {
-		const file = files.find((f) => f.name === fileName);
-		setCurrentFile(fileName);
-		setCode(file.content);
-	};
-
-	const addNewFile = () => {
-		const newFileName = `file${files.length + 1}.js`;
-		setFiles([...files, { name: newFileName, content: '' }]);
-		setCurrentFile(newFileName);
-		setCode('');
-	};
+export default function Home() {
+	const [output, setOutput] = useState('');
 
 	return (
-		<div className={styles.container}>
-			<div className={styles.sidebar}>
-				<h2>Files</h2>
-				<button onClick={addNewFile}>New File</button>
-				<ul>
-				{files.map((file) => (
-					<li
-					key={file.name}
-					onClick={() => handleFileChange(file.name)}
-					className={file.name === currentFile ? styles.active : ''}
-					>
-					{file.name}
-					</li>
-				))}
-				</ul>
+		<div className="flex h-screen bg-white text-black">
+			{/* File Explorer */}
+			<div className="w-1/4 bg-white p-4 overflow-auto">
+				<FileExplorer />
 			</div>
-			<div className={styles.editor}>
-				<Editor code={code} onChange={handleCodeChange} language={language} />
+			{/* Editor, Output, and Terminal */}
+			<div className="w-3/4 flex flex-col">
+				<div className="flex-1">
+					<MonacoEditor setOutput={setOutput} />
+				</div>
+				<div className="h-1/4 bg-gray-200 p-4 overflow-auto">
+					<h3 className="text-lg font-bold mb-2">Output</h3>
+					<pre className="text-sm">{output || 'No output yet'}</pre>
+				</div>
+				<div className="h-1/3 bg-black">
+					<Terminal />
+				</div>
 			</div>
 		</div>
 	);

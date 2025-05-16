@@ -18,6 +18,12 @@ module.exports = {
   			'kaito-brand-ash-green': '#3E6765'
   		},
   		colors: {
+			'vscode-bg': '#1e1e1e',
+			'vscode-sidebar': '#252526',
+			'vscode-titlebar': '#3c3c3c',
+			'vscode-statusbar': '#007acc',
+			'vscode-text': '#d4d4d4',
+			'vscode-active': '#37373d',
   			'kaito-brand-ash-green': '#3E6765',
   			'kaito-brand-gray': '#D9E2D5',
   			background: 'hsl(var(--background))',
