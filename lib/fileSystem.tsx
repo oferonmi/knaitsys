@@ -10,6 +10,7 @@ type FileNode = {
     content?: string;
     children?: FileNode[];
     parentId?: string;
+    isCollapsed?: boolean;
 };
 
 type FileSystemContextType = {
@@ -19,6 +20,8 @@ type FileSystemContextType = {
     addFile: (file: FileNode, parentId?: string) => void;
     deleteFile: (id: string) => void;
     renameFile: (id: string, newName: string) => void;
+    toggleCollapse: (id: string) => void;
+    moveFile: (id: string, targetId: string | null) => void;
 };
 
 const FileSystemContext = createContext<FileSystemContextType | undefined>(
@@ -26,23 +29,29 @@ const FileSystemContext = createContext<FileSystemContextType | undefined>(
 );
 
 export function FileSystemProvider({
-  children,
+    children,
 }: {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }) {
     const [files, setFiles] = useState<FileNode[]>([
         {
-        id: uuidv4(),
-        name: "index.js",
-        isDirectory: false,
-        content: '// Start coding here\nconsole.log("Hello, World!");\n',
+            id: uuidv4(),
+            name: "index.js",
+            isDirectory: false,
+            content: '// Start coding here\nconsole.log("Hello, World!");\n',
         },
-        { id: uuidv4(), name: "src", isDirectory: true, children: [] },
+        {
+            id: uuidv4(),
+            name: "src",
+            isDirectory: true,
+            children: [],
+            isCollapsed: false,
+        },
     ]);
     const [currentFile, setCurrentFile] = useState<FileNode | null>(null);
 
     const addFile = (file: FileNode, parentId?: string) => {
-        const newFile = { ...file, id: uuidv4(), parentId };
+        const newFile = { ...file, id: uuidv4(), parentId, isCollapsed: false };
         setFiles((prev) => {
             if (!parentId) {
                 return [...prev, newFile];
@@ -101,18 +110,83 @@ export function FileSystemProvider({
         }
     };
 
+    const toggleCollapse = (id: string) => {
+        setFiles((prev) => {
+        const toggleInNode = (nodes: FileNode[]): FileNode[] => {
+            return nodes.map((node) => {
+                if (node.id === id && node.isDirectory) {
+                    return { ...node, isCollapsed: !node.isCollapsed };
+                }
+                if (node.children) {
+                    return { ...node, children: toggleInNode(node.children) };
+                }
+                return node;
+            });
+        };
+        return toggleInNode(prev);
+        });
+    };
+
+    const moveFile = (id: string, targetId: string | null) => {
+        setFiles((prev) => {
+            let draggedNode: FileNode | null = null;
+            // Remove the dragged node
+            const removeNode = (nodes: FileNode[]): FileNode[] => {
+                return nodes
+                .filter((node) => {
+                    if (node.id === id) {
+                    draggedNode = node;
+                    return false;
+                    }
+                    return true;
+                })
+                .map((node) => ({
+                    ...node,
+                    children: node.children ? removeNode(node.children) : node.children,
+                }));
+            };
+            let newFiles = removeNode(prev);
+            if (!draggedNode) return newFiles;
+
+            // Add the dragged node to the target
+            const addNode = (nodes: FileNode[], nodeToAdd: FileNode): FileNode[] => {
+                if (!targetId) {
+                    return [...nodes, { ...nodeToAdd, parentId: undefined }];
+                }
+                return nodes.map((node) => {
+                    if (node.id === targetId && node.isDirectory) {
+                        return {
+                            ...node,
+                            children: [
+                                ...(node.children || []),
+                                { ...nodeToAdd, parentId: targetId },
+                            ],
+                        };
+                    }
+                    if (node.children) {
+                        return { ...node, children: addNode(node.children, nodeToAdd) };
+                    }
+                    return node;
+                });
+            };
+            return addNode(newFiles, draggedNode);
+        });
+    };
+
     return (
         <FileSystemContext.Provider
-            value={{
-                files,
-                currentFile,
-                setCurrentFile,
-                addFile,
-                deleteFile,
-                renameFile,
-            }}
+        value={{
+            files,
+            currentFile,
+            setCurrentFile,
+            addFile,
+            deleteFile,
+            renameFile,
+            toggleCollapse,
+            moveFile,
+        }}
         >
-            {children}
+        {children}
         </FileSystemContext.Provider>
     );
 }

@@ -104,10 +104,10 @@ export default function MonacoEditor({ setOutput }: { setOutput: (output: string
 
 	return (
 		<div className="h-full flex flex-col">
-			<div className="flex justify-end p-2 bg-gray-800">
+			<div className="flex justify-end p-2 bg-white">
 				<button
 					onClick={runCode}
-					className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded"
+					className="px-4 py-2 bg-kaito-brand-ash-green  hover:bg-kaito-brand-gray  rounded text-white"
 					disabled={!currentFile || getLanguage(currentFile.name) !== 'javascript'}
 				>
 					Run Code

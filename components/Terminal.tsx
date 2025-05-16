@@ -19,7 +19,7 @@ export default function TerminalComponent() {
             theme: { background: "#000000", foreground: "#FFFFFF" },
         });
         termRef.current.open(terminalRef.current);
-        termRef.current.write("$ ");
+        termRef.current.write(" $ ");
 
         // Initialize WebSocket
         socketRef.current = new WebSocket("ws://localhost:3000/api/terminal");
