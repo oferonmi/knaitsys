@@ -1,31 +1,19 @@
-import { AnthropicStream, StreamingTextResponse } from "ai";
+import { streamText } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
+
+// Allow streaming responses up to 30 seconds
+export const maxDuration = 30;
 
 // IMPORTANT! Set the runtime to edge
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-    // Extract the `prompt` from the body of the request
-    const { prompt } = await req.json();
+    const { prompt }: { prompt: string } = await req.json();
 
-    const response = await fetch("https://api.anthropic.com/v1/complete", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-api-key": process.env.ANTHROPIC_API_KEY,
-            "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-            prompt: `Human: ${prompt}\n\nAssistant:`,
-            model: "claude-v2",
-            max_tokens_to_sample: 300,
-            temperature: 0.9,
-            stream: true,
-        }),
+    const result = streamText({
+        model: anthropic("claude-3-haiku-20240307"),
+        prompt,
     });
 
-    // Convert the response into a friendly text-stream
-    const stream = AnthropicStream(response);
-
-    // Respond with the stream
-    return new StreamingTextResponse(stream);
+    return result.toDataStreamResponse();
 }
