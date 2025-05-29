@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["latin"], weight: "300" });
 
 export const metadata = {
   	title: 'Knaitsys - Log In',
-  	description: 'Your AI tools kit',
+  	description: 'Authentication',
 }
 
 export default function AuthLayout({children}: {children: React.ReactNode}) {
