@@ -133,9 +133,9 @@ export const authOptions: CustomAuthConfig = {
             },
             authorization: {
                 params: {
-                prompt: "consent",
-                access_type: "offline",
-                response_type: "code",
+                    prompt: "consent",
+                    access_type: "offline",
+                    response_type: "code",
                 },
             },
         }),
@@ -145,11 +145,11 @@ export const authOptions: CustomAuthConfig = {
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
             profile(profile: FacebookProfile): UserProfile {
                 return {
-                id: profile.id,
-                name: profile.name,
-                email: profile.email,
-                image: profile.picture.data.url,
-                role: profile.role ?? DEFAULT_USER_ROLE,
+                    id: profile.id,
+                    name: profile.name,
+                    email: profile.email,
+                    image: profile.picture.data.url,
+                    role: profile.role ?? DEFAULT_USER_ROLE,
                 };
             },
         }),
@@ -159,11 +159,11 @@ export const authOptions: CustomAuthConfig = {
             clientSecret: process.env.GITHUB_SECRET!,
             profile(profile: GithubProfile): UserProfile {
                 return {
-                id: profile.id.toString(),
-                name: profile.name || profile.login,
-                email: profile.email ?? undefined,
-                image: profile.avatar_url,
-                role: profile.role ?? DEFAULT_USER_ROLE,
+                    id: profile.id.toString(),
+                    name: profile.name || profile.login,
+                    email: profile.email ?? undefined,
+                    image: profile.avatar_url,
+                    role: profile.role ?? DEFAULT_USER_ROLE,
                 };
             },
         }),
@@ -179,12 +179,12 @@ export const authOptions: CustomAuthConfig = {
             account?: any;
             profile?: any;
         }) {
-        // If the user is signing in for the first time, add their profile info to the token
-        if (account && profile) {
-            token.accessToken = account.access_token;
-            token.id = profile.id;
-        }
-        return token;
+            // If the user is signing in for the first time, add their profile info to the token
+            if (account && profile) {
+                token.accessToken = account.access_token;
+                token.id = profile.id;
+            }
+            return token;
         },
 
         async session({
@@ -200,9 +200,9 @@ export const authOptions: CustomAuthConfig = {
                 ...session,
                 accessToken: token.accessToken,
                 user: {
-                ...session.user,
-                id: token.id as string,
-                role: token.role || DEFAULT_USER_ROLE,
+                    ...session.user,
+                    id: token.id as string,
+                    role: token.role || DEFAULT_USER_ROLE,
                 },
             };
         },

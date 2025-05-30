@@ -5,8 +5,6 @@ export { default } from "next-auth/middleware";
 
 // to allow cross-origin requests
 const allowedOrigins = [
-    "https://acme.com",
-    "https://my-app.org",
     "http://localhost:3000/*",
     "https://www.wikipedia.org/*",
     "https://www.sciencedirect.com/*",
@@ -49,5 +47,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard", "/extra", "/api/:path*", "/:path*"],
+    matcher: ["/dashboard", "/extra", "/api/:path*", "/:path*"],
 };
