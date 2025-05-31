@@ -99,11 +99,34 @@ const Login = () => {
 				<div className="text-center">
 					<h1 className="text-3xl text-black font-bold">Login</h1>
 					<p className="text-gray-600 mt-4 text-center font-bold">
-						Enter your email and password to sign in to your account.
+						Choose your preferred way to sign in to your account.
 					</p>
 				</div>
 
 				<div className="space-y-8">
+					{providers && (
+						<div className="space-y-4">
+							<div className="flex flex-col gap-4 w-full">
+								{Object.values(providers).map((provider) => {
+									if (provider.name === "Credentials") return null;
+									const icon = getProviderIcon(provider.name);
+									return (
+										<SocialLoginButton key={provider.id} provider={provider} icon={icon} />
+									);
+								})}
+							</div>
+
+							<div className="relative">
+								<div className="absolute inset-0 flex items-center">
+									<div className="w-full border-t border-gray-300"></div>
+								</div>
+								<div className="relative flex justify-center text-sm">
+									<span className="px-2 bg-white text-gray-500 font-bold">Or sign in with email</span>
+								</div>
+							</div>
+						</div>
+					)}
+
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<div className="space-y-2">
 							<label htmlFor="email" className="text-black block font-bold">
@@ -151,29 +174,6 @@ const Login = () => {
 							</button>
 						</div>
 					</form>
-
-					{providers && (
-						<>
-							<div className="relative">
-								<div className="absolute inset-0 flex items-center">
-									<div className="w-full border-t border-gray-300"></div>
-								</div>
-								<div className="relative flex justify-center text-sm">
-									<span className="px-2 bg-white text-gray-500 font-bold">Or continue with</span>
-								</div>
-							</div>
-
-							<div className="flex flex-col gap-4 w-full">
-								{Object.values(providers).map((provider) => {
-									if (provider.name === "Credentials") return null;
-									const icon = getProviderIcon(provider.name);
-									return (
-										<SocialLoginButton key={provider.id} provider={provider} icon={icon} />
-									);
-								})}
-							</div>
-						</>
-					)}
 				</div>
 			</div>
 		</div>
