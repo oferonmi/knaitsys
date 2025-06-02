@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client/edge'
-import { withAccelerate } from '@prisma/extension-accelerate'
+// import { PrismaClient } from '@prisma/client/edge'
+// import { withAccelerate } from '@prisma/
+// extension-accelerate'
+import prisma from "@/lib/prisma";
 import { z } from 'zod';
 
-const prisma = new PrismaClient().$extends(withAccelerate())
+// const prisma = new PrismaClient().$extends(withAccelerate())
 
 // Input validation schema
 const signUpSchema = z.object({
