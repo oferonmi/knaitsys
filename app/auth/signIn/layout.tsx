@@ -9,7 +9,7 @@ export const metadata = {
   	description: 'Authentication',
 }
 
-export default function AuthLayout({children}: {children: React.ReactNode}) {
+export default function LoginLayout({children}: {children: React.ReactNode}) {
 	return (
 		<html lang="en">
 			<body className={`${inter.className} bg-white bg-cover bg-center` }>

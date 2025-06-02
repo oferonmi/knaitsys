@@ -8,9 +8,11 @@ export const UnAuthHeader = () => {
     return (
         <header className=" bg-gray-100 px-4 py-2">
             <nav className="container mx-auto flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                    <SignUpButton />
-                </div>
+                {pgPathName !== "/auth/signup" && (
+                    <div className="flex items-center space-x-4">
+                        <SignUpButton />
+                    </div>
+                )}
 
                 {pgPathName !== "/auth/signIn" && (
                     <div>
