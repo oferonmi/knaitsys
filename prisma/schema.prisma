@@ -1,10 +1,12 @@
 datasource db {
-  provider = "postgresql" // or your preferred database
-  url      = env("POSTGRES_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("POSTGRES_URL") // Add this for Edge runtime
 }
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 model User {
