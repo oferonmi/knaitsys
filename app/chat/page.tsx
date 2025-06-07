@@ -40,12 +40,12 @@ const LLM_OPTIONS: LlmRoute[] = [
 		label: "Gemini-1.5-Flash",
 		isMultimodal: true,
 	},
-	{ value: "chat/local_chat/deepseek", label: "Deepseek-r1" },
+	// { value: "chat/local_chat/deepseek", label: "Deepseek-r1" },
 	{ value: "chat/remote_chat/fireworks/deepseek_fireworks/r1", label: "Deepseek-r1-Fwks" },
 	{ value: "chat/remote_chat/fireworks/deepseek_fireworks/v3", label: "Deepseek-v3-Fwks" },
-	{ value: "chat/local_chat/qwen2", label: "Qwen-2.5" },
-	{ value: "multimodal/local_chat/llava", label: "Llava", isMultimodal: true },
-	{ value: "multimodal/local_chat/phi3", label: "Phi3" },
+	// { value: "chat/local_chat/qwen2", label: "Qwen-2.5" },
+	// { value: "multimodal/local_chat/llava", label: "Llava", isMultimodal: true },
+	// { value: "multimodal/local_chat/phi3", label: "Phi3" },
 ];
 
 const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/gemini";
