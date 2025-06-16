@@ -12,7 +12,9 @@ const TEXTAREA_CONFIG = {
 const ChatForm = ({ 
 	userInput, 
 	onChangeHandler, 
-	onSubmitHandler, 
+	onSubmitHandler,
+	llmApiEndpoint,
+	onLlmApiEndpointChange,
 	isLoading 
 }) => {
 	const [files, setFiles] = useState(null);
@@ -29,14 +31,17 @@ const ChatForm = ({
 	const resetForm = () => {
 		setFiles(null);
 		if (fileInputRef.current) {
-		fileInputRef.current.value = '';
+			fileInputRef.current.value = '';
 		}
 	};
 
 	return (
 		<div className="w-full max-w-full rounded-lg bg-white relative">
 			<div className="absolute right-16 bottom-5 z-10">
-				<LlmSelector />
+				<LlmSelector 
+					llmApiRoute={llmApiEndpoint} 
+					handleLlmApiChange={onLlmApiEndpointChange}
+				/>
 			</div>
 			
 			<form className="relative w-full" onSubmit={handleSubmit}> 
@@ -45,7 +50,7 @@ const ChatForm = ({
 				autoComplete="off"
 				autoFocus={false}
 				name="prompt"
-				className="w-full h-full min-h-[100px] bg-white rounded-lg shadow-lg border 
+				className="w-full h-full min-h-[100px] bg-white rounded-lg shadow-md border 
 						border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 
 						focus:border-transparent resize-none text-kaito-brand-ash-green 
 						placeholder:text-gray-400 sm:leading-6"

@@ -1,8 +1,4 @@
-
-import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Tooltip } from "flowbite-react";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 /**
@@ -28,7 +24,7 @@ const LLM_OPTIONS = [
     { value: "chat/remote_chat/anthropic", label: "Claude-3.5-Haiku" },
     {
         value: "chat/remote_chat/fireworks/mixtral_MoE8x7B_Instruct_fireworks",
-        label: "Mixtral-MoE8x7B-Fwks",
+        label: "Mixtral-MoE-Fwks",
     },
     { value: "chat/remote_chat/xai", label: "Grok-2" },
     {
@@ -44,18 +40,7 @@ const LLM_OPTIONS = [
     // { value: "multimodal/local_chat/phi3", label: "Phi3" },
 ];
 
-const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/gemini";
-
-const LlmSelector = () => {
-    //LLM engine API route
-    const [llmApiRoute, setLlmApiRoute] = useState(DEFAULT_LLM_ROUTE);
-
-    /** @param {import('react').ChangeEvent<HTMLSelectElement>} event */
-    const handleLlmApiChange = (event) => {
-        const newRoute = event.target.value;
-        setLlmApiRoute(newRoute ? `/api/${newRoute}` : DEFAULT_LLM_ROUTE);
-    };
-
+const LlmSelector = ({ llmApiRoute, handleLlmApiChange }) => {
     return (
         <>
             <select

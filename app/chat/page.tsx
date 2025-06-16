@@ -10,44 +10,6 @@ import { Tooltip } from "flowbite-react";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { withAuth } from "@/components/HOC/withAuth";
 
-// Add type for LLM API routes to improve type safety and maintainability
-type LlmRoute = {
-	value: string;
-	label: string;
-	isMultimodal?: boolean;
-};
-
-const LLM_OPTIONS: LlmRoute[] = [
-	{ value: "chat/remote_chat/openai", label: "GPT-3.5" },
-	{ value: "multimodal/remote_chat/openai", label: "GPT-4o-mini", isMultimodal: true },
-	{ value: "chat/remote_chat/fireworks/llama3_fireworks", label: "Llama-3-Fwks" },
-	{ value: "chat/remote_chat/fireworks/qwen2_fireworks", label: "Qwen-2-Fwks" },
-	{ value: "chat/remote_chat/fireworks/qwen3_fireworks", label: "Qwen-3-Fwks" },
-	{ value: "chat/remote_chat/fireworks/qwq_fireworks", label: "QWQ-Fwks" },
-	{
-		value: "multimodal/remote_chat/groq/llama3_groq",
-		label: "Llama-3.2-Groq",
-		isMultimodal: true,
-	},
-	{ value: "chat/remote_chat/anthropic", label: "Claude-3.5-Haiku" },
-	{
-		value: "chat/remote_chat/fireworks/mixtral_MoE8x7B_Instruct_fireworks",
-		label: "Mixtral-MoE8x7B-Fwks",
-	},
-	{ value: "chat/remote_chat/xai", label: "Grok-2" },
-	{
-		value: "chat/remote_chat/gemini",
-		label: "Gemini-1.5-Flash",
-		isMultimodal: true,
-	},
-	// { value: "chat/local_chat/deepseek", label: "Deepseek-r1" },
-	{ value: "chat/remote_chat/fireworks/deepseek_fireworks/r1", label: "Deepseek-r1-Fwks" },
-	{ value: "chat/remote_chat/fireworks/deepseek_fireworks/v3", label: "Deepseek-v3-Fwks" },
-	// { value: "chat/local_chat/qwen2", label: "Qwen-2.5" },
-	// { value: "multimodal/local_chat/llava", label: "Llava", isMultimodal: true },
-	// { value: "multimodal/local_chat/phi3", label: "Phi3" },
-];
-
 const DEFAULT_LLM_ROUTE = "/api/chat/remote_chat/gemini";
 
 const ChatbotPage = () => {
@@ -91,29 +53,14 @@ const ChatbotPage = () => {
 		},
 	});
 
-	// const LlmSelector = () => (
-	// 	<select
-	// 		onChange={handleLlmApiChange}
-	// 		value={llmApiRoute.replace("/api/", "")}
-	// 		className="inline-flex items-center py-5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2"
-	// 		id="llm-selector"
-	// 		required
-	// 	>
-	// 		<option value="">--Select LLM--</option>
-	// 		{LLM_OPTIONS.map(({ value, label }) => (
-	// 			<option key={value} value={value}>
-	// 			{label}
-	// 			</option>
-	// 		))}
-	// 	</select>
-	// );
-
 	const LlmChatFormMainWidgets = (
 		<>
 			<ChatForm
 				userInput={input}
 				onChangeHandler={handleInputChange}
 				onSubmitHandler={handleSubmit}
+				llmApiEndpoint={llmApiRoute}
+				onLlmApiEndpointChange={handleLlmApiChange}
 				isLoading={chatEndpointIsLoading}
 			/>
 		</>
@@ -131,7 +78,6 @@ const ChatbotPage = () => {
 
 			<br></br>
 
-			{/* border border-gray-300 rounded-lg shadow-xl space-x-2 text-black  pt-9 pb-9 px-5*/}
 			<div className="w-full max-w-3xl flex justify-center items-center">
 				{LlmChatFormMainWidgets}
 			</div>
@@ -151,11 +97,11 @@ const ChatbotPage = () => {
 					/>
 
 					<div
-						className="fixed bottom-0 border border-gray-300 rounded-lg shadow-xl space-x-2 text-black mb-20 container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9"
+						className="fixed bottom-0 mb-20 container flex max-w-3xl mx-auto my-auto"
 					>
-						<Tooltip content="Clear Chat Thread" className="inline-flex bg-black">
+						<Tooltip content="Clear Chat Thread" className="inline-flex bg-black  ">
 							<button
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-6 py-5 mr-2"
+								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 mr-2  absolute right-60  bottom-3 z-10"
 								type="button"
 								onClick={() => { setMessages([]); } }
 							>
