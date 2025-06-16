@@ -91,26 +91,25 @@ const ChatbotPage = () => {
 		},
 	});
 
-	const LlmSelector = () => (
-		<select
-			onChange={handleLlmApiChange}
-			value={llmApiRoute.replace("/api/", "")}
-			className="inline-flex items-center py-5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2"
-			id="llm-selector"
-			required
-		>
-			<option value="">--Select LLM--</option>
-			{LLM_OPTIONS.map(({ value, label }) => (
-				<option key={value} value={value}>
-				{label}
-				</option>
-			))}
-		</select>
-	);
+	// const LlmSelector = () => (
+	// 	<select
+	// 		onChange={handleLlmApiChange}
+	// 		value={llmApiRoute.replace("/api/", "")}
+	// 		className="inline-flex items-center py-5 px-2 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-md hover:bg-kaito-brand-ash-green mr-2"
+	// 		id="llm-selector"
+	// 		required
+	// 	>
+	// 		<option value="">--Select LLM--</option>
+	// 		{LLM_OPTIONS.map(({ value, label }) => (
+	// 			<option key={value} value={value}>
+	// 			{label}
+	// 			</option>
+	// 		))}
+	// 	</select>
+	// );
 
-	const ChatFormWidgets = (
+	const LlmChatFormMainWidgets = (
 		<>
-			<LlmSelector />
 			<ChatForm
 				userInput={input}
 				onChangeHandler={handleInputChange}
@@ -121,21 +120,20 @@ const ChatbotPage = () => {
 	);
 
 	const landingSectionUI = (
-		<div className="flex flex-col justify-center items-center md:p-8  min-h-screen max-w-3xl mx-auto my-auto ">
+		<div className="flex flex-col justify-center items-center md:p-8  min-h-screen w-full mx-auto my-auto overflow-hidden text-black">
 			<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
-				Query or Question a Gen AI Text Chatbot
+				Query or Question an AI Chatbot
 			</h1>
-
 			<p className="text-black text-lg text-center">
-				Switch between LLMs by selecting each from the dropdown menu, then ask away.
+				Switch between LLMs by selecting each from the dropdown menu, then ask
+				away.
 			</p>
 
 			<br></br>
 
-			<div
-				className="w-full max-w-3xl border border-gray-300 rounded-lg shadow-xl space-x-2 text-black flex justify-center items-center pt-9 pb-9 px-5"
-			>
-				{ChatFormWidgets}
+			{/* border border-gray-300 rounded-lg shadow-xl space-x-2 text-black  pt-9 pb-9 px-5*/}
+			<div className="w-full max-w-3xl flex justify-center items-center">
+				{LlmChatFormMainWidgets}
 			</div>
 		</div>
 	);
@@ -153,7 +151,7 @@ const ChatbotPage = () => {
 					/>
 
 					<div
-						className="fixed bottom-0 border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9"
+						className="fixed bottom-0 border border-gray-300 rounded-lg shadow-xl space-x-2 text-black mb-20 container flex max-w-3xl mx-auto my-auto p-5 pt-9 pb-9"
 					>
 						<Tooltip content="Clear Chat Thread" className="inline-flex bg-black">
 							<button
@@ -166,7 +164,7 @@ const ChatbotPage = () => {
 						</Tooltip>
 
 						{/* main chat form widgets */}
-						{ChatFormWidgets}
+						{LlmChatFormMainWidgets}
 					</div>
 				</div>
 			)}  

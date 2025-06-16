@@ -1,72 +1,93 @@
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { useRef, useState } from 'react';
-import { Loader2 } from "lucide-react";
+import { Loader2 } from 'lucide-react';
+import LlmSelector from '@/components/LlmSelector';
+import PropTypes from 'prop-types';
 
-const ChatForm = ({ userInput, onChangeHandler, onSubmitHandler, isLoading }) => {
+const TEXTAREA_CONFIG = {
+	minHeight: '100px',
+	placeholder: 'Got questions? Ask ...',
+};
 
-	const [files, setFiles] = useState(undefined);  //useState< FileList | undefined >(undefined);
-	const fileInputRef = useRef(null);  //useRef< HTMLInputElement >(null);
+const ChatForm = ({ 
+	userInput, 
+	onChangeHandler, 
+	onSubmitHandler, 
+	isLoading 
+}) => {
+	const [files, setFiles] = useState(null);
+	const fileInputRef = useRef(null);
 
 	const handleSubmit = (event) => {
-		// event.preventDefault();
-		// onSubmitHandler(event.target.prompt.value);
-		onSubmitHandler(event, {experimental_attachments: files,} );
+		event.preventDefault(); // Prevent default form submission
+		onSubmitHandler(event, {
+		experimental_attachments: files,
+		});
+		resetForm();
+	};
 
-		setFiles(undefined);
-
+	const resetForm = () => {
+		setFiles(null);
 		if (fileInputRef.current) {
-			fileInputRef.current.value = '';
+		fileInputRef.current.value = '';
 		}
 	};
 
 	return (
-		<>
-			<form className="w-full flex space-x-2" onSubmit={onSubmitHandler}> 
-				{/* file input */}
-				{/* <input
-				type="file"
-				className=""
-				onChange={event => {
-					if (event.target.files) {
-					setFiles(event.target.files);
-					}
-				}}
-				multiple
-				ref={fileInputRef}
-				/> */}
-
-				{/* Text input */}
-				<input
-					type="text"
-					autoComplete="off"
-					autoFocus={false}
-					name="prompt"
-					className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
-					placeholder="  Say something ..."
-					required={true}
-					value={userInput}
-					onChange={onChangeHandler}
+		<div className="w-full max-w-full rounded-lg bg-white relative">
+			<div className="absolute right-16 bottom-5 z-10">
+				<LlmSelector />
+			</div>
+			
+			<form className="relative w-full" onSubmit={handleSubmit}> 
+				<textarea
+				type="text"
+				autoComplete="off"
+				autoFocus={false}
+				name="prompt"
+				className="w-full h-full min-h-[100px] bg-white rounded-lg shadow-lg border 
+						border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 
+						focus:border-transparent resize-none text-kaito-brand-ash-green 
+						placeholder:text-gray-400 sm:leading-6"
+				placeholder={TEXTAREA_CONFIG.placeholder}
+				required
+				value={userInput}
+				onChange={onChangeHandler}
+				style={{ minHeight: TEXTAREA_CONFIG.minHeight }}
 				/>
-				<button
-					className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5"
-					type="submit"
-				>
-					<div
-						role="status"
-						className={`${
-						isLoading ? "" : "hidden"
-						} flex justify-center`}
-					>
-						<Loader2 className="animate-spin w-5 h-5" />
-						<span className="sr-only">Loading...</span>
-					</div>
-					<span className={isLoading ? "hidden" : ""}>
-						<i className="bi bi-send-fill"></i>
-					</span>
-				</button>
+				<SubmitButton isLoading={isLoading} />
 			</form>
-		</>
+		</div>
 	);
+};
+
+const SubmitButton = ({ isLoading }) => (
+	<button
+		className="absolute bottom-3 right-3 text-gray-200 hover:text-gray-300 
+				bg-kaito-brand-ash-green rounded-full px-4 py-3 transition-colors"
+		type="submit"
+		aria-label={isLoading ? 'Submitting...' : 'Submit'}
+	>
+		{isLoading ? (
+			<div role="status" className="flex justify-center">
+				<Loader2 className="animate-spin w-4 h-6" />
+				<span className="sr-only">Loading...</span>
+			</div>
+		) : (
+			<i className="bi bi-send-fill" />
+		)}
+	</button>
+);
+
+ChatForm.propTypes = {
+  userInput: PropTypes.string.isRequired,
+  onChangeHandler: PropTypes.func.isRequired,
+  onSubmitHandler: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
+
+SubmitButton.propTypes = {
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default ChatForm;
