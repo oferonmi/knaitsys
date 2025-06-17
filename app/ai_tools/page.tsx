@@ -44,7 +44,7 @@ function AiToolsPage() {
 					</div>
 				</Link>
 
-				<Link href="/code">
+				<Link href="/#">
 					<div className={styles.linkBase}>
 						<i className="bi bi-file-code-fill" style={{ fontSize: 64 }}></i>
 						<p className={styles.textBase}>Code</p>
@@ -58,7 +58,7 @@ function AiToolsPage() {
 					</div>
 				</Link>
 
-				<Link href="/simulator">
+				<Link href="/#">
 					<div className={styles.linkBase}>
 						<i
 							className="bi bi-globe-europe-africa"
