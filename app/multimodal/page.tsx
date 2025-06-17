@@ -15,7 +15,7 @@ import { withAuth } from '@/components/HOC/withAuth';
 function MultiModalChat() {
     //LLM engine API route
     const [llmApiRoute, setLlmApiRoute] = useState(
-        "/api/multimodal/chat/openai"
+        "/api/multimodal/remote_chat/openai"
     );
     const [sourcesForMessages, setSourcesForMessages] = useState<
         Record<string, any>
