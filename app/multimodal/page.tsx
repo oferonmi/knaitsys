@@ -1,25 +1,49 @@
 'use client';
 
-import {  useChat } from '@ai-sdk/react';
-import { useRef, useState, useEffect, type FormEvent } from 'react';
-import Image from "next/image";
+import { useChat } from '@ai-sdk/react';
+import { useRef, useState, useEffect, useCallback, type FormEvent } from 'react';
+import { ToastContainer, toast } from "react-toastify";
+import { withAuth } from '@/components/HOC/withAuth';
+import { CONSTANTS } from '@/components/MultiModal/constants';
+import { LoadingSpinner } from '@/components/MultiModal/LoadingSpinner';
 import { AudioRecorder } from "@/components/AudioRecorder";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
-import { ToastContainer, toast } from "react-toastify";
 import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { Footer } from "@/components/Footer";
 import { Tooltip } from "flowbite-react";
-import { withAuth } from '@/components/HOC/withAuth';
+
+const TEXTAREA_CONFIG = {
+    minHeight: "100px",
+    placeholder: "Got questions? Ask ...",
+};
 
 function MultiModalChat() {
-    //LLM engine API route
-    const [llmApiRoute, setLlmApiRoute] = useState(
-        "/api/multimodal/remote_chat/openai"
-    );
-    const [sourcesForMessages, setSourcesForMessages] = useState<
-        Record<string, any>
-    >({});
+    const [sourcesForMessages, setSourcesForMessages] = useState<Record<string, any>>({});
+    const [files, setFiles] = useState<FileList | undefined>();
+    const [showAudioRecorder, setShowAudioRecorder] = useState(false);
+    const [audioInTranscript, setAudioInTranscript] = useState("");
+    const [showFileAttachmentUI, setShowFileAttachmentUI] = useState(false);
+    const [showSendButton, setShowSendButton] = useState(false);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const textInputRef = useRef<HTMLInputElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null);
+    const sendButtonRef = useRef<HTMLButtonElement>(null);
+
+    const handleResponse = useCallback((response: Response) => {
+        const sourcesHeader = response.headers.get("x-sources");
+        const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
+        const messageIndexHeader = response.headers.get("x-message-index");
+
+        if (sources.length && messageIndexHeader !== null) {
+            setSourcesForMessages(prev => ({
+                ...prev,
+                [messageIndexHeader]: sources,
+            }));
+        }
+        setShowSendButton(false);
+    }, []);
 
     const { 
         messages,
@@ -32,114 +56,78 @@ function MultiModalChat() {
         handleSubmit, 
         isLoading 
     } = useChat({
-        api: llmApiRoute,
-        onResponse(response) {
-            const sourcesHeader = response.headers.get("x-sources");
-            const sources = sourcesHeader ? JSON.parse(atob(sourcesHeader)) : [];
-            const messageIndexHeader = response.headers.get("x-message-index");
-
-            if (sources.length && messageIndexHeader !== null) {
-                setSourcesForMessages({
-                    ...sourcesForMessages,
-                [   messageIndexHeader]: sources,
-                });
-            }
-
-            setShowSendButton(false);
-        },
-        onError: (e) => {
-            toast(e.message, {
-                theme: "dark",
-            });
-        },
+        api: CONSTANTS.API_ROUTES.LLM,
+        onResponse: handleResponse,
+        onError: (e) => toast(e.message, { theme: "dark" })
     });
 
-    const [files, setFiles] = useState<FileList | undefined>(undefined);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const textInputRef = useRef<HTMLInputElement>(null);
-
-    const [showAudioRecorder, setShowAudioRecorder] = useState<boolean>(false);
-    const [audioInTranscript, setAudioInTranscript] = useState("");
-
-    const [showFileAttactmentUI, setShowFileAttactmentUI] = useState<boolean>(false);
-    const [showSendButton, setShowSendButton] = useState<boolean>(false);
-
-    const bottomRef = useRef<HTMLDivElement>(null);
-	const sendButtonRef = useRef<HTMLButtonElement>(null);
-
     useEffect(() => {
-        if (messages?.length > 0 ) {
-            bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages?.length]);
+
+    const processRecordedAudioIn = useCallback(async (audioBlob: Blob) => {
+        if (!audioBlob?.size) {
+            toast("Invalid audio data", { theme: "dark" });
+            return;
         }
-    }, [messages]);
 
-
-    async function processRecordedAudioIn(audioBlob: Blob) {
         try {
-            // Validate the blob
-            if (!audioBlob || audioBlob.size === 0) {
-                throw new Error("Invalid audio data");
-            }
-
             const formData = new FormData();
             formData.append("file", audioBlob, "audio.webm");
 
-            const response = await fetch("/api/stt/whisper", {
+            const response = await fetch(CONSTANTS.API_ROUTES.WHISPER, {
                 method: "POST",
                 body: formData,
-                headers: {
-                    Accept: "application/json",
-                },
+                headers: { Accept: "application/json" }
             });
 
-            if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(`Server error: ${response.status} - ${errorData}`);
-            }
+            if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-            const data = await response.json();
-                if (!data || !data.transcript) {
-                throw new Error("Invalid response format");
-            }
+            const { transcript } = await response.json();
+            if (!transcript) throw new Error("Invalid response format");
 
-            setAudioInTranscript(data.transcript);
-            // append transcript to chat thread
-            setMessages([
-                ...messages,
-                {
-                    id: String(Date.now()),
-                    role: "user",
-                    content: data.transcript,
-                },
-            ]);
-            // trigger LLM API call and update chat thread with response
+            setAudioInTranscript(transcript);
+            setMessages(prev => [...prev, {
+                id: String(Date.now()),
+                role: "user",
+                content: transcript,
+            }]);
             reload();
-
             setShowSendButton(true);
         } catch (error) {
             console.error("Error processing audio:", error);
-            setAudioInTranscript(""); // User feedback
+            toast("Error processing audio recording", { theme: "dark" });
+            setAudioInTranscript("");
         }
-    }
+    }, [reload, setMessages]);
 
-    function handleSend(event: FormEvent<HTMLFormElement>){
-        handleSubmit(event, {
-            experimental_attachments: files,
-        });
-                            
+    const handleFormSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+        handleSubmit(event, { experimental_attachments: files });
         setFiles(undefined);
-                            
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
+        if (fileInputRef.current) fileInputRef.current.value = '';
+        setShowFileAttachmentUI(false);
+    }, [files, handleSubmit]);
+
+    const handleRecordingStart = useCallback(async (recorderControls: any) => {
+        if (!recorderControls.recorderReady) {
+            toast("Recorder not ready. Please wait a moment.", { theme: "dark" });
+            return;
         }
 
-        setShowFileAttactmentUI(false);
-    }
+        try {
+            await recorderControls.startRecording();
+            setShowAudioRecorder(true);
+        } catch (error) {
+            toast("Failed to start recording. Please check microphone permissions.", { theme: "dark" });
+            console.error("Recording failed to start:", error);
+        }
+    }, []);
 
-    const recorderSettings = {
-        noiseSuppression: true,
-        echoCancellation: true,
-    }
+    // const recorderSettings = {
+    //     noiseSuppression: true,
+    //     echoCancellation: true,
+    // }
+    const recorderSettings = CONSTANTS.RECORDER_SETTINGS;
 
     const recorderControls = useAudioRecorder(recorderSettings);
 
@@ -157,24 +145,18 @@ function MultiModalChat() {
 
     const loadingAnimation = (
         <div role="status" className={`${isLoading ? "" : "hidden"} flex justify-center`}>
-            <span className="flex items-center gap-2">
-                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-            </span>
-            <span className="sr-only">Loading...</span>
+            <LoadingSpinner />
         </div>
     );
 
     // Common button styles
-    const buttonBaseStyle = "inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5";
+    const buttonBaseStyle = "inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-3";
 
     // Clear chat button
     const ClearChatButton = messages.length > 0 && (
         <Tooltip content="Clear Chat Thread" className="inline-flex">
             <button
-                className={`${buttonBaseStyle} mr-2`}
+                className={`${buttonBaseStyle} mr-2 absolute right-16 bottom-3 z-10`}
                 type="button"
                 onClick={() => setMessages([])}
             >
@@ -186,12 +168,12 @@ function MultiModalChat() {
     // File Upload node
     const FileUpload = (
         <div>
-            {!showFileAttactmentUI ? (
+            {!showFileAttachmentUI ? (
                 <Tooltip content="Upload File" className="inline-flex">
                     <button
                         type="button"
-                        className={buttonBaseStyle}
-                        onClick={() => setShowFileAttactmentUI(true)}
+                        className={`${buttonBaseStyle} absolute right-auto bottom-3 z-10 ml-3`}
+                        onClick={() => setShowFileAttachmentUI(true)}
                     >
                         <i className="bi bi-paperclip" />
                         <span className="sr-only">Attach file</span>
@@ -201,7 +183,7 @@ function MultiModalChat() {
                 <input
                     type="file"
                     id="multimod-file-in"
-                    className="border bg-white border-kaito-brand-ash-green rounded-lg py-2 inline-flex pl-2"
+                    className="border bg-white border-kaito-brand-ash-green rounded-lg inline-flex pl-2 absolute right-auto bottom-3 z-10 ml-3"
                     onChange={(e) => e.target.files && setFiles(e.target.files)}
                     multiple
                     ref={fileInputRef}
@@ -210,39 +192,10 @@ function MultiModalChat() {
         </div>
     );
 
-    async function handleRecordingStart(recorderControls: any) {
-        if (!recorderControls.recorderReady) {
-            toast("Recorder not ready. Please wait a moment.", { theme: "dark" });
-            return;
-        }
-
-        try {
-            await recorderControls.startRecording();
-            setShowAudioRecorder(true);
-        } catch (error) {
-            toast(
-                "Failed to start recording. Please check your microphone permissions.",
-                { theme: "dark" }
-            );
-            console.error("Recording failed to start:", error);
-        }
-    };
-
-    // Audio Record Button
-    const AudioRecordButton = (
-        <button
-            className={buttonBaseStyle}
-            type="button"
-            onClick={() => handleRecordingStart(recorderControls)}
-        >
-            <i className="bi bi-mic-fill" />
-        </button>
-    );
-
     // Send Button
     const SendButton = (
         <button
-            className={buttonBaseStyle}
+            className={`${buttonBaseStyle} absolute bottom-3 right-3`}
             type="submit"
             ref={sendButtonRef}
         >
@@ -254,13 +207,20 @@ function MultiModalChat() {
     );
 
     const ChatInput = (
-        <input
-            className="w-full h-16 p-2 rounded-full border border-kaito-brand-ash-green focus:border-kaito-brand-ash-green text-kaito-brand-ash-green placeholder:text-gray-400"
+        <textarea
+            autoComplete="off"
+            autoFocus={false}
+            name="prompt"
+            className="w-full h-full min-h-[100px] bg-white rounded-lg shadow-md border 
+                    border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 
+                    focus:border-transparent resize-none text-kaito-brand-ash-green 
+                    placeholder:text-gray-400 sm:leading-6"
             id="multimod-text-in"
             value={input}
-            placeholder="Ask anything..."
-            ref={textInputRef}
-            onChange={(e) => {
+            placeholder={TEXTAREA_CONFIG.placeholder}
+            required
+            style={{ minHeight: TEXTAREA_CONFIG.minHeight }} // ref={textInputRef}
+                onChange={(e) => {
                 setShowSendButton(e.target.value.length > 0);
                 handleInputChange(e);
             }}
@@ -272,12 +232,20 @@ function MultiModalChat() {
             {showAudioRecorder ? (
                 audioRecorderWidget
             ) : (
-                <>
+                <main className='w-full max-w-full rounded-lg bg-white relative' >
                     {messages.length > 0 &&  ClearChatButton}
                     {FileUpload}
                     {ChatInput}
-                    {showSendButton ? SendButton  : AudioRecordButton}
-                </>
+                    {showSendButton ? SendButton  : (
+                        <button
+                            className={`${buttonBaseStyle} absolute bottom-3 right-3`}
+                            type="button"
+                            onClick={() => handleRecordingStart(recorderControls)}
+                        >
+                            <i className="bi bi-mic-fill" />
+                        </button>
+                    )}
+                </main>
             )}
         </div>
     );
@@ -287,16 +255,17 @@ function MultiModalChat() {
             <div className="max-w-3xl w-full mx-auto md:p-8">
                 <header className="mb-8 text-center">
                     <h1 className="text-3xl text-gray-700 mb-4">
-                        Query or Question a Gen AI Multimodal Chatbot
+                        Query or Question a Multimodal AI Chatbot
                     </h1>
                     <p className="text-lg text-black">
                         Use any of the inputs to make your inquiry
                     </p>
                 </header>
 
+                {/*border border-gray-300 rounded-lg shadow-xl p-9 space-y-4 */}
                 <form
-                    onSubmit={(event) => handleSend(event)}
-                    className="w-full border border-gray-300 rounded-lg shadow-xl p-9 space-y-4"
+                    onSubmit={(event) => handleFormSubmit(event)}
+                    className="w-full relative"
                 >
                     {chatFormWidgets}
                 </form>
@@ -313,7 +282,7 @@ function MultiModalChat() {
                         <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
                             {messages.length > 0
                             ? [...messages].map((m, i) => {
-                                const sourceKey = (messages.length -1 -i).toString();
+                                const sourceKey = (messages.length - 1 - i).toString();
                                 return (
                                     <ChatMessageBubble
                                     key={m.id}
@@ -322,14 +291,16 @@ function MultiModalChat() {
                                     sources={sourcesForMessages[sourceKey]}
                                     />
                                 );
-                            }) : ""}
+                                })
+                            : ""}
                         </div>
 
                         <div ref={bottomRef} />
 
+                        {/**max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5 */}
                         <form
-                            className="fixed bottom-0 w-full max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5"
-                            onSubmit={(event) => handleSend(event)}
+                            className="fixed bottom-0 mb-20 container flex max-w-3xl mx-auto my-auto"
+                            onSubmit={(event) => handleFormSubmit(event)}
                         >
                             {chatFormWidgets}
                         </form>
@@ -339,14 +310,16 @@ function MultiModalChat() {
                         <div className="  bottom-0">
                             <Footer />
                         </div>
-                    ) : ("")}
+                    ) : (
+                     ""
+                    )}
                 </main>
             ) : (
                 <main>
                     {/* Landing section */}
                     {landingSectionUI}
                     <div className="  bottom-0">
-                        <Footer />
+                    <Footer />
                     </div>
                 </main>
             )}

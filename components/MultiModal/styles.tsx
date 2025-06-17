@@ -1,0 +1,1 @@
+export const buttonBaseStyle = "inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-6 py-5";

@@ -46,19 +46,19 @@ const ChatForm = ({
 			
 			<form className="relative w-full" onSubmit={handleSubmit}> 
 				<textarea
-				type="text"
-				autoComplete="off"
-				autoFocus={false}
-				name="prompt"
-				className="w-full h-full min-h-[100px] bg-white rounded-lg shadow-md border 
-						border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 
-						focus:border-transparent resize-none text-kaito-brand-ash-green 
-						placeholder:text-gray-400 sm:leading-6"
-				placeholder={TEXTAREA_CONFIG.placeholder}
-				required
-				value={userInput}
-				onChange={onChangeHandler}
-				style={{ minHeight: TEXTAREA_CONFIG.minHeight }}
+					type="text"
+					autoComplete="off"
+					autoFocus={false}
+					name="prompt"
+					className="w-full h-full min-h-[100px] bg-white rounded-lg shadow-md border 
+							border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 
+							focus:border-transparent resize-none text-kaito-brand-ash-green 
+							placeholder:text-gray-400 sm:leading-6"
+					placeholder={TEXTAREA_CONFIG.placeholder}
+					required
+					value={userInput}
+					onChange={onChangeHandler}
+					style={{ minHeight: TEXTAREA_CONFIG.minHeight }}
 				/>
 				<SubmitButton isLoading={isLoading} />
 			</form>
