@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Tooltip } from "flowbite-react";
 
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import { useRef, useState, useEffect, ReactElement } from "react";
 import type { Dispatch, FormEvent, SetStateAction } from "react";
 
@@ -14,6 +14,12 @@ import { EmbedPdfsForm } from "@/components/EmbedPdfsForm";
 import { WebpageUploadForm } from "@/components/WebpageUploadForm";
 import { SearchIndexUploadForm } from "@/components/SearchIndexUploadForm";
 import { Footer } from "@/components/Footer";
+import { Loader2 } from 'lucide-react';
+
+const TEXTAREA_CONFIG = {
+	minHeight: "100px",
+	placeholder: "Got questions? Ask ...",
+};
 
 interface styleList {
 	sideBar: string;
@@ -258,19 +264,19 @@ export function RetrievalChatWindow(props: {
 			<div className="flex flex-col w-full">
 				{/* Chat Thread */}
 				<div
-					className="flex flex-col-reverse w-full mb-4 grow overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black p-4 md:p-8"
-					ref={messageContainerRef}
+				className="flex flex-col-reverse w-full mb-4 grow overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black p-4 md:p-8"
+				ref={messageContainerRef}
 				>
-					{messages.length > 0
+				{messages.length > 0
 					? [...messages].reverse().map((m, i) => {
 						const sourceKey = (messages.length - 1 - i).toString();
 						return (
-							<ChatMessageBubble
-								key={m.id}
-								message={m}
-								aiEmoji={emoji}
-								sources={sourcesForMessages[sourceKey]}
-							></ChatMessageBubble>
+						<ChatMessageBubble
+							key={m.id}
+							message={m}
+							aiEmoji={emoji}
+							sources={sourcesForMessages[sourceKey]}
+						/>
 						);
 					})
 					: ""}
@@ -278,74 +284,74 @@ export function RetrievalChatWindow(props: {
 
 				<div ref={bottomRef} />
 
-				<div className=" fixed bottom-0 w-full">
+				<div className="fixed bottom-0 left-0 right-0 flex justify-center items-center w-full px-4">
 					<form
 						onSubmit={sendMessage}
-						className=" border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex max-w-3xl  p-5 pt-9 pb-9 w-1/2 mx-auto"
+						className="text-black mb-20 w-full max-w-3xl relative"
 						id="chat-form"
 					>
-						<div className="flex w-full m-auto gap-2 ">
-							<Tooltip content="Clear Chat Thread" className={toolTipsStyle}>
-								<button
-									className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-6 py-5 mr-2 "
-									type="button"
-									onClick={() => {
-										setMessages([]);
-									}}
-								>
-									<i className="bi bi-trash3-fill"></i>
-									<span className="sr-only">Clear Chat Thread</span>
-								</button>
-							</Tooltip>
+						<div className="relative w-full">
+							{/* Left-aligned buttons */}
+							<div className="absolute left-3 bottom-3 flex gap-2 z-10">
+								<Tooltip content="Clear Chat Thread" className={toolTipsStyle}>
+									<button
+										className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
+										type="button"
+										onClick={() => setMessages([])}
+									>
+										<i className="bi bi-trash3-fill"></i>
+										<span className="sr-only">Clear Chat Thread</span>
+									</button>
+								</Tooltip>
 
-							<Tooltip content="Upload Corpus" className={toolTipsStyle}>
-								<button
-									className=" px-6 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full ml-2"
-									type="button"
-									onClick={() => {
+								<Tooltip content="Upload Corpus" className={toolTipsStyle}>
+									<button
+										className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
+										type="button"
+										onClick={() => {
 										setShowIngestForm(true);
 										setShowDocEmbedForm(false);
 										setShowUrlEntryForm(false);
 										setShowSearchForm(false);
 										setMessages([]);
 										setReadyToChat(false);
-									}}
-								>
-									<i className="bi bi-upload"></i>
-									<span className="sr-only">Upload Corpus</span>
-								</button>
-							</Tooltip>
+										}}
+									>
+										<i className="bi bi-upload"></i>
+										<span className="sr-only">Upload Corpus</span>
+									</button>
+								</Tooltip>
+							</div>
 
-							<input
-								className="grow px-4 py-1.5 rounded-full border border-kaito-brand-ash-green text-kaito-brand-ash-green"
+							<textarea
+								autoComplete="off"
+								autoFocus={false}
+								name="prompt"
+								className="w-full min-h-[100px] bg-white rounded-lg shadow-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none text-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6 px-4 py-3"
 								id="chat-textbox"
+								required
 								value={input}
-								placeholder={placeholder ?? "What is truth?"}
+								placeholder={placeholder ?? TEXTAREA_CONFIG.placeholder}
+								style={{ minHeight: TEXTAREA_CONFIG.minHeight }}
 								onChange={handleInputChange}
 							/>
 
+							{/* Right-aligned send button */}
 							<button
 								type="submit"
-								className=" px-6 py-5 bg-kaito-brand-ash-green text-gray-200 rounded-full"
+								className="absolute right-3 bottom-3 px-4 py-3 bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green text-gray-200 rounded-full z-10"
 							>
-								<div
-									role="status"
-									className={`${
-										chatEndpointIsLoading ? "" : "hidden"
-									} flex justify-center`}
-								>
-									<span className="flex items-center gap-2">
-										<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-											<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-											<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-										</svg>
-									</span>
+								{chatEndpointIsLoading ? (
+								<div role="status" className="flex justify-center">
+									<Loader2 className="animate-spin w-4 h-6" />
 									<span className="sr-only">Loading...</span>
 								</div>
-								<div className={chatEndpointIsLoading ? "hidden" : ""}>
+								) : (
+								<>
 									<i className="bi bi-send-fill"></i>
 									<span className="sr-only">Send Message</span>
-								</div>
+								</>
+								)}
 							</button>
 						</div>
 					</form>

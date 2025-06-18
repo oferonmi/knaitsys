@@ -16,7 +16,7 @@ function RetrievalPage() {
 				endPoint={apiEndPoint}
 				setEndPoint={setApiEndPoint}
 				placeholder={
-					"Ask questions about the content of the text/document uploaded."
+					"Ask questions about content of documents uploaded."
 				}
 				emoji="🤖"
 				titleText="Chat to your Document"
