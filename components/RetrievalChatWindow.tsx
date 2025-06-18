@@ -257,12 +257,12 @@ export function RetrievalChatWindow(props: {
 										className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3"
 										type="button"
 										onClick={() => {
-										setShowIngestForm(true);
-										setShowDocEmbedForm(false);
-										setShowUrlEntryForm(false);
-										setShowSearchForm(false);
-										setMessages([]);
-										setReadyToChat(false);
+											setShowIngestForm(true);
+											setShowDocEmbedForm(false);
+											setShowUrlEntryForm(false);
+											setShowSearchForm(false);
+											setMessages([]);
+											setReadyToChat(false);
 										}}
 									>
 										<i className="bi bi-upload"></i>

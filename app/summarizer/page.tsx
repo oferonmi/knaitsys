@@ -12,16 +12,16 @@ import copy from 'copy-to-clipboard';
 import { withAuth } from "@/components/HOC/withAuth";
 
 interface styleList {
-  sideBar: string;
-  toolTips: string;
-  button: string;
+	sideBar: string;
+	toolTips: string;
+	button: string;
 }
 
 const sideNavStyle: styleList = {
-  sideBar: "flex grow-0 gap-2 ml-2.5 mt-4 border-r border-slate-300 h-screen",
-  toolTips: "inline-flex bg-black",
-  button:
-    "inline-flex border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green bg-white items-center font-medium hover:text-gray-200 text-kaito-brand-ash-green text-lg rounded-full px-4 py-3",
+	sideBar: "flex grow-0 gap-2 ml-2.5 mt-4 border-r border-slate-300 h-screen",
+	toolTips: "inline-flex bg-black",
+	button:
+		"inline-flex border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green bg-white items-center font-medium hover:text-gray-200 text-kaito-brand-ash-green text-lg rounded-full px-4 py-3",
 } as const;
 
 const toolTipsStyle = "inline-flex bg-black";
@@ -300,32 +300,26 @@ const SummarizerPage = () => {
 
 	// input section form specifications
 	const summarizerCtrlButtons = (
-		<div className="flex flex-row">
-			<div className="flex ml-auto space-x-3">
-				<div>
-					<button
-						className="items-center py-3 px-4 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-						type="submit"
-					>
-						<div
-							role="status"
-							className={`${loading ? "" : "hidden"} flex justify-center`}
-						>
-							{/* Loading wheel animation  */}
-							<Loader2 className="animate-spin w-4 h-6" />
-							<span className="sr-only">Loading...</span>
-						</div>
-
-						{/* Send icon*/}
-						<div className={`${loading ? "hidden" : ""}`}>
-							<i className="bi bi-send-fill"></i>
-							<span className="sr-only">Send</span>
-						</div>
-					</button>
-				</div>
+		<button
+			className="flex px-4 py-3 bg-kaito-brand-ash-green text-gray-200 rounded-full  max-w-24 max-h-24 items-center shrink-0 absolute right-3 bottom-3 z-10 hover:bg-kaito-brand-ash-green/90 focus:outline-none focus:ring-4 focus:ring-kaito-brand-ash-green/50 disabled:opacity-50 disabled:cursor-not-allowed"
+			type="submit"
+		>
+			{/* Loading wheel animation  */}
+			<div
+				role="status"
+				className={`${loading ? "" : "hidden"} flex justify-center`}
+			>
+				<Loader2 className="animate-spin w-4 h-6" />
+				<span className="sr-only">Loading...</span>
 			</div>
-		</div>
-  	);
+
+			{/* Send icon*/}
+			<div className={`${loading ? "hidden" : ""}`}>
+				<i className="bi bi-send-fill"></i>
+				<span className="sr-only">Send</span>
+			</div>
+		</button>
+	);
 
 	// summary page home button
 	const homeButton = (
@@ -346,24 +340,18 @@ const SummarizerPage = () => {
 
 	// raw text input form
 	const textInputForm = (
-		<form className="w-full flex flex-col" onSubmit={summarizeRawText}>
-			<div className="w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50">
-				<div className="px-2 py-2 bg-white rounded-t-lg ">
-					<textarea
-						id="textInput"
-						rows={13}
-						className="w-full px-0 text-sm text-black bg-white border-0  focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green"
-						value={inputTextCorpus}
-						onChange={(e) => setInputTextCorpus(e.target.value)}
-						placeholder="Paste in the text you want to summarize..."
-						required
-					></textarea>
-				</div>
-
-				<div className=" px-3 py-2 border-t ">
-					{summarizerCtrlButtons}
-				</div>
-			</div>
+		<form className="w-full flex flex-col relative" onSubmit={summarizeRawText}>
+			<textarea
+				id="textInput"
+				rows={13}
+				className="w-full min-h-[100px] bg-white rounded-lg shadow-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none text-black placeholder:text-gray-400 sm:leading-6 px-4 py-3"
+				value={inputTextCorpus}
+				onChange={(e) => setInputTextCorpus(e.target.value)}
+				placeholder="Paste in the text you want to summarize..."
+				required
+			/>
+			
+			{summarizerCtrlButtons}
 		</form>
 	);
 
@@ -372,24 +360,24 @@ const SummarizerPage = () => {
 		<form
 			id="pdfUploadForm"
 			onSubmit={summarizePDF}
-			className="flex flex-col w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50"
+			className="flex flex-col w-full mb-4 border border-gray-200 rounded-lg shadow-md bg-gray-50  relative"
 		>
 			<label
 				{...getRootProps({
-				htmlFor: "dropzone-file",
-				className:
-					"grow items-center justify-center  cursor-pointer bg-white border-x-0 border-t-0 border-b border-gray-200 rounded-t-lg  hover:bg-gray-50",
+					htmlFor: "dropzone-file",
+					className:
+						"grow items-center justify-center  cursor-pointer bg-white border-x-0 border-t-0 border-b border-gray-200 rounded-t-lg  hover:bg-gray-50",
 				})}
 			>
 				<div className="flex flex-col items-center justify-center pt-24 pb-28">
 					<i className="bi bi-file-earmark-arrow-up text-gray-500 text-4xl"></i>
 					<div className="mb-2 text-sm text-gray-500 ">
 						<span className="font-semibold">
-						{isDragActive ? (
-							<p>Drop the files here ...</p>
-						) : (
-							<p>Click to upload or drag and drop</p>
-						)}
+							{isDragActive ? (
+								<p>Drop the files here ...</p>
+							) : (
+								<p>Click to upload or drag and drop</p>
+							)}
 						</span>
 					</div>
 
@@ -401,7 +389,7 @@ const SummarizerPage = () => {
 						</p>
 					)}
 				</div>
-				
+
 				<input
 					{...getInputProps({
 						id: "dropzone-file",
@@ -411,10 +399,10 @@ const SummarizerPage = () => {
 						// onChange: (e) =>
 						//   e.target.files ? setSelectedPDF(e.target.files[0]) : null,
 					})}
-				></input>
+				/>
 			</label>
 
-			<div className="px-3 py-2 ">{summarizerCtrlButtons}</div>
+			{summarizerCtrlButtons}
 		</form>
 	);
 
@@ -434,81 +422,85 @@ const SummarizerPage = () => {
 
 	// URL input form
 	const urlInputForm = (
-		<form className="w-full flex space-x-2" onSubmit={summarizeWebPage}>
-			<input
-				type="url"
-				id="urlInput"
-				className="flex-grow block w-full rounded-full border py-1.5 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
-				placeholder="Enter URL (http:// address) of webpage to summarize."
-				value={inputUrl}
-				onChange={(e) => setInputUrl(e.target.value)}
-				required
-			/>
+    <form
+      className="w-full flex space-x-2 relative"
+      onSubmit={summarizeWebPage}
+    >
+      <input
+        type="url"
+        id="urlInput"
+        className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green border-gray-200 shadow-md focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none"
+        placeholder="Enter URL (http:// address) of webpage to summarize."
+        value={inputUrl}
+        onChange={(e) => setInputUrl(e.target.value)}
+        required
+      />
 
-			<button
-				className="items-center py-4 px-5 font-medium text-center text-gray-200 bg-kaito-brand-ash-green rounded-full hover:bg-kaito-brand-ash-green"
-				type="submit"
-			>
-				<div
-					role="status"
-					className={`${loading ? "" : "hidden"} flex justify-center`}
-				>
-					{/* Loading wheel animation  */}
-					<Loader2 className="animate-spin w-5 h-6" />
-					<span className="sr-only">Loading...</span>
-				</div>
+      <button
+        className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)]"
+        type="submit"
+      >
+        <div
+          role="status"
+          className={`${loading ? "" : "hidden"} flex justify-center`}
+        >
+          {/* Loading wheel animation  */}
+          <Loader2 className="animate-spin w-5 h-6" />
+          <span className="sr-only">Loading...</span>
+        </div>
 
-				{/* Send icon*/}
-				<div className={`${loading ? "hidden" : ""}`}>
-					<i className="bi bi-send-fill"></i>
-					<span className="sr-only">Send</span>
-				</div>
-			</button>
-		</form>
-	);
+        {/* Send icon*/}
+        <div className={`${loading ? "hidden" : ""}`}>
+          <i className="bi bi-send-fill"></i>
+          <span className="sr-only">Send</span>
+        </div>
+      </button>
+    </form>
+  );
 
 	// search indices page form
 	const searchInputForm = (
-		<>
-			<h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
-				Enter your search query, send and recieve summary of the search result
-				pages.
-			</h1>
+    <>
+      <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+        Enter your search query, send and recieve summary of the search result
+        pages.
+      </h1>
 
-			<form
-				className="flex w-full space-x-2"
-				id="search-form"
-				onSubmit={summarizeSearchResult}
-			>
-				<input
-					type="text"
-					autoComplete="off"
-					autoFocus={false}
-					name="url_input_bar"
-					className="flex-grow block w-full rounded-full border py-4 text-kaito-brand-ash-green border-kaito-brand-ash-green focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6"
-					placeholder="  Search"
-					required={true}
-					onChange={(e) => setSearchQuery(e.target.value)}
-				/>
-				<button
-					className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 py-4"
-					type="submit"
-				>
-					<div
-						role="status" className={`${loading ? "" : "hidden"} flex justify-center`}
-					>
-						{/* Loading wheel animation  */}
-						<Loader2 className="animate-spin w-5 h-6" />
-						<span className="sr-only">Loading...</span>
-					</div>
-					<span className={loading ? "hidden" : ""}>
-						<i className="bi bi-send-fill"></i>
-						<span className="sr-only">Send</span>
-					</span>
-				</button>
-			</form>
-		</>
-	);
+      <form
+        className="flex w-full space-x-2 relative"
+        id="search-form"
+        onSubmit={summarizeSearchResult}
+      >
+        <input
+          type="text"
+          autoComplete="off"
+          autoFocus={false}
+          name="url_input_bar"
+          className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green border-gray-200 shadow-md focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none"
+          placeholder="  Search"
+          required={true}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button
+          className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)]"
+          type="submit"
+        >
+          <div
+            role="status"
+            className={`${loading ? "" : "hidden"} flex justify-center`}
+          >
+            {/* Loading wheel animation  */}
+            <Loader2 className="animate-spin w-5 h-6" />
+            <span className="sr-only">Loading...</span>
+          </div>
+          <span className={loading ? "hidden" : ""}>
+            <i className="bi bi-send-fill"></i>
+            <span className="sr-only">Send</span>
+          </span>
+        </button>
+      </form>
+    </>
+  );
 
 	const SideNavBar = (
 		<>
