@@ -14,6 +14,7 @@ import { EmbedPdfsForm } from "@/components/EmbedPdfsForm";
 import { WebpageUploadForm } from "@/components/WebpageUploadForm";
 import { SearchIndexUploadForm } from "@/components/SearchIndexUploadForm";
 import { Footer } from "@/components/Footer";
+import { RetrievalSideNav } from "./RetrievalSideNav";
 import { Loader2 } from 'lucide-react';
 
 const TEXTAREA_CONFIG = {
@@ -135,98 +136,45 @@ export function RetrievalChatWindow(props: {
 		<SearchIndexUploadForm setReadyToChat={setReadyToChat} setEndPoint={setEndPoint}/>
 	);
 
+	const handleSetIngestForm = () => {
+		setShowIngestForm(true);
+		setShowDocEmbedForm(false);
+		setShowUrlEntryForm(false);
+		setShowSearchForm(false);
+	};
+
+	const handleSetDocEmbedForm = () => {
+		setShowDocEmbedForm(true);
+		setShowIngestForm(false);
+		setShowUrlEntryForm(false);
+		setShowSearchForm(false);
+	};
+
+	const handleSetUrlEntryForm = () => {
+		setShowUrlEntryForm(true);
+		setShowDocEmbedForm(false);
+		setShowIngestForm(false);
+		setShowSearchForm(false);
+	};
+
+	const handleSetSearchForm = () => {
+		setShowSearchForm(true);
+		setShowDocEmbedForm(false);
+		setShowIngestForm(false);
+		setShowUrlEntryForm(false);
+	};
+
 	const navSideBar = (
-		<div className={sideNavStyle.sideBar}>
-			<ul>
-				<li className="p-3">
-					<Tooltip content="Upload Text" className={sideNavStyle.toolTips}>
-						<button
-							className={sideNavStyle.button}
-							type="button"
-							onClick={() => {
-								setShowIngestForm(true);
-								setShowDocEmbedForm(false);
-								setShowUrlEntryForm(false);
-								setShowSearchForm(false);
-							}}
-						>
-							<i className="bi bi-body-text"></i>
-							<span className="sr-only">Paste text</span>
-						</button>
-					</Tooltip>
-				</li>
-
-				<li className="p-3">
-					<Tooltip content="Upload PDF File" className={sideNavStyle.toolTips}>
-						<button
-							className={sideNavStyle.button}
-							type="button"
-							onClick={() => {
-								setShowDocEmbedForm(true);
-								setShowIngestForm(false);
-								setShowUrlEntryForm(false);
-								setShowSearchForm(false);
-							}}
-						>
-							<i className="bi bi-file-earmark-arrow-up"></i>
-							<span className="sr-only">Upload PDF</span>
-						</button>
-					</Tooltip>
-				</li>
-
-				<li className="p-3">
-					<Tooltip content="Upload a Webpage Content" className={sideNavStyle.toolTips}>
-						<button
-							className={sideNavStyle.button}
-							type="button"
-							onClick={() => {
-								setShowUrlEntryForm(true);
-								setShowDocEmbedForm(false);
-								setShowIngestForm(false);
-								setShowSearchForm(false);
-							}}
-						>
-							<i className="bi bi-globe2"></i>
-							<span className="sr-only">Upload Webpage</span>
-						</button>
-					</Tooltip>
-				</li>
-
-				<li className="p-3">
-					<Tooltip content="Upload Web Search Result" className={sideNavStyle.toolTips}>
-						<button
-							className={sideNavStyle.button}
-							type="button"
-							onClick={() => {
-								setShowSearchForm(true);
-								setShowDocEmbedForm(false);
-								setShowIngestForm(false);
-								setShowUrlEntryForm(false);
-							}}
-						>
-							<i className="bi bi-search"></i>
-							<span className="sr-only">Upload Web Search Result</span>
-						</button>
-					</Tooltip>
-				</li>
-
-				<li className="p-3">
-					<Tooltip content="Chat to Corpus" className={sideNavStyle.toolTips}>
-						<button
-							className={sideNavStyle.button}
-							type="button"
-							onClick={() => {
-								setReadyToChat(true);
-							}}
-						>
-							<i className="bi bi-chat-text"></i>
-							<span className="sr-only">Chat to Corpus</span>
-						</button>
-					</Tooltip>
-				</li>
-			</ul>
-		</div>
-	);
+		<>
+			<RetrievalSideNav
+				onSetIngestForm={handleSetIngestForm}
+				onSetDocEmbedForm={handleSetDocEmbedForm}
+				onSetUrlEntryForm={handleSetUrlEntryForm}
+				onSetSearchForm={handleSetSearchForm}
+				onSetReadyToChat={() => setReadyToChat(true)}
+			/>
+		</>
+  );
 
 	const emptyStateComponent = (
 		<>
@@ -363,7 +311,7 @@ export function RetrievalChatWindow(props: {
 	return (
 		<main>
 			<div
-				className={`flex flex-col w-full min-h-screen text-black pt-32 ${
+				className={`flex flex-col w-full min-h-screen pt-32 ${
 					readyToChat ? "border" : ""
 				}`}
 			>

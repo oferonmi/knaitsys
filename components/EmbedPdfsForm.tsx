@@ -4,6 +4,7 @@ import { useRef,useState, useEffect, type FormEvent, Dispatch, SetStateAction, u
 import { toast } from "react-toastify";
 import { Tooltip } from "flowbite-react";
 import { useDropzone } from "react-dropzone";
+import { Loader2 } from 'lucide-react';
 
 export function EmbedPdfsForm(props: {
   	setReadyToChat: Dispatch<SetStateAction<boolean>>;
@@ -93,14 +94,14 @@ export function EmbedPdfsForm(props: {
 
 			<form
 				onSubmit={embedPDF}
-				className="flex flex-col w-full mb-4 border border-kaito-brand-ash-green rounded-lg bg-gray-50"
+				className="flex flex-col w-full mb-4 border border-gray-200 rounded-lg shadow-md bg-gray-50 relative"
 			>
 				<label
-					{...getRootProps({
-						htmlFor: "dropzone-file",
-						className:
-						"grow items-center justify-center  cursor-pointer bg-white border-x-0 border-t-0 border-b border-gray-200 rounded-t-lg  hover:bg-gray-50",
-					})}
+				{...getRootProps({
+					htmlFor: "dropzone-file",
+					className:
+					"grow items-center justify-center  cursor-pointer bg-white border-x-0 border-t-0 border-b border-gray-200 rounded-t-lg  hover:bg-gray-50",
+				})}
 				>
 				<div className="flex flex-col items-center justify-center pt-24 pb-28">
 					<i className="bi bi-file-earmark-arrow-up text-gray-500 text-4xl"></i>
@@ -121,27 +122,27 @@ export function EmbedPdfsForm(props: {
 				</div>
 				<input
 					{...getInputProps({
-						id: "dropzone-file",
-						// type: "file",
-						// accept: "pdf",
-						// className: "text-black hidden ",
-						// onChange: (e) =>
-						//   e.target.files ? setSelectedPDF(e.target.files[0]) : null,
+					id: "dropzone-file",
+					// type: "file",
+					// accept: "pdf",
+					// className: "text-black hidden ",
+					// onChange: (e) =>
+					//   e.target.files ? setSelectedPDF(e.target.files[0]) : null,
 					})}
 				></input>
 
 				{/* <ul>
-					{uploadedFiles.map((file) => (
-					<li key={file.name}>{file.name}</li>
-					))}
-				</ul> */}
+							{uploadedFiles.map((file) => (
+							<li key={file.name}>{file.name}</li>
+							))}
+						</ul> */}
 				</label>
 
-				<div className="inline-flex justify-end mt-2 space-x-6 items-center px-3 py-2 ">
+				<div className="">
 					<Tooltip content="Ingest">
 						<button
 							type="submit"
-							className="flex shrink-0 px-5 py-4 bg-kaito-brand-ash-green text-gray-200 rounded-full max-h-24 max-w-24 items-center"
+							className="flex px-4 py-3 bg-kaito-brand-ash-green text-gray-200 rounded-full  max-w-24 max-h-24 items-center shrink-0 absolute right-3 bottom-3 z-10 hover:bg-kaito-brand-ash-green/90 focus:outline-none focus:ring-4 focus:ring-kaito-brand-ash-green/50 disabled:opacity-50 disabled:cursor-not-allowed"
 						>
 							<div
 								role="status"
@@ -150,12 +151,7 @@ export function EmbedPdfsForm(props: {
 								} flex item-center justify-center`}
 							>
 								{/* loading animation */}
-								<span className="flex items-center gap-2">
-									<svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-										<circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-										<path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-									</svg>
-								</span>
+								<Loader2 className="w-4 h-6 animate-spin text-white" />
 								<span className="sr-only">Loading...</span>
 							</div>
 							<span className={isLoading ? "hidden" : ""}>
