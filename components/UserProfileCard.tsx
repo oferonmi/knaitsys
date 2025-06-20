@@ -17,7 +17,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
     provider,
 }) => (
     <div className="bg-white dark:bg-gray-900 rounded-lg shadow p-6 flex flex-col items-center">
-        <Image
+        <Image 
             width={96}
             height={96}
             src={image ? image : "/avatars/default_user_avatar.JPG"}

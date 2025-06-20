@@ -34,6 +34,12 @@ const nextConfig = {
 		];
 	},
 
+	images: {
+		domains: [
+			'avatars.githubusercontent.com',
+		],
+	},
+
 	// Override the default webpack configuration
 	webpack: (config, { isServer }) => {
 		// See https://webpack.js.org/configuration/resolve/#resolvealias
