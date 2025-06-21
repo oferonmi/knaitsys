@@ -71,7 +71,7 @@ export const Header = ({ menu, session }) => {
                 <nav className="container mx-auto px-4 py-2 md:flex md:items-center md:justify-between">
                     <BrandLogo session={session} />
                     <MenuItems items={menu} /> 
-                    {session ? <AuthHeader /> : <UnAuthHeader />}
+                    {session ? <AuthHeader session={session}/> : <UnAuthHeader />}
                 </nav>
             </header>
         </div>

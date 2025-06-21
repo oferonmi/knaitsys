@@ -22,7 +22,7 @@ const UserProfileCard: React.FC<UserProfileCardProps> = ({
             height={96}
             src={image ? image : "/avatars/default_user_avatar.JPG"}
             alt="User avatar"
-            className="w-24 h-24 rounded-full mb-4 border-2 border-gray-300 dark:border-gray-700"
+            className="w-24 h-24 rounded-full mb-4 border border-1 border-gray-500 dark:border-gray-700"
         />
 
         <h2 className="text-xl font-semibold mb-1">{name}</h2>
