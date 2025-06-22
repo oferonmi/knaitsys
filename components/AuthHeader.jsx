@@ -60,7 +60,7 @@ export const AuthHeader = ({session}) => {
                                     </Link>
                                 </li>
                             </ul>
-                            <div className ="py-1">
+                            <div className =" ">
                                 <button
                                     onClick={ () => signOut({ callbackUrl: "/home",}) }
                                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"

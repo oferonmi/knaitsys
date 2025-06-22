@@ -25,8 +25,7 @@ export default async function Home() {
 				</h1>
 
 				<p className="mt-2 text-3xl text-white">
-					Adopt Natural Language Interface (NLI) and AI models for your
-					knowledge work.
+					Transform your knowledge work using AI models!
 				</p>
 
 				<Link
