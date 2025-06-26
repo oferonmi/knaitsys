@@ -12,10 +12,10 @@ interface ToolList {
 
 const listStyles = {
 	grid: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
-	card: "p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md hover:shadow-lg transition-shadow",
+	card: "p-6 bg-white dark:bg-gray-900 rounded-lg shadow-md hover:shadow-lg dark:shadow-gray-800 dark:hover:shadow-gray-700 transition-shadow border border-gray-200 dark:border-gray-800",
 	icon: "text-3xl text-kaito-brand-ash-green mb-4",
-	title: "text-xl font-semibold text-gray-800 mb-2",
-	description: "text-gray-600"
+	title: "text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2",
+	description: "text-gray-600 dark:text-gray-300"
 } as const
 
 function ToolsList({ tools }: { tools: ToolList[] }) {

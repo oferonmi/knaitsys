@@ -94,11 +94,11 @@ const Login = () => {
 	};
 
 	return (
-		<div className="flex flex-col justify-center items-center min-h-screen px-7 py-16 mt-10">
+		<div className="flex flex-col justify-center items-center min-h-screen px-7 py-16 mt-10 bg-white dark:bg-gray-900">
 			<div className="w-full max-w-md space-y-8">
 				<div className="text-center">
-					<h1 className="text-3xl text-black font-bold">Login</h1>
-					<p className="text-gray-600 mt-4 text-center font-bold">
+					<h1 className="text-3xl text-black dark:text-white font-bold">Login</h1>
+					<p className="text-gray-600 dark:text-gray-300 mt-4 text-center font-bold">
 						Choose your preferred way to sign in to your account.
 					</p>
 				</div>
@@ -118,10 +118,10 @@ const Login = () => {
 
 							<div className="relative">
 								<div className="absolute inset-0 flex items-center">
-									<div className="w-full border-t border-gray-300"></div>
+									<div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
 								</div>
 								<div className="relative flex justify-center text-sm">
-									<span className="px-2 bg-white text-gray-500 font-bold">Or sign in with email</span>
+									<span className="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-300 font-bold">Or sign in with email</span>
 								</div>
 							</div>
 						</div>
@@ -129,7 +129,7 @@ const Login = () => {
 
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<div className="space-y-2">
-							<label htmlFor="email" className="text-black block font-bold">
+							<label htmlFor="email" className="text-black dark:text-white block font-bold">
 								Email
 							</label>
 							<input
@@ -137,14 +137,14 @@ const Login = () => {
 								id="email"
 								value={formData.username}
 								onChange={handleInputChange}
-								className="w-full border border-kaito-brand-ash-green rounded-lg py-2 px-3 font-bold"
+								className="w-full border border-kaito-brand-ash-green rounded-lg py-2 px-3 font-bold bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
 								required
 								aria-required="true"
 							/>
 						</div>
 
 						<div className="space-y-2">
-							<label htmlFor="pass" className="text-black block font-bold">
+							<label htmlFor="pass" className="text-black dark:text-white block font-bold">
 								Password
 							</label>
 							<input
@@ -152,7 +152,7 @@ const Login = () => {
 								id="pass"
 								value={formData.password}
 								onChange={handleInputChange}
-								className="w-full border border-kaito-brand-ash-green rounded-lg py-2 px-3 font-bold"
+								className="w-full border border-kaito-brand-ash-green rounded-lg py-2 px-3 font-bold bg-white dark:bg-gray-900 text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
 								required
 								aria-required="true"
 							/>
@@ -168,7 +168,7 @@ const Login = () => {
 							<button
 								type="submit"
 								disabled={isLoading}
-								className="w-full text-white bg-kaito-brand-ash-green border border-kaito-brand-ash-green hover:text-kaito-brand-ash-green hover:bg-white focus:ring-4 focus:ring-kaito-brand-ash-green rounded-lg text-sm px-5 py-2 focus:outline-none disabled:opacity-50 font-bold"
+								className="w-full text-white bg-kaito-brand-ash-green border border-kaito-brand-ash-green hover:text-kaito-brand-ash-green hover:bg-white dark:hover:bg-gray-900 dark:hover:text-kaito-brand-ash-green focus:ring-4 focus:ring-kaito-brand-ash-green rounded-lg text-sm px-5 py-2 focus:outline-none disabled:opacity-50 font-bold"
 							>
 								{isLoading ? "Signing in..." : "Sign In"}
 							</button>

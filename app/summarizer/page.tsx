@@ -181,7 +181,7 @@ const SummarizerPage = () => {
             <textarea
                 id="textInput"
                 rows={13}
-                className="w-full min-h-[100px] bg-white rounded-lg shadow-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none text-black placeholder:text-gray-400 sm:leading-6 px-4 py-3"
+                className="w-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-black dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6 px-4 py-3"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder="Paste in the text you want to summarize..."
@@ -195,22 +195,22 @@ const SummarizerPage = () => {
         <form
             id="pdfUploadForm"
             onSubmit={summarizePDF}
-            className="flex flex-col w-full mb-4 border border-gray-200 rounded-lg shadow-md bg-gray-50  relative"
+            className="flex flex-col w-full mb-4 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md bg-gray-50 dark:bg-gray-900 relative"
         >
             <label
                 {...getRootProps({
                     htmlFor: "dropzone-file",
-                    className: "grow items-center justify-center cursor-pointer bg-white border-x-0 border-t-0 border-b border-gray-200 rounded-t-lg hover:bg-gray-50",
+                    className: "grow items-center justify-center cursor-pointer bg-white dark:bg-gray-900 border-x-0 border-t-0 border-b border-gray-200 dark:border-gray-700 rounded-t-lg hover:bg-gray-50 dark:hover:bg-gray-800",
                 })}
             >
                 <div className="flex flex-col items-center justify-center pt-24 pb-28">
-                    <i className="bi bi-file-earmark-arrow-up text-gray-500 text-4xl"></i>
-                    <div className="mb-2 text-sm text-gray-500 ">
+                    <i className="bi bi-file-earmark-arrow-up text-gray-500 dark:text-gray-400 text-4xl"></i>
+                    <div className="mb-2 text-sm text-gray-500 dark:text-gray-400 ">
                         <span className="font-semibold">
                             {isDragActive ? <p>Drop the files here ...</p> : <p>Click to upload or drag and drop</p>}
                         </span>
                     </div>
-                    <p className="text-xs text-gray-500 ">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 ">
                         {selectedPDF ? `${selectedPDF.name} file attached` : "PDF files"}
                     </p>
                 </div>
@@ -225,14 +225,14 @@ const SummarizerPage = () => {
             <input
                 type="url"
                 id="urlInput"
-                className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green border-gray-200 shadow-md focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none"
+                className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green border-gray-200 dark:border-gray-700 shadow-md focus:border-kaito-brand-ash-green dark:focus:border-kaito-brand-ash-green placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none bg-white dark:bg-gray-900"
                 placeholder="Enter URL (http:// address) of webpage to summarize."
                 value={inputUrl}
                 onChange={(e) => setInputUrl(e.target.value)}
                 required
             />
             <button
-                className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)]"
+                className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)] dark:bg-kaito-brand-ash-green dark:hover:bg-kaito-brand-ash-green dark:text-gray-200"
                 type="submit"
                 disabled={loading}
             >
@@ -250,7 +250,7 @@ const SummarizerPage = () => {
 
     const SearchInputForm = (
         <>
-            <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+            <h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green dark:text-kaito-brand-ash-green">
                 Enter your search query, send and receive summary of the search result pages.
             </h1>
             <form className="flex w-full space-x-2 relative" id="search-form" onSubmit={summarizeSearchResult}>
@@ -258,13 +258,13 @@ const SummarizerPage = () => {
                     type="text"
                     autoComplete="off"
                     name="url_input_bar"
-                    className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green border-gray-200 shadow-md focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none"
+                    className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green border-gray-200 dark:border-gray-700 shadow-md focus:border-kaito-brand-ash-green dark:focus:border-kaito-brand-ash-green placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none bg-white dark:bg-gray-900"
                     placeholder="  Search"
                     required
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <button
-                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)]"
+                    className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)] dark:bg-kaito-brand-ash-green dark:hover:bg-kaito-brand-ash-green dark:text-gray-200"
                     type="submit"
                     disabled={loading}
                 >
@@ -282,14 +282,14 @@ const SummarizerPage = () => {
     );
 
     const SideNavBar = (
-        <nav className="flex grow-0 gap-2 ml-2.5 mt-4 border-r border-slate-300 h-screen">
-            <ul>
+        <nav className="flex grow-0 gap-2 ml-2.5 mt-4 border-r border-slate-300 dark:border-slate-700 h-screen bg-white dark:bg-gray-900">
+            <ul className="pt-20">
                 {SIDEBAR_BUTTONS.map(({ type, icon, tooltip, label }) => (
                     <li className="p-3" key={type}>
                         <Tooltip content={tooltip} className={toolTipsStyle}>
                             <button
                                 type="button"
-                                className="inline-flex border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green bg-white items-center font-medium hover:text-gray-200 text-kaito-brand-ash-green text-lg rounded-full px-4 py-3"
+                                className="inline-flex border border-kaito-brand-ash-green hover:bg-kaito-brand-ash-green bg-white dark:bg-gray-900 items-center font-semibold   hover:text-gray-200 text-kaito-brand-ash-green  rounded-full px-4 py-3 dark:hover:bg-kaito-brand-ash-green dark:hover:text-white"
                                 onClick={() => setInputType(type)}
                                 aria-label={label}
                             >
@@ -305,10 +305,10 @@ const SummarizerPage = () => {
 
     const OrigTextDisplay = (
         <form className="w-full flex flex-col" onSubmit={summarizeRawText}>
-            <div className="w-full h-dvh border-r border-gray-100 bg-gray-50 relative flex">
+            <div className="w-full h-dvh border-r border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 relative flex">
                 <textarea
                     id="textInput"
-                    className="flex-1 mb-0 px-4 py-4 text-sm text-black bg-white bg-opacity-60 border-0 focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-screen relative resize-none"
+                    className="flex-1 mb-0 px-4 py-4 text-sm text-black dark:text-white bg-white dark:bg-gray-900 bg-opacity-60 border-0 focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-screen relative resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     placeholder="Paste in the text you want to summarize..."
@@ -323,11 +323,11 @@ const SummarizerPage = () => {
 
     const FlashCard = (
         <div className="flex flex-col h-screen">
-            <h2 className="text-black text-2xl flex justify-center mt-2">Summary Flash Card</h2>
-            <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
+            <h2 className="text-black dark:text-white text-2xl flex justify-center mt-2">Summary Flash Card</h2>
+            <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black dark:text-white">
                 {summarizedText && (
                     <div
-                        className={`${CARD_COLORS[Math.floor(Math.random() * CARD_COLORS.length)]} text-black rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150`}
+                        className={`${CARD_COLORS[Math.floor(Math.random() * CARD_COLORS.length)]} text-black dark:text-white rounded px-4 py-2 max-w-[80%] mb-8 ml-auto mr-auto mt-auto flex border-1 border-gray-150 dark:border-gray-700`}
                     >
                         <span className="whitespace-pre-wrap flex flex-col">{summarizedText}</span>
                         <Tooltip content="Copy to clipboard" className={toolTipsStyle}>
@@ -350,16 +350,16 @@ const SummarizerPage = () => {
     );
 
     return (
-        <main>
+        <main className="bg-white dark:bg-gray-900 min-h-screen">
             <div className="flex flex-col pt-24">
                 {!summarizedText && (
-                    <div className="flex h-screen">
+                    <div className="flex h-screen bg-white dark:bg-gray-900">
                         {SideNavBar}
-                        <div className="flex flex-col p-4 md:p-8 bg-[#25252d00] overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
-                            <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
+                        <div className="flex flex-col p-4 md:p-8  overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
+                            <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
                                 Summarize your documents, web pages and search indices pages.
                             </h1>
-                            <p className="text-black text-lg text-center">
+                            <p className="text-gray-800 dark:text-gray-200 text-lg text-center">
                                 Specify text source on the left. Send and get a summary.
                             </p>
                             <br />
@@ -374,7 +374,7 @@ const SummarizerPage = () => {
                     </div>
                 )}
                 {summarizedText && (
-                    <div className="flex flex-col h-screen">
+                    <div className="flex flex-col h-screen bg-white dark:bg-gray-900">
                         <div className="flex flex-row h-fit">
                             <div className="flex-1">{OrigTextDisplay}</div>
                             <div className="flex-1">{FlashCard}</div>

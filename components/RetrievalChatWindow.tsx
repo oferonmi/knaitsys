@@ -178,18 +178,17 @@ export function RetrievalChatWindow(props: {
 
 	const emptyStateComponent = (
 		<>
-			<div className="flex flex-col h-screen">
-				{/* items-center top-0 bottom-0 */}
+			<div className="flex flex-col h-screen bg-white dark:bg-gray-900">
 				<div className="flex h-screen">
 					{/* side bar */}
 					{navSideBar}
 					{/* main section */}
-					<div className="flex flex-col p-4 md:p-8 overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto pb-10">
-						<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 ">
+					<div className="flex flex-col p-4 md:p-8 overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto pt-32 pb-40 bg-white dark:bg-gray-900">
+						<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100 ">
 							Chat to your documents and the web.
 						</h1>
 
-						<p className="text-black text-lg text-center">
+						<p className="text-gray-800 dark:text-gray-200 text-lg text-center">
 							Upload text corpuses using options on the left, then ask questions about the
 							uploaded content.
 						</p>
@@ -203,39 +202,38 @@ export function RetrievalChatWindow(props: {
 					</div>
 				</div>
 			</div>
-			{/* {!readyToChat && <Footer />} */}
 		</>
 	);
 
 	const chatInterfaceComponent = (
 		<>
-			<div className="flex flex-col w-full">
+			<div className="flex flex-col w-full bg-white dark:bg-gray-900 pb-40">
 				{/* Chat Thread */}
 				<div
-				className="flex flex-col-reverse w-full mb-4 grow overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black p-4 md:p-8"
-				ref={messageContainerRef}
+					className="flex flex-col-reverse w-full mb-4 grow overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black dark:text-gray-100 p-4 md:p-8"
+					ref={messageContainerRef}
 				>
-				{messages.length > 0
-					? [...messages].reverse().map((m, i) => {
-						const sourceKey = (messages.length - 1 - i).toString();
-						return (
-						<ChatMessageBubble
-							key={m.id}
-							message={m}
-							aiEmoji={emoji}
-							sources={sourcesForMessages[sourceKey]}
-						/>
-						);
-					})
-					: ""}
+					{messages.length > 0
+						? [...messages].reverse().map((m, i) => {
+							const sourceKey = (messages.length - 1 - i).toString();
+							return (
+							<ChatMessageBubble
+								key={m.id}
+								message={m}
+								aiEmoji={emoji}
+								sources={sourcesForMessages[sourceKey]}
+							/>
+							);
+						})
+						: ""}
 				</div>
 
 				<div ref={bottomRef} />
 
-				<div className="fixed bottom-0 left-0 right-0 flex justify-center items-center w-full px-4">
+				<div className="fixed bottom-0 left-0 right-0 flex justify-center items-center w-full px-4 z-40">
 					<form
 						onSubmit={sendMessage}
-						className="text-black mb-20 w-full max-w-3xl relative"
+						className="text-black dark:text-gray-100 mb-20 w-full max-w-3xl relative"
 						id="chat-form"
 					>
 						<div className="relative w-full">
@@ -309,16 +307,16 @@ export function RetrievalChatWindow(props: {
 	);
 
 	return (
-		<main>
+		<main className="bg-white dark:bg-gray-900 min-h-screen">
 			<div
-				className={`flex flex-col w-full min-h-screen pt-32 ${
-					readyToChat ? "border" : ""
+				className={`flex flex-col w-full min-h-screen pt-28 ${
+					readyToChat ? "border border-gray-200 dark:border-gray-700" : ""
 				}`}
 			>
 				<h2
 					className={`${
 						readyToChat ? "" : "hidden"
-					} text-2xl flex justify-center mt-2`}
+					} text-2xl flex justify-center mt-2 text-gray-800 dark:text-gray-100`}
 				>
 					{emoji} {titleText}
 				</h2>

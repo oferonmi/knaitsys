@@ -64,7 +64,7 @@ export const RetrievalSideNav = ({
     };
 
     return (
-        <div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 h-screen">
+        <div className="flex grow-0 gap-2 ml-2.5 border-r border-slate-300 dark:border-slate-700 h-screen bg-white dark:bg-gray-900  pt-20">
             <ul>
                 {navItems.map((item) => (
                 <NavItem

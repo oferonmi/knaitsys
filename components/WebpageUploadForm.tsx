@@ -46,7 +46,7 @@ export function WebpageUploadForm(props: {
 
 	return (
 		<main>
-			<h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green">
+			<h1 className="text-center text-lg mb-4 text-kaito-brand-ash-green dark:text-kaito-brand-ash-green">
 				Type in the address of a web page, click upload and chat with the
 				content of the web page.
 			</h1>
@@ -61,21 +61,21 @@ export function WebpageUploadForm(props: {
 					autoComplete="off"
 					autoFocus={false}
 					name="url_input_bar"
-					className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green border-gray-200 shadow-md focus:border-kaito-brand-ash-green placeholder:text-gray-400 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none"
+					className="flex-grow block w-full rounded-full border py-5 pr-16 text-kaito-brand-ash-green dark:text-kaito-brand-ash-green border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-900 focus:border-kaito-brand-ash-green placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none"
 					placeholder="  Type in the URL of the webpage you want to explore"
 					required={true}
 					onChange={(e) => setInputUrl(e.target.value)}
 				/>
 
 				<button
-					className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)]"
+					className="bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 dark:text-gray-100 dark:bg-kaito-brand-ash-green dark:hover:bg-kaito-brand-ash-green rounded-full px-5 absolute right-1 top-1/2 transform -translate-y-1/2 h-[calc(100%-8px)]"
 					type="submit"
 				>
 					<div
 						role="status"
 						className={`${isLoading ? "" : "hidden"} flex justify-center`}
 					>
-						<Loader2 className="w-4 h-6 animate-spin text-white" />
+						<Loader2 className="w-4 h-6 animate-spin text-white dark:text-gray-100" />
 						<span className="sr-only">Loading...</span>
 					</div>
 					<span className={isLoading ? "hidden" : ""}>
