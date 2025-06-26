@@ -45,10 +45,10 @@ export function ChatMessageBubble(props: {
 
 	return (
     <div
-      className={`${alignmentClassName} ${colorClassName} ${borderRadiusClassName} border ${borderColorClassName} rounded-lg px-4 py-2 max-w-[80%] mb-8 flex`}
+      className={`${alignmentClassName} ${colorClassName} ${borderRadiusClassName} border ${borderColorClassName} rounded-lg px-4 py-2 max-w-[80%] mb-8 flex dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700`}
     >
-      <div className="mr-2">{prefix}</div>
-      <div className="whitespace-pre-wrap flex flex-col">
+      <div className="mr-2 dark:text-gray-300">{prefix}</div>
+      <div className="whitespace-pre-wrap flex flex-col dark:text-gray-100">
         {/* <span>{props.message.content}</span> */}
         <MarkdownWithLatexRenderer content={props.message.content} />
 
@@ -85,12 +85,12 @@ export function ChatMessageBubble(props: {
 
         {props.sources && props.sources.length ? (
           <>
-            <code className="mt-4 mr-auto bg-indigo-50 px-2 py-1 rounded">
+            <code className="mt-4 mr-auto bg-indigo-50 dark:bg-gray-900 px-2 py-1 rounded">
               <h2>🔍 Sources:</h2>
             </code>
-            <code className="mt-1 mr-2 bg-indigo-50 px-2 py-1 rounded text-xs">
+            <code className="mt-1 mr-2 bg-indigo-50 dark:bg-gray-900 px-2 py-1 rounded text-xs">
               {props.sources?.map((source, i) => (
-                <div className="mt-2" key={"source:" + i}>
+                <div className="mt-2 dark:text-gray-300" key={"source:" + i}>
                   {i + 1}. &quot;{source.pageContent}&quot;
                   {source.metadata?.loc?.lines !== undefined ? (
                     <div>
@@ -109,9 +109,9 @@ export function ChatMessageBubble(props: {
           ""
         )}
       </div>
-      <Tooltip content="Copy to clipboard" className="inline-flex bg-black">
+      <Tooltip content="Copy to clipboard" className="inline-flex bg-black dark:bg-gray-800">
         <button
-          className="ml-2 mb-auto"
+          className="ml-2 mb-auto dark:text-gray-200"
           type="button"
           onClick={() => {
             copy(props.message.content);

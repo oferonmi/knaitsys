@@ -1,5 +1,6 @@
 import { FileSystemProvider } from "@/lib/fileSystem";
 import "@/app/globals.css";
+import { ThemeScript } from '@/components/ThemeScript';
 
 export const metadata = {
     title: "Knaitsys - Code Editor",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <head />
+      <body className="bg-white dark:bg-gray-900 bg-cover bg-center">
+        <ThemeScript />
         <FileSystemProvider>{children}</FileSystemProvider>
       </body>
     </html>

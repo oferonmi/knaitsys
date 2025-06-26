@@ -100,7 +100,7 @@ export function EmbedPdfsForm(props: {
 				{...getRootProps({
 					htmlFor: "dropzone-file",
 					className:
-					"grow items-center justify-center  cursor-pointer bg-white border-x-0 border-t-0 border-b border-gray-200 rounded-t-lg  hover:bg-gray-50",
+					"grow items-center justify-center cursor-pointer bg-white dark:bg-gray-900 border-x-0 border-t-0 border-b border-gray-200 dark:border-gray-700 rounded-t-lg hover:bg-gray-50 dark:hover:bg-gray-800",
 				})}
 				>
 				<div className="flex flex-col items-center justify-center pt-24 pb-28">

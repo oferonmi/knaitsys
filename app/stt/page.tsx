@@ -90,8 +90,8 @@ export default function STTPage() {
 	}
 
 	return (
-		<div className="container mx-auto px-4 py-8  h-screen">
-			<h1 className="text-3xl md:text-3xl mb-6 text-gray-700 text-center pt-36">
+		<div className="container mx-auto px-4 py-8 h-screen bg-white dark:bg-gray-900">
+			<h1 className="text-3xl md:text-3xl mb-6 text-gray-700 dark:text-gray-100 text-center pt-36">
 				Speech to Text
 			</h1>
 
@@ -99,7 +99,7 @@ export default function STTPage() {
 				<Button
 					onClick={isRecording ? stopRecording : startRecording}
 					variant={isRecording ? "destructive" : "default"}
-					className="w-16 h-16 rounded-full bg-kaito-brand-ash-green"
+					className="w-16 h-16 rounded-full bg-kaito-brand-ash-green dark:bg-kaito-brand-ash-green/80"
 				>
 				{isRecording ? (
 					<Square className="h-6 w-6" />

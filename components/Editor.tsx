@@ -104,7 +104,7 @@ export default function MonacoEditor({ setOutput }: { setOutput: (output: string
 
 	return (
 		<div className="h-full flex flex-col">
-			<div className="flex justify-end p-2 bg-white">
+			<div className="flex justify-end p-2 bg-white dark:bg-gray-900">
 				<button
 					onClick={runCode}
 					className="px-4 py-2 bg-kaito-brand-ash-green  hover:bg-kaito-brand-gray  rounded text-white"

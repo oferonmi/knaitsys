@@ -132,7 +132,7 @@ function MultiModalChat() {
     const recorderControls = useAudioRecorder(recorderSettings);
 
     const audioRecorderWidget = (
-        <div className="flex items-center rounded-full bg-white border border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1">
+        <div className="flex items-center rounded-full bg-white dark:bg-gray-900 border border-kaito-brand-ash-green dark:border-kaito-brand-ash-green mr-auto ml-auto py-1 px-1">
             <AudioRecorder
                 audioTrackSettings={recorderSettings}
                 recorderCtrls={recorderControls}
@@ -144,13 +144,13 @@ function MultiModalChat() {
     );
 
     const loadingAnimation = (
-        <div role="status" className={`${isLoading ? "" : "hidden"} flex justify-center`}>
+        <div role="status" className={`${isLoading ? "" : "hidden"} flex justify-center text-black dark:text-gray-100`}>
             <LoadingSpinner />
         </div>
     );
 
     // Common button styles
-    const buttonBaseStyle = "inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 rounded-full px-4 py-3";
+    const buttonBaseStyle = "inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-semibold text-gray-200 dark:text-gray-100 rounded-full px-4 py-3";
 
     // Clear chat button
     const ClearChatButton = messages.length > 0 && (
@@ -169,7 +169,7 @@ function MultiModalChat() {
     const FileUpload = (
         <div>
             {!showFileAttachmentUI ? (
-                <Tooltip content="Upload File" className="inline-flex">
+                <Tooltip content="Upload File" className="inline-flex bg-white dark:bg-gray-900">
                     <button
                         type="button"
                         className={`${buttonBaseStyle} absolute right-auto bottom-3 z-10 ml-3`}
@@ -183,7 +183,7 @@ function MultiModalChat() {
                 <input
                     type="file"
                     id="multimod-file-in"
-                    className="border bg-white border-kaito-brand-ash-green rounded-lg inline-flex pl-2 absolute right-auto bottom-3 z-10 ml-3"
+                    className="border bg-white dark:bg-gray-900 border-kaito-brand-ash-green dark:border-kaito-brand-ash-green rounded-lg inline-flex pl-2 absolute right-auto bottom-3 z-10 ml-3 text-black dark:text-gray-100"
                     onChange={(e) => e.target.files && setFiles(e.target.files)}
                     multiple
                     ref={fileInputRef}
@@ -211,10 +211,7 @@ function MultiModalChat() {
             autoComplete="off"
             autoFocus={false}
             name="prompt"
-            className="w-full h-full min-h-[100px] bg-white rounded-lg shadow-md border 
-                    border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 
-                    focus:border-transparent resize-none text-kaito-brand-ash-green 
-                    placeholder:text-gray-400 sm:leading-6"
+            className="w-full h-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-none border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-kaito-brand-ash-green/80 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
             id="multimod-text-in"
             value={input}
             placeholder={TEXTAREA_CONFIG.placeholder}
@@ -232,7 +229,7 @@ function MultiModalChat() {
             {showAudioRecorder ? (
                 audioRecorderWidget
             ) : (
-                <main className='w-full max-w-full rounded-lg bg-white relative' >
+                <main className='w-full max-w-full rounded-lg bg-white dark:bg-gray-900 relative' >
                     {messages.length > 0 &&  ClearChatButton}
                     {FileUpload}
                     {ChatInput}
@@ -251,13 +248,13 @@ function MultiModalChat() {
     );
 
     const landingSectionUI = (
-        <main className="min-h-screen flex items-center justify-center px-4">
+        <main className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-gray-900 text-black dark:text-gray-100">
             <div className="max-w-3xl w-full mx-auto md:p-8">
                 <header className="mb-8 text-center">
-                    <h1 className="text-3xl text-gray-700 mb-4">
+                    <h1 className="text-3xl text-gray-700 dark:text-gray-100 mb-4">
                         Query or Question a Multimodal AI Chatbot
                     </h1>
-                    <p className="text-lg text-black">
+                    <p className="text-lg text-black dark:text-gray-200">
                         Use any of the inputs to make your inquiry
                     </p>
                 </header>
@@ -276,10 +273,10 @@ function MultiModalChat() {
     return (
         <>
             {messages.length > 0 ? (
-                <main className="pt-36">
+                <main className="pt-36 bg-white dark:bg-gray-900 text-black dark:text-gray-100">
                     {/* Chat thread section */}
-                    <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
-                        <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black">
+                    <div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black dark:text-gray-100 min-h-screen bg-white dark:bg-gray-900">
+                        <div className="flex flex-col w-full mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black dark:text-gray-100">
                             {messages.length > 0
                             ? [...messages].map((m, i) => {
                                 const sourceKey = (messages.length - 1 - i).toString();
@@ -307,7 +304,7 @@ function MultiModalChat() {
                     </div>
 
                     {messages.length > 0 ? (
-                        <div className="  bottom-0">
+                        <div className="bottom-0">
                             <Footer />
                         </div>
                     ) : (
@@ -318,7 +315,7 @@ function MultiModalChat() {
                 <main>
                     {/* Landing section */}
                     {landingSectionUI}
-                    <div className="  bottom-0">
+                    <div className="bottom-0">
                     <Footer />
                     </div>
                 </main>

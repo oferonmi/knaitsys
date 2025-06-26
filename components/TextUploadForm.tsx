@@ -58,7 +58,7 @@ export function TextUploadForm(props: {
 				id="raw-textarea-form"
 			>
 				<textarea
-					className="w-full min-h-[100px] bg-white rounded-lg shadow-md border border-gray-200 focus:outline-none focus:ring-1 focus:ring-gray-200 focus:border-transparent resize-none text-black placeholder:text-gray-400 sm:leading-6 px-4 py-3"
+					className="w-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-black dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6 px-4 py-3"
 					id="raw-text-injest"
 					value={document}
 					rows={14}

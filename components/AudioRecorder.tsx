@@ -65,10 +65,10 @@ const AudioRecorder =  (props:{
         }
     }, [closeAudioRecorder, onRecordingComplete, recordingBlob]);
 
-    const buttonBaseStyle = "flex items-center font-semibold text-gray-200 rounded-full px-5 py-4 bg-kaito-brand-ash-green hover:bg-red-600";
+    const buttonBaseStyle = "flex items-center font-semibold text-gray-200 dark:text-gray-100 rounded-full px-5 py-4 bg-kaito-brand-ash-green hover:bg-red-600 dark:bg-kaito-brand-ash-green/80 dark:hover:bg-red-700";
 
     const AudioControls = () => (
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 dark:space-x-2">
             {/* Close Button */}
             <button
                 className={buttonBaseStyle}
@@ -81,7 +81,7 @@ const AudioRecorder =  (props:{
             
             {/* Audio Visualizer */}
             {showVisualizer && (
-                <div className="flex items-center">
+                <div className="flex items-center dark:items-center">
                     {mediaRecorder && (
                         <Suspense fallback={null}>
                             <LiveAudioVisualizer
@@ -101,7 +101,7 @@ const AudioRecorder =  (props:{
             )}
 
             {/* Timer */}
-            <div className="flex items-center">
+            <div className="flex items-center dark:items-center">
                 <Timer secondsElasped={recordingTime} />
             </div>
 
@@ -128,7 +128,7 @@ const AudioRecorder =  (props:{
     );
 
     return (
-        <div className="flex space-x-2 ">
+        <div className="flex space-x-2 dark:space-x-2 ">
             <AudioControls />
         </div>
     );

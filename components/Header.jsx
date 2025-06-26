@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 
 const BrandLogo = ({ session }) => (
     <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto">
-        <div className="flex items-center ml-1 ">
+        <div className="flex items-center ml-1">
             <Image 
                 src="/knaitsys_v3.png" 
                 priority
@@ -63,12 +63,12 @@ export const Header = ({ menu, session }) => {
         <div className="fixed w-full top-0 z-50">
             <header 
                 className={`
-                    bg-gray-100 w-full border-b border-gray-200
+                    bg-gray-100 dark:bg-gray-900 w-full border-b border-gray-200 dark:border-gray-700
                     transform transition-all duration-200
                     ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
                 `}
             >
-                <nav className="container mx-auto px-4 py-2 md:flex md:items-center md:justify-between">
+                <nav className="container mx-auto px-4 py-2 md:flex md:items-center md:justify-between text-black dark:text-gray-100">
                     <BrandLogo session={session} />
                     <MenuItems items={menu} /> 
                     {session ? <AuthHeader session={session}/> : <UnAuthHeader />}

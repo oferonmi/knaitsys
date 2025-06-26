@@ -27,7 +27,18 @@ yarn dev
 pnpm dev
 ```
 
+<!-- This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font. -->
+
+## FFmpeg Requirement
+
+This app requires FFmpeg to be installed and accessible in the system PATH for audio processing.
+
+- On Ubuntu/Debian: `sudo apt-get install -y ffmpeg`
+- On macOS: `brew install ffmpeg`
+- On Windows: [Download FFmpeg](https://ffmpeg.org/download.html) and add it to your PATH.
+
+If deploying with Docker, FFmpeg is installed in the Dockerfile.
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result and use the App.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 

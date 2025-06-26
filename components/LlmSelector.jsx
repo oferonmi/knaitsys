@@ -46,7 +46,7 @@ const LlmSelector = ({ llmApiRoute, handleLlmApiChange }) => {
             <select
                 onChange={handleLlmApiChange}
                 value={llmApiRoute.replace("/api/", "")}
-                className="inline-flex items-center gap-2 px-1 py-1 text-sm text-gray-700 hover:bg-gray-50 rounded-md border-0"
+                className="inline-flex items-center gap-2 px-1 py-1 text-sm text-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800 bg-white dark:bg-gray-900 rounded-md border-0"
                 id="llm-selector"
                 required
             >

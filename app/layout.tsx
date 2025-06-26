@@ -2,6 +2,7 @@ import './globals.css';
 import { Inter } from 'next/font/google';
 // import { Ubuntu_Mono } from "next/font/google";
 import NextAuthProvider from '@/context/NextAuthProvider';
+import { ThemeScript } from '@/components/ThemeScript';
 
 const inter = Inter({ subsets: ['latin'], weight: '300', })
 // const ubuntuMono = Ubuntu_Mono({ subsets: ["latin"] });
@@ -13,6 +14,9 @@ export const metadata = {
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
 	return (
-		<NextAuthProvider>{children}</NextAuthProvider>
+		<NextAuthProvider>
+			<ThemeScript />
+			{children}
+		</NextAuthProvider>
 	);
 }

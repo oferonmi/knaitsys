@@ -3,11 +3,12 @@ import NextAuthProvider from '@/context/NextAuthProvider';
 import { Inter } from 'next/font/google'
 import { HeaderWrapper } from '@/components/HeaderWrapper'
 import { Footer } from '@/components/Footer'
+import { ThemeScript } from '@/components/ThemeScript'
 
 const inter = Inter({ subsets: ['latin'], weight: '300', })
 
 export const metadata = {
-  title: 'Profile | Knaitsys',
+  title: 'Knaitsys - Profile',
   description: 'Manage your user profile and account settings',
 };
 
@@ -15,7 +16,9 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
     return (
         <NextAuthProvider>
             <html lang="en">
-                <body className={`${inter.className} bg-white bg-cover bg-center`}>
+                <head />
+                <body className={`${inter.className} bg-white dark:bg-gray-900 bg-cover bg-center`}>
+                    <ThemeScript />
                     <HeaderWrapper
                         menu={[
                         // { id: 1, value: "Home", url: "/" },
@@ -23,7 +26,7 @@ export default function ProfileLayout({ children }: { children: React.ReactNode 
                         // { id: 3, value: "Profile", url: "/profile" },
                         ]}
                     />
-                    <main className="h-screen">{children}</main>
+                    <main className="h-screen bg-white dark:bg-gray-900">{children}</main>
                     <Footer />
                 </body>
             </html>

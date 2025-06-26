@@ -28,8 +28,8 @@ export const AuthHeader = ({session}) => {
     }, [menuOpen]);
 
     return (
-        <div className="header">
-            <nav className="flex flex-row bg-gray-100 w-full items-center space-x-6  justify-between  mr-2.5">
+        <div className="header bg-white dark:bg-gray-900">
+            <nav className="flex flex-row bg-gray-100 dark:bg-gray-900 w-full items-center space-x-6 justify-between mr-2.5">
                 <div className="relative" ref={menuRef}>
                     <button onClick={() => setMenuOpen((v) => !v)} aria-label="User menu">
                         <Image 
@@ -37,11 +37,11 @@ export const AuthHeader = ({session}) => {
                             height={38}
                             src={image ? image : "/avatars/default_user_avatar.JPG"}
                             alt="User avatar"
-                            className="w-9 h-9 rounded-full  border border-1 border-gray-300 dark:border-gray-700"
+                            className="w-9 h-9 rounded-full border border-1 border-gray-300 dark:border-gray-700"
                         />
                     </button>
                     {menuOpen && (
-                        <div className="absolute right-0 mt-1 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50 text-sm divide-y divide-gray-100 dark:bg-gray-700 dark:divide-gray-600">
+                        <div className="absolute right-0 mt-1 w-44 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-50 text-sm divide-y divide-gray-100 dark:divide-gray-600">
                             <div className="px-4 py-3 text-sm text-gray-900 dark:text-white">
                                 <div className="font-semibold mb-1">
                                     {name}
@@ -50,20 +50,20 @@ export const AuthHeader = ({session}) => {
                             </div>
                             <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownProfileButton">
                                 <li>
-                                    <Link href="/ai_tools" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                    <Link href="/ai_tools" className="block px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600">
                                         Tools
                                     </Link>
                                 </li>
                                 <li>
-                                    <Link href="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                    <Link href="/profile" className="block px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600">
                                         Profile
                                     </Link>
                                 </li>
                             </ul>
-                            <div className =" ">
+                            <div>
                                 <button
                                     onClick={ () => signOut({ callbackUrl: "/home",}) }
-                                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 w-full text-left"
+                                    className="block px-4 py-2 text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600 w-full text-left"
                                 >
                                     Log out
                                 </button>

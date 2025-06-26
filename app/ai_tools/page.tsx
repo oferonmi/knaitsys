@@ -5,11 +5,11 @@ import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css'
 import { withAuth } from "@/components/HOC/withAuth"
 
 const styles = {
-	container: "flex flex-col min-h-screen justify-center",
-	header: "font-mono text-3xl text-gray-700 max-w-2xl pb-5 mx-auto mt-4 sm:px-4",
-	description: "mt-2 text-xl text-black text-center",
-	linkBase: "border-hidden border-8 hover:border-solid border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green transition-all text-kaito-brand-ash-green p-4",
-	textBase: "text-center text-lg ",
+	container: "flex flex-col min-h-screen justify-center bg-white dark:bg-gray-900 text-black dark:text-gray-100",
+	header: "font-mono text-3xl text-gray-700 dark:text-gray-100 max-w-2xl pb-5 mx-auto mt-4 sm:px-4",
+	description: "mt-2 text-xl text-black dark:text-gray-300 text-center",
+	linkBase: "border-hidden border-8 hover:border-solid border-kaito-brand-ash-green rounded-md text-center justify-self-center hover:text-white hover:bg-kaito-brand-ash-green dark:hover:text-gray-900 dark:hover:bg-kaito-brand-ash-green transition-all text-kaito-brand-ash-green dark:text-gray-100 p-4",
+	textBase: "text-center text-lg dark:text-gray-100 ",
 }
 
 function AiToolsPage() {
@@ -22,7 +22,7 @@ function AiToolsPage() {
 				knowledge work.
 			</p>
 
-			<div className="grid grid-flow-col justify-items-stretch place-items-center gap-4 max-w-2xl pb-5 mx-auto mt-4 sm:px-4 text-gray-700">
+			<div className="grid grid-flow-col justify-items-stretch place-items-center gap-4 max-w-2xl pb-5 mx-auto mt-4 sm:px-4 text-gray-700 dark:text-gray-200">
 				<Link href="/text">
 					<div className={styles.linkBase}>
 						<i className="bi bi-file-text-fill" style={{ fontSize: 64 }}></i>

@@ -29,6 +29,8 @@
 		"@ai-sdk/react": "^1.1.11",
 		"@ai-sdk/xai": "^1.0.17",
 		"@auth/core": "^0.39.1",
+		"@ffmpeg/ffmpeg": "^0.12.15",
+		"@ffmpeg/util": "^0.12.2",
 		"@huggingface/inference": "^2.8.1",
 		"@langchain/anthropic": "^0.3.11",
 		"@langchain/community": "^0.3.23",

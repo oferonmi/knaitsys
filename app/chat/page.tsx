@@ -67,16 +67,15 @@ const ChatbotPage = () => {
 	);
 
 	const landingSectionUI = (
-		<div className="flex flex-col justify-center items-center md:p-8  min-h-screen w-full mx-auto my-auto overflow-hidden text-black">
-			<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700">
+		<div className="flex flex-col justify-center items-center md:p-8 min-h-screen w-full mx-auto my-auto overflow-hidden text-black dark:text-gray-100 bg-white dark:bg-gray-900">
+			<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
 				Query or Question an AI Chatbot
 			</h1>
-			<p className="text-black text-lg text-center">
-				Switch between LLMs by selecting each from the dropdown menu, then ask
-				away.
+			<p className="text-black dark:text-gray-200 text-lg text-center">
+				Switch between LLMs by selecting each from the dropdown menu, then ask away.
 			</p>
 
-			<br></br>
+			<br />
 
 			<div className="w-full max-w-3xl flex justify-center items-center">
 				{LlmChatFormMainWidgets}
@@ -85,11 +84,11 @@ const ChatbotPage = () => {
 	);
 
 	return (
-		<main>
+		<main className="bg-white dark:bg-gray-900 min-h-screen">
 			{messages.length == 0 && landingSectionUI}
 
 			{messages.length > 0 && (
-				<div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black min-h-screen">
+				<div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black dark:text-gray-100 min-h-screen bg-white dark:bg-gray-900">
 					<ChatThread
 						messages={messages}
 						sysEmoji="🤖"
@@ -99,9 +98,9 @@ const ChatbotPage = () => {
 					<div
 						className="fixed bottom-0 mb-20 container flex max-w-3xl mx-auto my-auto"
 					>
-						<Tooltip content="Clear Chat Thread" className="inline-flex bg-black  ">
+						<Tooltip content="Clear Chat Thread" className="inline-flex bg-black dark:bg-gray-800">
 							<button
-								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 rounded-full px-4 py-3 mr-2  absolute right-60  bottom-3 z-10"
+								className="inline-flex bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green items-center font-medium text-gray-200 dark:text-gray-100 rounded-full px-4 py-3 mr-2 absolute right-60 bottom-3 z-10"
 								type="button"
 								onClick={() => { setMessages([]); } }
 							>

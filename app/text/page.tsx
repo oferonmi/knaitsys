@@ -38,11 +38,11 @@ const pageStyles = {
 
 function TextToolsPage() {
 	return (
-		<div className={pageStyles.container}>
-			<main className={pageStyles.main}>
-				<div className={pageStyles.content}>
-					<h1 className={pageStyles.heading}>Text Tools</h1>
-					<p className={pageStyles.description}>
+		<div className={pageStyles.container + " bg-white dark:bg-gray-900"}>
+			<main className={pageStyles.main + " bg-white dark:bg-gray-900"}>
+				<div className={pageStyles.content + " bg-white dark:bg-gray-900"}>
+					<h1 className={pageStyles.heading + " text-gray-800 dark:text-gray-100"}>Text Tools</h1>
+					<p className={pageStyles.description + " text-gray-600 dark:text-gray-300"}>
 						Select a text processing tool to begin
 					</p>
 					<ToolsList  tools={textTools}/>
