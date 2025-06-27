@@ -2,21 +2,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Marcellus_SC, Audiowide, Gugi, Hubot_Sans } from 'next/font/google'
 import { AuthHeader } from "@/components/AuthHeader";
 import { UnAuthHeader } from "@/components/UnAuthHeader";
 import { MenuItems } from "@/components/Menuitems";
 import { useState, useEffect } from "react";
 
+const hubotSans = Hubot_Sans({ subsets: ["latin"], weight: "200", });
+const audiowide = Audiowide({ subsets: ["latin"], weight: "400", });
+
 const BrandLogo = ({ session }) => (
     <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto">
         <div className="flex items-center ml-1">
-            <Image 
+            {/* <Image 
                 src="/knaitsys_v3.png" 
                 priority
                 alt="Knaitsys logo" 
                 width={330} 
                 height={115}
+            /> */}
+            <Image 
+                src="/knaitsys_logo_fig.svg" 
+                priority
+                alt="Knaitsys logo" 
+                width={38} 
+                height={38}
             />
+            <div className={`${audiowide.className} font-bold text-3xl pl-3`}>KnaitSys</div>
         </div>
     </Link>
 );

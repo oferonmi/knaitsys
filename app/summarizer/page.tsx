@@ -305,7 +305,7 @@ const SummarizerPage = () => {
 
     const OrigTextDisplay = (
         <form className="w-full flex flex-col" onSubmit={summarizeRawText}>
-            <div className="w-full h-dvh border-r border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 relative flex">
+            <div className="w-full h-dvh border-r border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 relative flex mt-4">
                 <textarea
                     id="textInput"
                     className="flex-1 mb-0 px-4 py-4 text-sm text-black dark:text-white bg-white dark:bg-gray-900 bg-opacity-60 border-0 focus:ring-0 focus:ring-inset focus:ring-kaito-brand-ash-green h-screen relative resize-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
@@ -323,7 +323,7 @@ const SummarizerPage = () => {
 
     const FlashCard = (
         <div className="flex flex-col h-screen">
-            <h2 className="text-black dark:text-white text-2xl flex justify-center mt-2">Summary Flash Card</h2>
+            <h2 className="text-black dark:text-white text-2xl flex justify-center mt-4">Summary Flash Card</h2>
             <div className="flex flex-col w-full mt-4 mb-4 overflow-auto transition-[flex-grow] ease-in-out pb-40 text-black dark:text-white">
                 {summarizedText && (
                     <div
@@ -351,12 +351,12 @@ const SummarizerPage = () => {
 
     return (
         <main className="bg-white dark:bg-gray-900 min-h-screen">
-            <div className="flex flex-col pt-24">
+            <div className="flex flex-col pt-12">
                 {!summarizedText && (
                     <div className="flex h-screen bg-white dark:bg-gray-900">
                         {SideNavBar}
                         <div className="flex flex-col p-4 md:p-8  overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
-                            <h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
+                            <h1 className="text-center font-mono text-2xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
                                 Summarize your documents, web pages and search indices pages.
                             </h1>
                             <p className="text-gray-800 dark:text-gray-200 text-lg text-center">

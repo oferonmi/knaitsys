@@ -184,7 +184,7 @@ export function RetrievalChatWindow(props: {
 					{navSideBar}
 					{/* main section */}
 					<div className="flex flex-col p-4 md:p-8 overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto pt-32 pb-40 bg-white dark:bg-gray-900">
-						<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100 ">
+						<h1 className="text-center font-mono text-2xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100 ">
 							Chat to your documents and the web.
 						</h1>
 
@@ -309,14 +309,14 @@ export function RetrievalChatWindow(props: {
 	return (
 		<main className="bg-white dark:bg-gray-900 min-h-screen">
 			<div
-				className={`flex flex-col w-full min-h-screen pt-28 ${
+				className={`flex flex-col w-full min-h-screen pt-14 ${
 					readyToChat ? "border border-gray-200 dark:border-gray-700" : ""
 				}`}
 			>
 				<h2
 					className={`${
 						readyToChat ? "" : "hidden"
-					} text-2xl flex justify-center mt-2 text-gray-800 dark:text-gray-100`}
+					} text-2xl flex justify-center mt-4 text-gray-800 font-mono dark:text-gray-100`}
 				>
 					{emoji} {titleText}
 				</h2>
