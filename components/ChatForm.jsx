@@ -50,7 +50,7 @@ const ChatForm = ({
 					autoComplete="off"
 					autoFocus={false}
 					name="prompt"
-					className="w-full h-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-none border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-kaito-brand-ash-green/80 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
+					className="w-full h-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-kaito-brand-ash-green/80 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
 					placeholder={TEXTAREA_CONFIG.placeholder}
 					required
 					value={userInput}
@@ -81,14 +81,14 @@ const SubmitButton = ({ isLoading }) => (
 );
 
 ChatForm.propTypes = {
-  userInput: PropTypes.string.isRequired,
-  onChangeHandler: PropTypes.func.isRequired,
-  onSubmitHandler: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
+	userInput: PropTypes.string.isRequired,
+	onChangeHandler: PropTypes.func.isRequired,
+	onSubmitHandler: PropTypes.func.isRequired,
+	isLoading: PropTypes.bool.isRequired,
 };
 
 SubmitButton.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
+	isLoading: PropTypes.bool.isRequired,
 };
 
 export default ChatForm;
