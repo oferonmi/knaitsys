@@ -32,7 +32,7 @@ const pageStyles = {
 	container: "flex flex-col min-h-screen",
 	main: "flex-grow bg-cover bg-center",
 	content: "container mx-auto px-4 py-8 pt-36",
-	heading: "text-3xl font-bold text-gray-800 mb-6",
+	heading: "text-3xl font-medium text-gray-800 mb-6",
 	description: "text-lg text-gray-600 mb-8"
 } as const
 
@@ -41,7 +41,7 @@ function TextToolsPage() {
 		<div className={pageStyles.container + " bg-white dark:bg-gray-900"}>
 			<main className={pageStyles.main + " bg-white dark:bg-gray-900"}>
 				<div className={pageStyles.content + " bg-white dark:bg-gray-900"}>
-					<h1 className={pageStyles.heading + " text-gray-800 dark:text-gray-100"}>Text Tools</h1>
+					<h1 className={pageStyles.heading + " font-mono text-gray-800 dark:text-gray-100"}>Text Tools</h1>
 					<p className={pageStyles.description + " text-gray-600 dark:text-gray-300"}>
 						Select a text processing tool to begin
 					</p>

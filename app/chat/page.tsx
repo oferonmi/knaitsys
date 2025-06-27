@@ -68,7 +68,7 @@ const ChatbotPage = () => {
 
 	const landingSectionUI = (
 		<div className="flex flex-col justify-center items-center md:p-8 min-h-screen w-full mx-auto my-auto overflow-hidden text-black dark:text-gray-100 bg-white dark:bg-gray-900">
-			<h1 className="text-center text-3xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
+			<h1 className="text-center text-3xl font-mono md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
 				Query or Question an AI Chatbot
 			</h1>
 			<p className="text-black dark:text-gray-200 text-lg text-center">
@@ -88,7 +88,7 @@ const ChatbotPage = () => {
 			{messages.length == 0 && landingSectionUI}
 
 			{messages.length > 0 && (
-				<div className="flex flex-col items-center p-4 md:p-8 rounded grow overflow-hidden text-black dark:text-gray-100 min-h-screen bg-white dark:bg-gray-900">
+				<div className="flex flex-col items-center mt-3 p-4 md:p-8 rounded grow overflow-hidden text-black dark:text-gray-100 min-h-screen bg-white dark:bg-gray-900">
 					<ChatThread
 						messages={messages}
 						sysEmoji="🤖"

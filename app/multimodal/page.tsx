@@ -12,6 +12,7 @@ import { ChatMessageBubble } from "@/components/ChatMessageBubble";
 import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 import { Footer } from "@/components/Footer";
 import { Tooltip } from "flowbite-react";
+import { Loader2 } from "lucide-react"
 
 const TEXTAREA_CONFIG = {
     minHeight: "100px",
@@ -144,8 +145,9 @@ function MultiModalChat() {
     );
 
     const loadingAnimation = (
-        <div role="status" className={`${isLoading ? "" : "hidden"} flex justify-center text-black dark:text-gray-100`}>
-            <LoadingSpinner />
+        <div role="status" className="flex justify-center">
+            <Loader2 className="animate-spin w-4 h-6" />
+            <span className="sr-only">Loading...</span>
         </div>
     );
 
@@ -199,10 +201,11 @@ function MultiModalChat() {
             type="submit"
             ref={sendButtonRef}
         >
-            {loadingAnimation}
-            <span className={isLoading ? "hidden" : ""}>
+            { isLoading? loadingAnimation : (
+            // <span className={isLoading ? "hidden" : ""}>
                 <i className="bi bi-send-fill" />
-            </span>
+            // </span>
+            )}
         </button>
     );
 
@@ -251,7 +254,7 @@ function MultiModalChat() {
         <main className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-gray-900 text-black dark:text-gray-100">
             <div className="max-w-3xl w-full mx-auto md:p-8">
                 <header className="mb-8 text-center">
-                    <h1 className="text-3xl text-gray-700 dark:text-gray-100 mb-4">
+                    <h1 className="text-3xl text-gray-700 font-mono dark:text-gray-100 mb-4">
                         Query or Question a Multimodal AI Chatbot
                     </h1>
                     <p className="text-lg text-black dark:text-gray-200">

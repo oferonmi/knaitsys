@@ -12,23 +12,17 @@ const hubotSans = Hubot_Sans({ subsets: ["latin"], weight: "200", });
 const audiowide = Audiowide({ subsets: ["latin"], weight: "400", });
 
 const BrandLogo = ({ session }) => (
-    <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto">
-        <div className="flex items-center ml-1">
-            {/* <Image 
-                src="/knaitsys_v3.png" 
-                priority
-                alt="Knaitsys logo" 
-                width={330} 
-                height={115}
-            /> */}
+    <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto focus:outline-none">
+        <div className="flex items-center ml-1 gap-2">
             <Image 
                 src="/knaitsys_logo_fig.svg" 
                 priority
                 alt="Knaitsys logo" 
                 width={38} 
                 height={38}
+                className="select-none"
             />
-            <div className={`${audiowide.className} font-bold text-3xl pl-3`}>KnaitSys</div>
+            <span className={`${audiowide.className} font-bold text-3xl select-none`}>KnaitSys</span>
         </div>
     </Link>
 );
@@ -36,53 +30,37 @@ const BrandLogo = ({ session }) => (
 export const Header = ({ menu, session }) => {
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
-    
+
     useEffect(() => {
-        const controlHeader = () => {
-            const currentScrollY = window.scrollY;
-            
-            // Show header immediately when scrolling up or at top
-            if (currentScrollY < lastScrollY || currentScrollY < 10) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
-            }
-            
-            setLastScrollY(currentScrollY);
-        };
-
-        // Add scroll event with debounce for performance
-        let timeoutId;
-        const onScroll = () => {
-            if (timeoutId) {
-                clearTimeout(timeoutId);
-            }
-            timeoutId = setTimeout(controlHeader, 50);
-        };
-
-        window.addEventListener('scroll', onScroll);
-        
-        // Cleanup
-        return () => {
-            window.removeEventListener('scroll', onScroll);
-            if (timeoutId) {
-                clearTimeout(timeoutId);
+        let ticking = false;
+        const handleScroll = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const currentScrollY = window.scrollY;
+                    if (currentScrollY < lastScrollY || currentScrollY < 10) {
+                        setIsVisible(true);
+                    } else {
+                        setIsVisible(false);
+                    }
+                    setLastScrollY(currentScrollY);
+                    ticking = false;
+                });
+                ticking = true;
             }
         };
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
 
     return (
         <div className="fixed w-full top-0 z-50">
             <header 
-                className={`
-                    bg-gray-100 dark:bg-gray-900 w-full border-b border-gray-200 dark:border-gray-700
-                    transform transition-all duration-200
-                    ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}
-                `}
+                className={`bg-gray-100 dark:bg-gray-900 w-full border-b border-gray-200 dark:border-gray-700 transform transition-all duration-200 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+                role="banner"
             >
-                <nav className="container mx-auto px-4 py-2 md:flex md:items-center md:justify-between text-black dark:text-gray-100">
+                <nav className="container mx-auto px-4 py-2 flex items-center justify-between text-black dark:text-gray-100" aria-label="Main navigation">
                     <BrandLogo session={session} />
-                    <MenuItems items={menu} /> 
+                    <MenuItems items={menu} />
                     {session ? <AuthHeader session={session}/> : <UnAuthHeader />}
                 </nav>
             </header>
