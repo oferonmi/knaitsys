@@ -36,30 +36,31 @@ const ChatForm = ({
 	};
 
 	return (
-		<div className="w-full max-w-full rounded-lg bg-white dark:bg-gray-900 relative">
-			<div className="absolute right-16 bottom-5 z-10">
-				<LlmSelector 
-					llmApiRoute={llmApiEndpoint} 
-					handleLlmApiChange={onLlmApiEndpointChange}
-				/>
-			</div>
-			
+		<>
 			<form className="relative w-full" onSubmit={handleSubmit}> 
 				<textarea
 					type="text"
 					autoComplete="off"
 					autoFocus={false}
 					name="prompt"
-					className="w-full h-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-kaito-brand-ash-green/80 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
+					className="w-full h-full min-h-[100px] mb-0 bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
 					placeholder={TEXTAREA_CONFIG.placeholder}
 					required
 					value={userInput}
 					onChange={onChangeHandler}
 					style={{ minHeight: TEXTAREA_CONFIG.minHeight }}
 				/>
+
+				<div className="absolute right-16 bottom-5 z-10">
+					<LlmSelector 
+						llmApiRoute={llmApiEndpoint} 
+						handleLlmApiChange={onLlmApiEndpointChange}
+					/>
+				</div>
+				
 				<SubmitButton isLoading={isLoading} />
 			</form>
-		</div>
+		</>
 	);
 };
 

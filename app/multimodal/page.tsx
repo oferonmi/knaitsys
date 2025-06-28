@@ -214,7 +214,7 @@ function MultiModalChat() {
             autoComplete="off"
             autoFocus={false}
             name="prompt"
-            className="w-full h-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-kaito-brand-ash-green/80 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
+            className="w-full h-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
             id="multimod-text-in"
             value={input}
             placeholder={TEXTAREA_CONFIG.placeholder}
@@ -297,7 +297,6 @@ function MultiModalChat() {
 
                         <div ref={bottomRef} />
 
-                        {/**max-w-3xl  border border-gray-300 rounded-lg shadow-xl  space-x-2 text-black mb-20 container flex mx-auto my-auto pt-9 pb-9 px-5 */}
                         <form
                             className="fixed bottom-0 mb-20 container flex max-w-3xl mx-auto my-auto"
                             onSubmit={(event) => handleFormSubmit(event)}

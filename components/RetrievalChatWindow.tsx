@@ -273,7 +273,7 @@ export function RetrievalChatWindow(props: {
 								autoComplete="off"
 								autoFocus={false}
 								name="prompt"
-								className="w-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-kaito-brand-ash-green/80 placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6 px-4 py-3"
+								className="w-full min-h-[100px] bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6 px-4 py-3"
 								id="chat-textbox"
 								required
 								value={input}
