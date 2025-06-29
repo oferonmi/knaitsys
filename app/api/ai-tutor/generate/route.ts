@@ -11,7 +11,7 @@ async function generateLearningContent({ prompt }: { prompt: string }) {
     // Compose a system prompt to instruct Gemini to return a JSON object with all required fields
     const systemPrompt = `
     You are an AI learning assistant. Given a topic or question, generate a JSON object with the following fields:
-    - tutorial: A structured, personalized tutorial (HTML, 500-1000 words) for a beginner, with real-world examples, analogies, and step-by-step explanations. Cite credible sources. List sources cited as a number list.
+    - tutorial: A structured, personalized tutorial (HTML, 500-1000 words) for a beginner, with real-world examples, analogies, and step-by-step explanations. Cite credible sources. It is mandatory to create a numbered list of sources cited, in a biblography section at the end, formatted in APA style.
     - quiz: An object with an array of 5-10 adaptive questions (multiple-choice and fill-in-the-blank), each with answer and explanation.
     - visual: An SVG string that visually explains the topic.
     - project: An HTML string suggesting a hands-on project with step-by-step guide and sample code.

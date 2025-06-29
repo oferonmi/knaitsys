@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export interface QuizQuestion {
 	question: string;
@@ -16,9 +16,30 @@ export interface AiTutorOutputData {
 	project?: string;
 }
 
-export function AiTutorOutput({ outputData }: { outputData?: AiTutorOutputData }) {
+export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutorOutputData, onProgress?: (progress: { correct: number, total: number }) => void }) {
 	const [userAnswers, setUserAnswers] = useState<Record<number, string | number>>({});
 	const [showFeedback, setShowFeedback] = useState<Record<number, boolean>>({});
+
+	// Track correct answers for progress dashboard
+	const [correctCount, setCorrectCount] = useState(0);
+	const [totalCount, setTotalCount] = useState(0);
+
+	// Update progress when feedback changes
+	useEffect(() => {
+		if (outputData?.quiz?.questions) {
+			const total = outputData.quiz.questions.length;
+			let correct = 0;
+			outputData.quiz.questions.forEach((q, idx) => {
+				if (showFeedback[idx]) {
+					if (q.type === "multiple-choice" && userAnswers[idx] === (q as any).answer) correct++;
+					if (q.type === "fill-in-the-blank" && typeof userAnswers[idx] === "string" && (q as any).answer && userAnswers[idx].toLowerCase().includes((q as any).answer.toLowerCase())) correct++;
+				}
+			});
+			setCorrectCount(correct);
+			setTotalCount(total);
+			if (onProgress) onProgress({ correct, total });
+		}
+	}, [showFeedback, userAnswers, outputData, onProgress]);
 
 	if (!outputData) {
 		return (
@@ -97,8 +118,7 @@ export function AiTutorOutput({ outputData }: { outputData?: AiTutorOutputData }
 									</button>
 									{showFeedback[idx] && (
 										<div className="text-sm mt-2 font-medium">
-											{q.type === "multiple-choice" &&
-												Number(userAnswers[idx]) === Number((q as any).answer) ? (
+											{q.type === "multiple-choice" && ( userAnswers[idx] as number === (q as any).answer || ( typeof userAnswers[idx] === "string" && userAnswers[idx].toLowerCase().includes((q as any).answer.toLowerCase()))) ? (
 												<span className="text-green-600">Correct! </span>
 											) : q.type === "multiple-choice" ? (
 												<span className="text-red-600">Incorrect. </span>
