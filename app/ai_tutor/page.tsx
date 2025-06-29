@@ -3,7 +3,7 @@ import AiTutorMain from "./AiTutorMain";
 
 export default function AiTutorPage() {
   return (
-    <main className="min-h-screen grow bg-white dark:bg-gray-900 text-black dark:text-gray-100 mt-20">
+    <main className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-gray-100 mt-20">
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold font-mono mb-4 text-center">AI-Powered Learning Assistant</h1>
             <p className="mb-8 text-center text-lg max-w-2xl mx-auto">

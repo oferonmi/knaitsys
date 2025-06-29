@@ -31,8 +31,23 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 			let correct = 0;
 			outputData.quiz.questions.forEach((q, idx) => {
 				if (showFeedback[idx]) {
-					if (q.type === "multiple-choice" && userAnswers[idx] === (q as any).answer) correct++;
-					if (q.type === "fill-in-the-blank" && typeof userAnswers[idx] === "string" && (q as any).answer && userAnswers[idx].toLowerCase().includes((q as any).answer.toLowerCase())) correct++;
+					if (q.type === "multiple-choice") {
+						const userAns = userAnswers[idx];
+						const correctAns = (q as any).answer;
+						if (typeof correctAns === "number") {
+							if (userAns === correctAns) correct++;
+							if (typeof userAns === "string" && q.options && q.options[correctAns] && userAns.trim().toLowerCase() === q.options[correctAns].trim().toLowerCase()) correct++;
+						}
+						if (typeof correctAns === "string") {
+							if (typeof userAns === "string" && userAns.trim().toLowerCase() === correctAns.trim().toLowerCase()) correct++;
+							if (typeof userAns === "number" && q.options && q.options[userAns] && q.options[userAns].trim().toLowerCase() === correctAns.trim().toLowerCase()) correct++;
+						}
+					}
+					if (q.type === "fill-in-the-blank" && typeof userAnswers[idx] === "string" && (q as any).answer) {
+						const userAns = userAnswers[idx].replace(/\s+/g, "").toLowerCase();
+						const correctAns = (q as any).answer.replace(/\s+/g, "").toLowerCase();
+						if (userAns.includes(correctAns) || correctAns.includes(userAns)) correct++;
+					}
 				}
 			});
 			setCorrectCount(correct);
@@ -76,7 +91,7 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
 					<h2 className="text-xl font-bold mb-2">Quiz</h2>
 					{Array.isArray(outputData.quiz.questions) && outputData.quiz.questions.length > 0 ? (
-						<div className="space-y-4">
+						<div className="space-y-4 text-black dark:text-white">
 							{outputData.quiz.questions.map((q: QuizQuestion, idx: number) => (
 								<div key={idx} className="mb-4">
 									<div className="font-semibold mb-2">{idx + 1}. {q.question}</div>
@@ -118,18 +133,34 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 									</button>
 									{showFeedback[idx] && (
 										<div className="text-sm mt-2 font-medium">
-											{q.type === "multiple-choice" && ( userAnswers[idx] as number === (q as any).answer || ( typeof userAnswers[idx] === "string" && userAnswers[idx].toLowerCase().includes((q as any).answer.toLowerCase()))) ? (
-												<span className="text-green-600">Correct! </span>
-											) : q.type === "multiple-choice" ? (
-												<span className="text-red-600">Incorrect. </span>
-											) : null}
-											{q.type === "fill-in-the-blank" && typeof userAnswers[idx] === "string" &&
-												(q as any).answer &&
-												userAnswers[idx].toLowerCase().includes((q as any).answer.toLowerCase()) ? (
-												<span className="text-green-600">Correct! </span>
-											) : q.type === "fill-in-the-blank" ? (
-												<span className="text-red-600">Incorrect. </span>
-											) : null}
+											{q.type === "multiple-choice" && (() => {
+												// Accept both number and string representations, and handle answer as index or value
+												const userAns = userAnswers[idx];
+												const correctAns = (q as any).answer;
+												// If answer is an index, check both index and value
+												if (typeof correctAns === "number") {
+													if (userAns === correctAns) return <span className="text-green-600">Correct! </span>;
+													// If userAns is string, check if it matches the correct option value
+													if (typeof userAns === "string" && q.options && q.options[correctAns] && userAns.trim().toLowerCase() === q.options[correctAns].trim().toLowerCase()) return <span className="text-green-600">Correct! </span>;
+												}
+												// If answer is a string, check value match (case-insensitive)
+												if (typeof correctAns === "string") {
+													if (typeof userAns === "string" && userAns.trim().toLowerCase() === correctAns.trim().toLowerCase()) return <span className="text-green-600">Correct! </span>;
+													if (typeof userAns === "number" && q.options && q.options[userAns] && q.options[userAns].trim().toLowerCase() === correctAns.trim().toLowerCase()) return <span className="text-green-600">Correct! </span>;
+												}
+												return <span className="text-red-600">Incorrect. </span>;
+											})()}
+											{q.type === "fill-in-the-blank" && typeof userAnswers[idx] === "string" && (q as any).answer && (
+												// Accept substring, ignore case, ignore whitespace, and allow partial match
+												(() => {
+													const userAns = userAnswers[idx].replace(/\s+/g, "").toLowerCase();
+													const correctAns = (q as any).answer.replace(/\s+/g, "").toLowerCase();
+													if (userAns.includes(correctAns) || correctAns.includes(userAns)) {
+														return <span className="text-green-600">Correct! </span>;
+													}
+													return <span className="text-red-600">Incorrect. </span>;
+												})()
+											)}
 											<span className="text-gray-500">Explanation: {q.explanation}</span>
 										</div>
 									)}
