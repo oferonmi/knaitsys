@@ -1,9 +1,10 @@
 "use client";
 
-import { signIn, getProviders } from "next-auth/react";
+import { signIn, getProviders, useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
 import { GoogleIcon, FacebookIcon, GitHubIcon, AppleIcon } from "@/components/Icons";
 import type { ClientSafeProvider } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface SignUpFormData {
   username: string;
@@ -32,6 +33,15 @@ const SocialLoginButton = ({
 );
 
 const SignUp = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/ai_tools");
+    }
+  }, [status, router]);
+
   const [formData, setFormData] = useState<SignUpFormData>({
     username: "",
     email: "",
