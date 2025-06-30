@@ -79,7 +79,7 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 	return (
 		<div className="space-y-6">
 			{outputData.tutorial && (
-				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
+				<section className="rounded-lg bg-white dark:text-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
 					<h2 className="text-xl font-bold mb-2">Tutorial</h2>
 					<div
 						className="prose dark:prose-invert max-w-none"

@@ -55,15 +55,15 @@ export default function ResearcherPage() {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center min-h-screen w-full bg-white">
+        <div className="flex flex-col justify-center items-center min-h-screen w-full bg-white dark:bg-gray-950">
             <div className="w-full max-w-3xl ">
-                <h1 className="text-3xl font-bold mb-6 mt-20 text-center">AI-Based Research Hub</h1>
+                <h1 className="text-3xl font-bold mb-6 mt-20 text-center text-gray-900 dark:text-gray-100">AI-Based Research Hub</h1>
                 <form
                     className="flex flex-col md:flex-row gap-4 mb-6 justify-center items-center"
                     onSubmit={e => { e.preventDefault(); handleResearch(); }}
                 >
                     <input
-                        className="flex-1 border border-gray-300 focus:border-kaito-brand-ash-green focus:ring-2 focus:ring-kaito-brand-ash-green/30 focus:outline-none rounded-full px-6 py-2 text-lg transition-colors duration-150 shadow-sm bg-white placeholder-gray-400 dark:bg-gray-900 dark:border-gray-700 dark:placeholder-gray-500"
+                        className="flex-1 border border-gray-300 focus:border-kaito-brand-ash-green focus:ring-2 focus:ring-kaito-brand-ash-green/30 focus:outline-none rounded-full px-6 py-2 text-lg transition-colors duration-150 shadow-sm bg-white placeholder-gray-400 dark:bg-gray-900 dark:border-gray-700 dark:placeholder-gray-500 dark:text-gray-100"
                         placeholder="Enter research topic (e.g. quantum computing)"
                         value={topic}
                         onChange={(e) => setTopic(e.target.value)}
@@ -83,16 +83,16 @@ export default function ResearcherPage() {
                         ) : "Research"}
                     </button>
                 </form>
-                {error && <div className="text-red-600 mb-4 text-center">{error}</div>}
+                {error && <div className="text-red-600 dark:text-red-400 mb-4 text-center">{error}</div>}
                 {aggregated.length > 0 && (
                     <div className="mb-8">
-                        <h2 className="text-xl font-semibold mb-2">Aggregated Sources</h2>
+                        <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Aggregated Sources</h2>
                         <ul className="space-y-3">
                             {aggregated.map((item, idx) => (
-                                <li key={idx} className="border rounded p-3 bg-gray-50">
-                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-bold text-kaito-brand-ash-green  hover:underline">{item.title}</a>
+                                <li key={idx} className="border rounded p-3 bg-gray-50 dark:bg-gray-800">
+                                    <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-bold text-kaito-brand-ash-green hover:underline dark:text-kaito-brand-ash-green">{item.title}</a>
                                     <span className="ml-2 text-xs text-gray-500">[{item.source}]</span>
-                                    <div className="mt-1 text-gray-700">{item.summary}</div>
+                                    <div className="mt-1 text-gray-700 dark:text-gray-200">{item.summary}</div>
                                 </li>
                             ))}
                         </ul>
@@ -100,20 +100,20 @@ export default function ResearcherPage() {
                 )}
                 {analysis && (
                     <div className="mb-8">
-                        <h2 className="text-xl font-semibold mb-2">Key Insights</h2>
-                        <ul className="list-disc ml-6 mb-4">
+                        <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Key Insights</h2>
+                        <ul className="list-disc ml-6 mb-4 text-gray-900 dark:text-gray-100">
                             {analysis.keyInsights.map((insight, idx) => (
                                 <li key={idx}>{insight}</li>
                             ))}
                         </ul>
-                        <h2 className="text-xl font-semibold mb-2">Novel Research Directions</h2>
-                        <ul className="list-disc ml-6 mb-4">
+                        <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Novel Research Directions</h2>
+                        <ul className="list-disc ml-6 mb-4 text-gray-900 dark:text-gray-100">
                             {analysis.novelDirections.map((dir, idx) => (
                                 <li key={idx}>{dir}</li>
                             ))}
                         </ul>
-                        <h2 className="text-xl font-semibold mb-2">Open Research Questions</h2>
-                        <ul className="list-disc ml-6">
+                        <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">Open Research Questions</h2>
+                        <ul className="list-disc ml-6 text-gray-900 dark:text-gray-100">
                             {analysis.openQuestions.map((q, idx) => (
                                 <li key={idx}>{q}</li>
                             ))}
@@ -132,7 +132,7 @@ export default function ResearcherPage() {
                 )}
             </div>
             {showReport && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 max-h-svh">
                     <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg max-w-2xl w-full p-8 relative">
                         <button
                             className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 dark:hover:text-white text-2xl font-bold"
@@ -141,35 +141,35 @@ export default function ResearcherPage() {
                         >
                             ×
                         </button>
-                        <h2 className="text-2xl font-bold mb-4 text-center">Research Report & Visualization</h2>
+                        <h2 className="text-2xl font-bold mb-4 text-center text-gray-900 dark:text-gray-100">Research Report & Visualization</h2>
                         <div className="mb-4">
-                            <h3 className="font-semibold mb-2">Topic:</h3>
-                            <div className="mb-2 text-lg">{topic}</div>
-                            <h3 className="font-semibold mb-2">Key Insights:</h3>
-                            <ul className="list-disc ml-6 mb-2">
+                            <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Topic:</h3>
+                            <div className="mb-2 text-lg text-gray-900 dark:text-gray-100">{topic}</div>
+                            <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Key Insights:</h3>
+                            <ul className="list-disc ml-6 mb-2 text-gray-900 dark:text-gray-100">
                                 {analysis?.keyInsights.map((insight, idx) => (
                                     <li key={idx}>{insight}</li>
                                 ))}
                             </ul>
-                            <h3 className="font-semibold mb-2">Novel Research Directions:</h3>
-                            <ul className="list-disc ml-6 mb-2">
+                            <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Novel Research Directions:</h3>
+                            <ul className="list-disc ml-6 mb-2 text-gray-900 dark:text-gray-100">
                                 {analysis?.novelDirections.map((dir, idx) => (
                                     <li key={idx}>{dir}</li>
                                 ))}
                             </ul>
-                            <h3 className="font-semibold mb-2">Open Research Questions:</h3>
-                            <ul className="list-disc ml-6 mb-2">
+                            <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Open Research Questions:</h3>
+                            <ul className="list-disc ml-6 mb-2 text-gray-900 dark:text-gray-100">
                                 {analysis?.openQuestions.map((q, idx) => (
                                     <li key={idx}>{q}</li>
                                 ))}
                             </ul>
                         </div>
                         <div className="mb-4">
-                            <h3 className="font-semibold mb-2">Aggregated Sources:</h3>
+                            <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">Aggregated Sources:</h3>
                             <ul className="space-y-2">
                                 {aggregated.map((item, idx) => (
                                     <li key={idx} className="border rounded p-2 bg-gray-50 dark:bg-gray-800">
-                                        <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-bold text-blue-700 hover:underline">{item.title}</a>
+                                        <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-bold text-kaito-brand-ash-green hover:underline dark:text-kaito-brand-ash-green">{item.title}</a>
                                         <span className="ml-2 text-xs text-gray-500">[{item.source}]</span>
                                         <div className="mt-1 text-gray-700 dark:text-gray-200">{item.summary}</div>
                                     </li>
