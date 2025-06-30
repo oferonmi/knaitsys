@@ -121,16 +121,55 @@ const SignUp = () => {
     <div className="flex flex-col justify-center items-center min-h-screen px-7 py-16 mt-16 bg-white dark:bg-gray-900">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl text-black dark:text-white font-bold">Create Account</h1>
+          <h1 className="text-3xl text-black dark:text-white font-bold">
+            Create Account
+          </h1>
           <p className="text-gray-600 dark:text-gray-300 mt-4 text-center font-bold">
-            Enter your details to create your account.
+            Use social sign up to register.
           </p>
         </div>
+
+        {/* Social signup section moved above the form */}
+        {providers && (
+          <>
+            <div className="flex flex-col gap-4 w-full">
+              {Object.values(providers).map((provider) => {
+                if (provider.name === "Credentials") return null;
+                if (provider.name === "Facebook") {
+                  // Temporarily hide Facebook until permission issue is resolved
+                  return null;
+                }
+                const icon = getProviderIcon(provider.name);
+                return (
+                  <SocialLoginButton
+                    key={provider.id}
+                    provider={provider}
+                    icon={icon}
+                  />
+                );
+              })}
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-300 font-bold">
+                  Or enter details to create your account
+                </span>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="space-y-8">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="username" className="text-black dark:text-white block font-bold">
+              <label
+                htmlFor="username"
+                className="text-black dark:text-white block font-bold"
+              >
                 Username
               </label>
               <input
@@ -145,7 +184,10 @@ const SignUp = () => {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="email" className="text-black dark:text-white block font-bold">
+              <label
+                htmlFor="email"
+                className="text-black dark:text-white block font-bold"
+              >
                 Email
               </label>
               <input
@@ -160,7 +202,10 @@ const SignUp = () => {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-black dark:text-white block font-bold">
+              <label
+                htmlFor="password"
+                className="text-black dark:text-white block font-bold"
+              >
                 Password
               </label>
               <input
@@ -175,7 +220,10 @@ const SignUp = () => {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-black dark:text-white block font-bold">
+              <label
+                htmlFor="confirmPassword"
+                className="text-black dark:text-white block font-bold"
+              >
                 Confirm Password
               </label>
               <input
@@ -205,29 +253,6 @@ const SignUp = () => {
               </button>
             </div>
           </form>
-
-          {providers && (
-            <>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-300 dark:border-gray-700"></div>
-                </div>
-                <div className="relative flex justify-center text-sm">
-                  <span className="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-300 font-bold">Or sign up with</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-4 w-full">
-                {Object.values(providers).map((provider) => {
-                  if (provider.name === "Credentials") return null;
-                  const icon = getProviderIcon(provider.name);
-                  return (
-                    <SocialLoginButton key={provider.id} provider={provider} icon={icon} />
-                  );
-                })}
-              </div>
-            </>
-          )}
         </div>
       </div>
     </div>

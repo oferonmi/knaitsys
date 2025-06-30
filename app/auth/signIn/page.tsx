@@ -87,7 +87,7 @@ const Login = () => {
 		const icons = {
 			Google: <GoogleIcon />,
 			Apple: <AppleIcon />,
-			Facebook: <FacebookIcon />,
+			Facebook: <FacebookIcon />, // Uncomment if Facebook when permission issue is fixed
 			GitHub: <GitHubIcon />
 		};
 		return icons[providerName as keyof typeof icons] || null;
@@ -109,6 +109,10 @@ const Login = () => {
 							<div className="flex flex-col gap-4 w-full">
 								{Object.values(providers).map((provider) => {
 									if (provider.name === "Credentials") return null;
+									if (provider.name === "Facebook") {
+										// Temporarily hide Facebook until permission issue is resolved
+										return null;
+									}									
 									const icon = getProviderIcon(provider.name);
 									return (
 										<SocialLoginButton key={provider.id} provider={provider} icon={icon} />
