@@ -29,6 +29,8 @@ const pageStyles = {
 	description: "text-lg text-gray-600 mb-8"
 } as const
 
+// TODO: Change entire page to render UI for audio conversations (input and output). e.g sort of like JARVIS in Iron Man.
+
 function AudioToolsPage(){
 	return (	
 		<div className={pageStyles.container}>

@@ -1,7 +1,10 @@
+'use client'
+
 import { Suspense } from "react";
 import AiTutorMain from "./AiTutorMain";
+import { withAuth } from "@/components/HOC/withAuth"
 
-export default function AiTutorPage() {
+function AiTutorPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-gray-100 mt-20">
         <div className="container mx-auto px-4 py-8">
@@ -16,3 +19,5 @@ export default function AiTutorPage() {
     </main>
   );
 }
+
+export default withAuth(AiTutorPage);
