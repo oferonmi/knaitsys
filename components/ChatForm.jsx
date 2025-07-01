@@ -42,8 +42,16 @@ const ChatForm = ({
 	const handleInput = (e) => {
 		const ta = textareaRef.current;
 		if (ta) {
+			const viewportFraction = 0.4; // 40% of viewport height
+			const maxHeight = Math.floor(window.innerHeight * viewportFraction);
 			ta.style.height = TEXTAREA_CONFIG.minHeight;
-			ta.style.height = ta.scrollHeight + 'px';
+			ta.style.maxHeight = maxHeight + 'px';
+			ta.style.overflowY = 'auto';
+			if (ta.scrollHeight <= maxHeight) {
+				ta.style.height = ta.scrollHeight + 'px';
+			} else {
+				ta.style.height = maxHeight + 'px';
+			}
 		}
 		onChangeHandler(e);
 	};
@@ -63,7 +71,7 @@ const ChatForm = ({
 					onChange={handleInput}
 					onInput={handleInput}
 					ref={textareaRef}
-					style={{ minHeight: TEXTAREA_CONFIG.minHeight, overflow: 'hidden' }}
+					style={{ minHeight: TEXTAREA_CONFIG.minHeight, overflow: 'hidden', maxHeight: '40vh' }}
 				/>
 
 				<div className="absolute right-16 bottom-5 z-10">

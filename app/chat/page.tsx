@@ -88,15 +88,17 @@ const ChatbotPage = () => {
 			{messages.length == 0 && landingSectionUI}
 
 			{messages.length > 0 && (
-				<div className="flex flex-col items-center mt-3 p-4 md:p-8 rounded grow overflow-hidden text-black dark:text-gray-100 min-h-screen bg-white dark:bg-gray-900">
-					<ChatThread
-						messages={messages}
-						sysEmoji="🤖"
-						sources={sourcesForMessages} 
-					/>
+				<div className="flex flex-col items-center mt-3 p-0 md:p-4 rounded grow overflow-hidden text-black dark:text-gray-100 min-h-screen bg-white dark:bg-gray-900 w-full">
+					<div className="w-full max-w-6xl mx-auto flex-1 flex flex-col">
+						<ChatThread
+							messages={messages}
+							sysEmoji="🤖"
+							sources={sourcesForMessages} 
+						/>
+					</div>
 
 					<div
-						className="fixed bottom-0 mb-20 container flex max-w-3xl mx-auto my-auto"
+						className="fixed bottom-0 mb-20 w-full max-w-3xl mx-auto flex"
 					>
 						<Tooltip content="Clear Chat Thread" className="inline-flex bg-black dark:bg-gray-800">
 							<button

@@ -48,10 +48,11 @@ export function ChatMessageBubble(props: {
       className={`${alignmentClassName} ${colorClassName} ${borderRadiusClassName} border ${borderColorClassName} rounded-lg px-4 py-2 max-w-[80%] mb-8 flex dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700`}
     >
       <div className="mr-2 dark:text-gray-300">{prefix}</div>
-      <div className="whitespace-pre-wrap flex flex-col dark:text-gray-100">
+      <div className="whitespace-pre-wrap flex flex-col dark:text-gray-100 break-words max-w-full w-full">
         {/* <span>{props.message.content}</span> */}
-        <MarkdownWithLatexRenderer content={props.message.content} />
-
+        <div className="w-full text-justify  break-words rounded-md">
+          <MarkdownWithLatexRenderer content={props.message.content} />
+        </div>
         <div>
           {/* Input image preview */}
           {props.message?.experimental_attachments
