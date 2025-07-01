@@ -173,7 +173,7 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 				</section>
 			)}
 			{outputData.visual && (
-				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
+				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 dark:text-white">
 					<h2 className="text-xl font-bold mb-2">Visual Explanation</h2>
 					{/* Render visual (SVG, D3, etc.) here */}
 					<div dangerouslySetInnerHTML={{ __html: outputData.visual }} />
