@@ -79,7 +79,7 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 	return (
 		<div className="space-y-6">
 			{outputData.tutorial && (
-				<section className="rounded-lg bg-white dark:text-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
+				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 text-black dark:text-white">
 					<h2 className="text-xl font-bold mb-2">Tutorial</h2>
 					<div
 						className="prose dark:prose-invert max-w-none"
@@ -88,10 +88,10 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 				</section>
 			)}
 			{outputData.quiz && (
-				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
+				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 text-black dark:text-white">
 					<h2 className="text-xl font-bold mb-2">Quiz</h2>
 					{Array.isArray(outputData.quiz.questions) && outputData.quiz.questions.length > 0 ? (
-						<div className="space-y-4 text-black dark:text-white">
+						<div className="space-y-4">
 							{outputData.quiz.questions.map((q: QuizQuestion, idx: number) => (
 								<div key={idx} className="mb-4">
 									<div className="font-semibold mb-2">{idx + 1}. {q.question}</div>
@@ -108,7 +108,7 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 														className="accent-kaito-brand-ash-green"
 														disabled={!!showFeedback[idx]}
 													/>
-													<span>{opt}</span>
+													<span className="text-black dark:text-white">{opt}</span>
 												</label>
 											))}
 										</div>
@@ -116,7 +116,7 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 									{q.type === "fill-in-the-blank" && (
 										<input
 											type="text"
-											className="border rounded px-2 py-1 w-64 mt-2 dark:text-black"
+											className="border rounded px-2 py-1 w-64 mt-2 text-black dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500"
 											placeholder="Your answer..."
 											value={userAnswers[idx] ?? ""}
 											onChange={e => handleFillChange(idx, e.target.value)}
@@ -161,26 +161,26 @@ export function AiTutorOutput({ outputData, onProgress }: { outputData?: AiTutor
 													return <span className="text-red-600">Incorrect. </span>;
 												})()
 											)}
-											<span className="text-gray-500">Explanation: {q.explanation}</span>
+											<span className="text-gray-500 dark:text-gray-400">Explanation: {q.explanation}</span>
 										</div>
 									)}
 								</div>
 							))}
 						</div>
 					) : (
-						<div className="text-gray-500">No quiz questions available.</div>
+						<div className="text-gray-500 dark:text-gray-400">No quiz questions available.</div>
 					)}
 				</section>
 			)}
 			{outputData.visual && (
-				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 dark:text-white">
+				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 text-black dark:text-white">
 					<h2 className="text-xl font-bold mb-2">Visual Explanation</h2>
 					{/* Render visual (SVG, D3, etc.) here */}
 					<div dangerouslySetInnerHTML={{ __html: outputData.visual }} />
 				</section>
 			)}
 			{outputData.project && (
-				<section className="rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
+				<section className="rounded-lg bg-white text-black dark:text-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6">
 					<h2 className="text-xl font-bold mb-2">Project Suggestion</h2>
 					<div
 						className="prose dark:prose-invert max-w-none"
