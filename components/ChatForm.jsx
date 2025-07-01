@@ -19,6 +19,7 @@ const ChatForm = ({
 }) => {
 	const [files, setFiles] = useState(null);
 	const fileInputRef = useRef(null);
+	const textareaRef = useRef(null);
 
 	const handleSubmit = (event) => {
 		event.preventDefault(); // Prevent default form submission
@@ -33,11 +34,23 @@ const ChatForm = ({
 		if (fileInputRef.current) {
 			fileInputRef.current.value = '';
 		}
+		if (textareaRef.current) {
+			textareaRef.current.style.height = TEXTAREA_CONFIG.minHeight;
+		}
+	};
+
+	const handleInput = (e) => {
+		const ta = textareaRef.current;
+		if (ta) {
+			ta.style.height = TEXTAREA_CONFIG.minHeight;
+			ta.style.height = ta.scrollHeight + 'px';
+		}
+		onChangeHandler(e);
 	};
 
 	return (
 		<>
-			<form className="relative w-full" onSubmit={handleSubmit}> 
+			<form className="relative w-full" onSubmit={handleSubmit} >
 				<textarea
 					type="text"
 					autoComplete="off"
@@ -47,8 +60,10 @@ const ChatForm = ({
 					placeholder={TEXTAREA_CONFIG.placeholder}
 					required
 					value={userInput}
-					onChange={onChangeHandler}
-					style={{ minHeight: TEXTAREA_CONFIG.minHeight }}
+					onChange={handleInput}
+					onInput={handleInput}
+					ref={textareaRef}
+					style={{ minHeight: TEXTAREA_CONFIG.minHeight, overflow: 'hidden' }}
 				/>
 
 				<div className="absolute right-16 bottom-5 z-10">
@@ -57,7 +72,6 @@ const ChatForm = ({
 						handleLlmApiChange={onLlmApiEndpointChange}
 					/>
 				</div>
-				
 				<SubmitButton isLoading={isLoading} />
 			</form>
 		</>
