@@ -19,7 +19,7 @@ const tools = [
 
 function AiToolsPage() {
 	return (
-		<main className="max-w-4xl mx-auto py-10 px-4 mt-12">
+		<main className="max-w-4xl mx-auto py-10 px-4 mt-12 h-screen">
 			<h1 className="text-3xl font-bold font-mono mb-6">AI-based Tools</h1>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 				{tools.map((tool) => (
