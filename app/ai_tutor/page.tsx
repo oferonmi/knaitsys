@@ -8,7 +8,7 @@ function AiTutorPage() {
 	return (
 		<main className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-gray-100 mt-20">
 			<div className="container mx-auto px-4 py-8">
-				<h1 className="text-3xl mb-4 text-center text-gray-700">
+				<h1 className="text-3xl mb-4 text-center text-gray-700 dark:text-gray-100">
 					AI-Based Learning Assistant
 				</h1>
 				<p className="mb-8 text-center text-lg max-w-2xl mx-auto">

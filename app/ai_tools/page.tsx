@@ -20,7 +20,7 @@ const tools = [
 function AiToolsPage() {
 	return (
 		<main className="max-w-4xl mx-auto py-10 px-4 mt-12 min-h-screen">
-			<h1 className="text-3xl text-center text-gray-700 mb-6">AI-based Tools</h1>
+			<h1 className="text-3xl text-center text-gray-700 dark:text-gray-100 mb-6">AI-based Tools</h1>
 			<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 				{tools.map((tool) => (
 					<Link href={tool.path} key={tool.name}>
