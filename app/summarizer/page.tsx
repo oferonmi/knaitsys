@@ -356,7 +356,7 @@ const SummarizerPage = () => {
                     <div className="flex h-screen bg-white dark:bg-gray-900">
                         {SideNavBar}
                         <div className="flex flex-col p-4 md:p-8  overflow-hidden grow h-screen max-w-2xl mx-auto flex-auto">
-                            <h1 className="text-center font-mono text-2xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
+                            <h1 className="text-center text-2xl md:text-3xl mb-4 text-gray-700 dark:text-gray-100">
                                 Summarize your documents, web pages and search indices pages.
                             </h1>
                             <p className="text-gray-800 dark:text-gray-200 text-lg text-center">

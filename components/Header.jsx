@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Marcellus_SC, Audiowide, Gugi, Hubot_Sans } from 'next/font/google'
+import { Marcellus_SC, Audiowide, Gugi, Hubot_Sans, Zen_Dots } from 'next/font/google'
 import { AuthHeader } from "@/components/AuthHeader";
 import { UnAuthHeader } from "@/components/UnAuthHeader";
 import { MenuItems } from "@/components/Menuitems";
@@ -10,6 +10,9 @@ import { useState, useEffect } from "react";
 
 const hubotSans = Hubot_Sans({ subsets: ["latin"], weight: "200", });
 const audiowide = Audiowide({ subsets: ["latin"], weight: "400", });
+const zendots = Zen_Dots({ subsets: ["latin"], weight: "400", });
+const gugi = Gugi({ subsets: ["latin"], weight: "400", });
+const marcellus = Marcellus_SC({ subsets: ["latin"], weight: "400", });
 
 const BrandLogo = ({ session }) => (
     <Link href={session ? "/ai_tools" : "/home"} className="py-1 w-auto h-auto focus:outline-none">
@@ -22,7 +25,7 @@ const BrandLogo = ({ session }) => (
                 height={38}
                 className="select-none"
             />
-            <span className={`${audiowide.className} font-bold text-3xl select-none`}>KnaitSys</span>
+            <span className={`${marcellus.className} font-bold text-4xl select-none`}>KnaitSys</span>
         </div>
     </Link>
 );

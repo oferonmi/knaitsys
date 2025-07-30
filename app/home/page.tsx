@@ -1,6 +1,5 @@
 import { HomeContent } from '@/components/HomeContent'
 import Link from "next/link";
-import HomeBgImg from "@/public/understand_innovate_build_domain_bg_photo_14.jpg";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]/options";
 import { redirect } from "next/navigation";
@@ -17,10 +16,10 @@ export default async function Home() {
 		<main>
 			{/* <HomeContent /> */}
 			<div
-				className="bg-cover bg-center flex flex-col items-center justify-center text-white dark:text-gray-100 h-screen relative pt-40"
-				style={{ backgroundImage: `url(${HomeBgImg.src})` }}
+				className={"bg-cover bg-center flex flex-col items-center justify-center text-white dark:text-gray-100 h-screen relative pt-40 bg-gray-400 bg-blend-multiply"}
+				style={{ backgroundImage: "url('/understand_innovate_build_domain_bg_photo_14.jpg')" }}
 			>
-				<h1 className="font-mono text-5xl text-white dark:text-gray-100 mt-30">
+				<h1 className="text-5xl text-white font-bold dark:text-gray-100 mt-30">
 					Use AI to understand, innovate and build.
 				</h1>
 

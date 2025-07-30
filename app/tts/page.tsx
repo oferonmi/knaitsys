@@ -37,7 +37,7 @@ export default function TTSPage() {
 	};
 
 	return (
-		<div className="container mx-auto p-4 max-w-2xl h-screen bg-white dark:bg-gray-900">
+		<div className="container mx-auto mb-20  p-4 max-w-2xl h-screen bg-white dark:bg-gray-900">
 			<h1 className="text-3xl md:text-3xl mb-6 text-gray-700 dark:text-gray-100 text-center pt-36">
 				Convert Text to Speech
 			</h1>
@@ -47,24 +47,24 @@ export default function TTSPage() {
 				{/* You can ask follow up questions. */}
 			</p>
 
-			<Card className="border-b-kaito-brand-ash-green border-x-kaito-brand-ash-green bg-gray-50 dark:bg-gray-800 rounded-lg shadow-lg">
+			<Card className="bg-white dark:bg-gray-800 rounded-lg shadow-lg">
 				<Textarea
 					placeholder="Enter text to convert to speech..."
 					value={text}
 					onChange={(e) => setText(e.target.value)}
-					className="min-h-[250px] m-0 mb-4 bg-white dark:bg-gray-900 border border-t-kaito-brand-ash-green dark:border-t-kaito-brand-ash-green/80"
+					className="min-h-[250px] m-0 mb-4 bg-white dark:bg-gray-900 border-none rounded-t-lg rounded-b-none focus:outline-none focus:ring-1 focus:ring-gray-200 dark:focus:ring-gray-700 focus:border-transparent resize-none text-kaito-brand-ash-green dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 sm:leading-6"
 				/>
 
 				<div className="flex justify-end gap-4 ">
 					<Button
 						onClick={handleSubmit}
 						disabled={isLoading || !text.trim()}
-						className="text-gray-200 dark:text-gray-100 bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green dark:bg-kaito-brand-ash-green/80 dark:hover:bg-kaito-brand-ash-green/60 py-5 px-5 mr-4 mb-4"
+						className="text-gray-200 dark:text-gray-100 bg-kaito-brand-ash-green hover:bg-kaito-brand-ash-green dark:bg-kaito-brand-ash-green/80 dark:hover:bg-kaito-brand-ash-green/60 py-5 px-5 mr-4 mb-4 rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						{/* {isLoading ? "Converting..." : "Convert"} */}
 						{isLoading ? (
 						<span className="flex items-center gap-2">
-							<svg className="animate-spin h-4 w-4 text-gray-700 dark:text-gray-100" viewBox="0 0 24 24">
+							<svg className="animate-spin h-4 w-4 text-gray-200 dark:text-gray-100" viewBox="0 0 24 24">
 							<circle
 								className="opacity-25 dark:opacity-40"
 								cx="12"

@@ -131,7 +131,7 @@ const SignUp = () => {
     <div className="flex flex-col justify-center items-center min-h-screen px-7 py-16 mt-16 bg-white dark:bg-gray-900">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl text-black dark:text-white font-bold">
+          <h1 className="text-3xl text-gray-700 dark:text-white font-bold">
             Create Account
           </h1>
           <p className="text-gray-600 dark:text-gray-300 mt-4 text-center font-bold">

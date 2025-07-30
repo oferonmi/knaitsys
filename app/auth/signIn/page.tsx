@@ -97,7 +97,7 @@ const Login = () => {
 		<div className="flex flex-col justify-center items-center min-h-screen px-7 py-16 mt-10 bg-white dark:bg-gray-900">
 			<div className="w-full max-w-md space-y-8">
 				<div className="text-center">
-					<h1 className="text-3xl text-black dark:text-white font-bold">Login</h1>
+					<h1 className="text-3xl text-gray-700 dark:text-white font-bold">Login</h1>
 					<p className="text-gray-600 dark:text-gray-300 mt-4 text-center font-bold">
 						Choose your preferred way to sign in to your account.
 					</p>

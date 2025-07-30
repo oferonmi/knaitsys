@@ -447,7 +447,7 @@ export default function SimulationPage() {
 
 	return (
 		<div className="min-h-screen p-4 bg-white pt-36">
-			<h1 className="text-3xl font-bold mb-6 text-center">
+			<h1 className="text-3xl text-gray-700 font-bold mb-6 text-center">
 				Electromagnetics Simulation
 			</h1>
 

@@ -254,7 +254,7 @@ function MultiModalChat() {
         <main className="min-h-screen flex items-center justify-center px-4 bg-white dark:bg-gray-900 text-black dark:text-gray-100">
             <div className="max-w-3xl w-full mx-auto md:p-8">
                 <header className="mb-8 text-center">
-                    <h1 className="text-3xl text-gray-700 font-mono dark:text-gray-100 mb-4">
+                    <h1 className="text-3xl text-gray-700 dark:text-gray-100 mb-4">
                         Query or Question a Multimodal AI Chatbot
                     </h1>
                     <p className="text-lg text-black dark:text-gray-200">
