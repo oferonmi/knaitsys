@@ -32,6 +32,7 @@ const LLM_OPTIONS = [
         label: "Gemini-2.5-Flash",
         isMultimodal: true,
     },
+    // { value: "chat/remote_chat/deepseek", label: "Deepseek-v3" },
     // { value: "chat/local_chat/deepseek", label: "Deepseek-r1" },
     { value: "chat/remote_chat/fireworks/deepseek_fireworks/r1", label: "Deepseek-r1-Fwks" },
     { value: "chat/remote_chat/fireworks/deepseek_fireworks/v3", label: "Deepseek-v3-Fwks" },
