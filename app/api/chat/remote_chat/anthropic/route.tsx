@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = await streamText({
-    model: anthropic("claude-3-5-haiku-20241022"),
+    model: anthropic("claude-opus-4-20250514"),
     messages: convertToCoreMessages(messages),
   } as any);
 

@@ -18,8 +18,17 @@ export async function POST(req: Request) {
 	const { messages } = await req.json();
 
 	const result = await streamText({
-		model: xai("grok-2-latest"),
+		model: xai("grok-3-latest"),
 		messages: convertToCoreMessages(messages),
+		providerOptions: {
+			xai: {
+				searchParameters: {
+					mode: 'auto', // 'auto', 'on', or 'off'
+					returnCitations: true,
+					maxSearchResults: 5,
+				},
+			},
+		},
 	} as any);
 
 	return result.toDataStreamResponse();

@@ -10,26 +10,26 @@ import '@/node_modules/bootstrap-icons/font/bootstrap-icons.css';
 
 /** @type {LlmRoute[]} */
 const LLM_OPTIONS = [
-    { value: "chat/remote_chat/openai", label: "GPT-3.5" },
+    { value: "chat/remote_chat/openai", label: "GPT-4-turbo" },
     { value: "multimodal/remote_chat/openai", label: "GPT-4o-mini", isMultimodal: true },
     { value: "chat/remote_chat/fireworks/llama3_fireworks", label: "Llama-3-Fwks" },
-    { value: "chat/remote_chat/fireworks/qwen2_fireworks", label: "Qwen-2-Fwks" },
+    // { value: "chat/remote_chat/fireworks/qwen2_fireworks", label: "Qwen-2-Fwks" },
     { value: "chat/remote_chat/fireworks/qwen3_fireworks", label: "Qwen-3-Fwks" },
-    { value: "chat/remote_chat/fireworks/qwq_fireworks", label: "QWQ-Fwks" },
-    {
-        value: "multimodal/remote_chat/groq/llama3_groq",
-        label: "Llama-3.2-Groq",
-        isMultimodal: true,
-    },
-    { value: "chat/remote_chat/anthropic", label: "Claude-3.5-Haiku" },
-    {
-        value: "chat/remote_chat/fireworks/mixtral_MoE8x7B_Instruct_fireworks",
-        label: "Mixtral-MoE-Fwks",
-    },
-    { value: "chat/remote_chat/xai", label: "Grok-2" },
+    // { value: "chat/remote_chat/fireworks/qwq_fireworks", label: "QWQ-Fwks" },
+    // {
+    //     value: "multimodal/remote_chat/groq/llama3_groq",
+    //     label: "Llama-3.2-Groq",
+    //     isMultimodal: true,
+    // },
+    { value: "chat/remote_chat/anthropic", label: "Claude-4-Opus" },
+    // {
+    //     value: "chat/remote_chat/fireworks/mixtral_MoE8x7B_Instruct_fireworks",
+    //     label: "Mixtral-MoE-Fwks",
+    // },
+    { value: "chat/remote_chat/xai", label: "Grok-3" },
     {
         value: "chat/remote_chat/gemini",
-        label: "Gemini-1.5-Flash",
+        label: "Gemini-2.5-Flash",
         isMultimodal: true,
     },
     // { value: "chat/local_chat/deepseek", label: "Deepseek-r1" },

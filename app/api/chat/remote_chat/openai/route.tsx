@@ -8,7 +8,15 @@ export async function POST(req: Request) {
 	const { messages } = await req.json();
 
 	const result = await streamText({
-		model: openai('gpt-3.5-turbo'),
+		model: openai('gpt-4-turbo'),
+		// tools: {
+		// 	web_search_preview: openai.tools.webSearchPreview({
+		// 		// optional configuration:
+		// 		searchContextSize: 'high',
+		// 	}),
+		// },
+		// // Force web search tool:
+		// toolChoice: { type: 'tool', toolName: 'web_search_preview' },
 		messages: convertToCoreMessages(messages),
 	} as any);
 

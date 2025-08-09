@@ -16,8 +16,8 @@ export default async function Home() {
 		<main>
 			{/* <HomeContent /> */}
 			<div
-				className={"bg-cover bg-center flex flex-col items-center justify-center text-white dark:text-gray-100 h-screen relative pt-40 bg-gray-400 bg-blend-multiply"}
-				style={{ backgroundImage: "url('/understand_innovate_build_domain_bg_photo_14.jpg')" }}
+				className={"bg-cover bg-center flex flex-col items-center justify-center text-white dark:text-gray-100 h-screen relative mt-5 pt-10 bg-gray-400 bg-blend-multiply"}
+				style={{ backgroundImage: "url('/understand_innovate_build_domain_bg_photo_23.jpg')" }}
 			>
 				<h1 className="text-5xl text-white font-bold dark:text-gray-100 mt-30">
 					Use AI to understand, innovate and build.
