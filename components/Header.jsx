@@ -56,12 +56,12 @@ export const Header = ({ menu, session }) => {
     }, [lastScrollY]);
 
     return (
-        <div className="fixed w-full top-0 z-50">
+        <div className="fixed w-full top-0 z-50 bg-opacity-80">
             <header 
-                className={`bg-gray-100 dark:bg-gray-900 w-full border-b border-gray-200 dark:border-gray-700 transform transition-all duration-200 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
+                className={`bg-gray-100 dark:bg-gray-900 bg-opacity-80 dark:bg-opacity-80 w-full border-b border-gray-200 dark:border-gray-700 transform transition-all duration-200 ${isVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}
                 role="banner"
             >
-                <nav className="container mx-auto px-4 py-2 flex items-center justify-between text-black dark:text-gray-100" aria-label="Main navigation">
+                <nav className="container mx-auto px-4 py-2 flex items-center justify-between text-black dark:text-gray-100 bg-opacity-80" aria-label="Main navigation">
                     <BrandLogo session={session} />
                     <MenuItems items={menu} />
                     {session ? <AuthHeader session={session}/> : <UnAuthHeader />}

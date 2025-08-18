@@ -28,10 +28,10 @@ export const AuthHeader = ({session}) => {
     }, [menuOpen]);
 
     return (
-        <div className="header bg-white dark:bg-gray-900">
-            <nav className="flex flex-row bg-gray-100 dark:bg-gray-900 w-full items-center space-x-6 justify-between mr-2.5">
+        <div className="header bg-white dark:bg-gray-900 bg-opacity-0">
+            <nav className="flex flex-row bg-gray-100 dark:bg-gray-900 bg-opacity-0 w-full items-center space-x-6 justify-between mr-2.5">
                 <div className="relative" ref={menuRef}>
-                    <button onClick={() => setMenuOpen((v) => !v)} aria-label="User menu">
+                    <button onClick={() => setMenuOpen((v) => !v)} className="bg-opacity-0" aria-label="User menu">
                         <Image 
                             width={38}
                             height={38}

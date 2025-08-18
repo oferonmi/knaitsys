@@ -1,5 +1,5 @@
 import { createOpenAI } from '@ai-sdk/openai';
-import { convertToCoreMessages, streamText } from 'ai';
+import { UIMessage, convertToModelMessages, convertToCoreMessages, streamText } from 'ai';
 
 // Allow streaming responses up to 30 seconds
 // export const maxDuration = 30;
@@ -11,7 +11,7 @@ import { convertToCoreMessages, streamText } from 'ai';
 // })
 
 export async function POST(req: Request) {
-    const { messages } = await req.json();
+    const { messages }: { messages: UIMessage[] } = await req.json();
 
     const result = streamText({
         model: "zai/glm-4.5",
@@ -24,10 +24,15 @@ export async function POST(req: Request) {
             }
         }
     } as any);
-
-    // Debugging output. comment out in production
-    const text = await result.text
-    console.log("Zhipu result", text);
+    
+    const reader = result.toDataStream().getReader();
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        // Process chunk (value)
+        console.log("Stream chunk:", value);
+    }
 
     return result.toDataStreamResponse();
+    // return result.toUIMessageStreamResponse();
 }

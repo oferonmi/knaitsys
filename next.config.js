@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
 const nextConfig = {
-
 	// redirect default landing page to routable home directory
 	async redirects() {
 		return [
@@ -77,6 +77,18 @@ const nextConfig = {
 		config.externals = [...(config.externals || []), { canvas: 'canvas' }];
 
 		return config;
+	},
+
+	// Enable turbopack for faster builds
+	turbopack: {
+		// root: path.join(__dirname, '..'),
+		rules: {
+			'*.svg': {
+				loaders: ['@svgr/webpack'],
+				as: '*.js',
+			},
+		},
+		resolveExtensions: ['.mdx', '.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
 	},
 };
 
